@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Project_DMD.Models
 {
-    public class AuthorModel
+    public class Author
     {
         /// <summary>
         /// Author id

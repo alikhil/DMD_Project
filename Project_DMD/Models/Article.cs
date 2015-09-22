@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Data.Entity;
 
 namespace Project_DMD.Models
 {
-    class ArticleModel
+    public class Article
     {
         /// <summary>
         /// Id of an article
         /// </summary>
+        
         public int ArticleId { get; set; }
 
         /// <summary>
