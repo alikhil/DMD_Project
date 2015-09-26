@@ -13,7 +13,7 @@ namespace Project_DMD.Controllers
 {
     public class ArticlesController : Controller
     {
-        private IDataRepository Repository = new DataRepository();
+        private IDataRepository Repository = FakeGenerator.Instance.FakeRepository;
 
         // GET: Articles
         public ActionResult Index()
@@ -117,7 +117,7 @@ namespace Project_DMD.Controllers
         {
             if (disposing)
             {
-                Repository.Dispose();
+                //Repository.Dispose();
             }
             base.Dispose(disposing);
         }
