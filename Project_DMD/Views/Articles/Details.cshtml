@@ -65,7 +65,15 @@
         <dd>
             @Html.DisplayFor(model => model.DOI)
         </dd>
-
+        @{
+            if (Model != null && Model.Authors != null)
+            {
+                foreach (var author in Model.Authors)
+                {
+                    <p>@Html.ActionLink(author.Name, "ShowAuthor", new { id = author.AuthorId})</p>
+                }
+            }
+        }
     </dl>
 </div>
 <p>
