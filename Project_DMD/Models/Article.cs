@@ -48,6 +48,11 @@ namespace Project_DMD.Models
         /// DOI
         /// </summary>
         public string DOI { get; set; }
+
+        /// <summary>
+        /// Authors of article
+        /// </summary>
+        public ICollection<Author> Authors { get; set; }
     }
 
 }
