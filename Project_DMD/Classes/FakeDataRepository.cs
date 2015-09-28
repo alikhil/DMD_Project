@@ -8,67 +8,142 @@ namespace Project_DMD.Classes
 {
     public class FakeDataRepository : IDataRepository
     {
-        private List<Article> List = new List<Article>();
-        
+        private List<Article> ArticlesList = new List<Article>();
+        private List<Author> Authors = new List<Author>();
+
         public FakeDataRepository()
         {
-            List.Add(new Article()
-            {
-                ArticleId = 0,
-                DOI = "ADAD",
-                Published = DateTime.Now,
-                Summary = "Summary",
-                Title = "Title",
-                Updated = DateTime.Now,
-                Url = "http://vk.com",
-                Venue = "BBC"
+            #region Generating fake data
+            Authors = new List<Author>(new[] {
+                new Author()
+                {
+                    AuthorId = 0,
+                    Name = "Alik Khil"
+                },
+                new Author()
+                {
+                    AuthorId = 1,
+                    Name = "Nikita Shib"
+                },
+                new Author()
+                {
+                    AuthorId = 2,
+                    Name = "Timur Khazh"
+                },
+                new Author()
+                {
+                    AuthorId = 3,
+                    Name = "Ruslan Tush"
+                }
             });
-            List.Add(new Article()
-            {
-                ArticleId = 1,
-                DOI = "ADAD",
-                Published = DateTime.Now,
-                Summary = "Summary",
-                Title = "Title",
-                Updated = DateTime.Now,
-                Url = "http://vk.com",
-                Venue = "BBC"
+
+            ArticlesList.AddRange(new [] {
+                new Article()
+                {
+                    ArticleId = 0,
+                    DOI = "ADAD",
+                    Published = DateTime.Now,
+                    Summary = "Summary",
+                    Title = "Title",
+                    Updated = DateTime.Now,
+                    Url = "http://vk.com",
+                    Venue = "BBC",
+                    Authors = new List<Author>(
+                        new[] {
+                            Authors[0], 
+                            Authors[1]
+                        })
+                },
+                new Article()
+                {
+                    ArticleId = 1,
+                    DOI = "ADAD",
+                    Published = DateTime.Now,
+                    Summary = "Summary",
+                    Title = "Title",
+                    Updated = DateTime.Now,
+                    Url = "http://vk.com",
+                    Venue = "BBC",
+                    Authors = new List<Author>(
+                        new[] {
+                            Authors[2], 
+                            Authors[3],
+                            Authors[1]
+                        })
+                },
+                new Article()
+                {
+                    ArticleId = 1,
+                    DOI = "EWWG",
+                    Published = DateTime.Now,
+                    Summary = "SuSDFmmary",
+                    Title = "TiSDtle",
+                    Updated = DateTime.Now,
+                    Url = "http://vk.com/sdf",
+                    Venue = "DSFSD",
+                    Authors = new List<Author>(
+                        new[] {
+                            Authors[0], 
+                            Authors[2],
+                            Authors[1]
+                        })
+                }
             });
+            foreach (Article art in ArticlesList)
+            {
+                foreach (Author auth in art.Authors)
+                {
+                    auth.PublishedArticles = auth.PublishedArticles ?? new List<Article>();
+                    auth.PublishedArticles.Add(art);
+                }
+            }
+            #endregion
         }
+
         public void Add(Article article)
         {
-            List.Add(article);
+            ArticlesList.Add(article);
         }
 
         public Article GetArticle(int id)
         {
-            return List.Find(x => x.ArticleId == id);
+            return ArticlesList.Find(x => x.ArticleId == id);
         }
 
         public List<Article> GetArticles()
         {
-            return List;
+            return ArticlesList;
         }
 
         public void Update(Article article)
         {
-            int index = List.FindIndex(x => x.ArticleId == article.ArticleId);
-            List[index] = article;
+            int index = ArticlesList.FindIndex(x => x.ArticleId == article.ArticleId);
+            ArticlesList[index] = article;
         }
 
         public void Delete(Article article)
         {
-            List.Remove(article);
+            ArticlesList.Remove(article);
         }
 
         public void Delete(int id)
         {
-            List.Remove(GetArticle(id));
+            ArticlesList.Remove(GetArticle(id));
+        }
+
+        public Author GetAuthor(int id)
+        {
+            return Authors[id];
+        }
+
+        public List<Author> GetAuthors()
+        {
+            return Authors;
         }
 
         public void Dispose()
         {
-            List = null;
+            ArticlesList = null;
         }
     }
 
