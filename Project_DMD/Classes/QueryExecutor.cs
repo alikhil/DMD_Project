@@ -45,5 +45,15 @@ namespace Project_DMD.Classes
         {
             throw new NotImplementedException();
         }
+
+        public Author GetAuthorById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Author> GetAuthors()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
