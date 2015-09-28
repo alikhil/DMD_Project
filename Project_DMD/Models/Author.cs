@@ -17,5 +17,9 @@ namespace Project_DMD.Models
         /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// Articles published by this author
+        /// </summary>
+        public ICollection<Article> PublishedArticles { get; set; }
     }
 }
