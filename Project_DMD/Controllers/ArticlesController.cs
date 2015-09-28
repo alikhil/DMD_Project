@@ -113,6 +113,15 @@ namespace Project_DMD.Controllers
             return RedirectToAction("Index");
         }
 
+        public ActionResult ShowAuthor(int id)
+        {
+            if (id != null)
+            {
+                return View(Repository.GetAuthor(id));
+            }
+            return RedirectToAction("Index");
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

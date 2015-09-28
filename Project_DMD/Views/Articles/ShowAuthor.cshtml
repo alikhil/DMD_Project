@@ -1,0 +1,36 @@
+﻿@model Project_DMD.Models.Author
+
+@{
+    ViewBag.Title = "ShowAuthor";
+}
+
+<h2>ShowAuthor</h2>
+
+<div>
+    <h4>Author</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        Articles:
+        <br/>
+        @{
+            if(Model !=null && Model.PublishedArticles != null)
+            {
+                foreach (var article in Model.PublishedArticles)
+                {
+                    <p>@Html.ActionLink(article.Title, "Details", new { id = article.ArticleId })</p>
+                }
+            }
+        }
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.AuthorId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
