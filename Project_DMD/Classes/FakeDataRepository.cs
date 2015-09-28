@@ -44,7 +44,7 @@ namespace Project_DMD.Classes
                     DOI = "ADAD",
                     Published = DateTime.Now,
                     Summary = "Summary",
-                    Title = "Title",
+                    Title = "Geek best 3",
                     Updated = DateTime.Now,
                     Url = "http://vk.com",
                     Venue = "BBC",
@@ -60,7 +60,7 @@ namespace Project_DMD.Classes
                     DOI = "ADAD",
                     Published = DateTime.Now,
                     Summary = "Summary",
-                    Title = "Title",
+                    Title = "Best of habr",
                     Updated = DateTime.Now,
                     Url = "http://vk.com",
                     Venue = "BBC",
@@ -73,11 +73,11 @@ namespace Project_DMD.Classes
                 },
                 new Article()
                 {
-                    ArticleId = 1,
+                    ArticleId = 2,
                     DOI = "EWWG",
                     Published = DateTime.Now,
                     Summary = "SuSDFmmary",
-                    Title = "TiSDtle",
+                    Title = "TOuch of class",
                     Updated = DateTime.Now,
                     Url = "http://vk.com/sdf",
                     Venue = "DSFSD",
@@ -118,7 +118,11 @@ namespace Project_DMD.Classes
         public void Update(Article article)
         {
             int index = ArticlesList.FindIndex(x => x.ArticleId == article.ArticleId);
-            ArticlesList[index] = article;
+            var old = ArticlesList[index];
+            old.DOI = article.DOI;
+            old.Title = article.Title;
+            old.Url = article.Url;
+            old.Venue = article.Venue;
         }
 
         public void Delete(Article article)
