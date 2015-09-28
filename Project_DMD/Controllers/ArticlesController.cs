@@ -47,7 +47,7 @@ namespace Project_DMD.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ArticleId,Url,Title,Summary,Published,Updated,Venue,DOI")] Article article)
+        public ActionResult Create([Bind(Include = "Url,Title,Summary,Venue,DOI")] Article article)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +78,7 @@ namespace Project_DMD.Controllers
         // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,Published,Updated,Venue,DOI")] Article article)
+        public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,Venue,DOI")] Article article)
         {
             if (ModelState.IsValid)
             {
