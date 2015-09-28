@@ -20,6 +20,10 @@ namespace Project_DMD.Classes
 
         void Delete(int id);
 
+        Author GetAuthor(int id);
+
+        List<Author> GetAuthors();
+
         void Dispose();
     }
 
@@ -54,6 +58,16 @@ namespace Project_DMD.Classes
         public void Delete(int id)
         {
             QueryExecutor.Instance.DeleteArticle(id);
+        }
+
+        public Author GetAuthor(int id)
+        {
+            return QueryExecutor.Instance.GetAuthorById(id);
+        }
+
+        public List<Author> GetAuthors()
+        {
+            return QueryExecutor.Instance.GetAuthors();
         }
 
         public void Dispose()
