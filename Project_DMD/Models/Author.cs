@@ -15,7 +15,7 @@ namespace Project_DMD.Models
         /// <summary>
         /// Author's Name and Last Name
         /// </summary>
-        public string Name { get; set; }
+        public string AuthorName { get; set; }
 
         /// <summary>
         /// Articles published by this author

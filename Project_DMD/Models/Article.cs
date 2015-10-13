@@ -42,12 +42,17 @@ namespace Project_DMD.Models
         /// <summary>
         /// Conference or journal name
         /// </summary>
-        public string Venue { get; set; }
+        public string JournalReference { get; set; }
 
         /// <summary>
         /// DOI
         /// </summary>
         public string DOI { get; set; }
+
+        /// <summary>
+        /// Number of article view 
+        /// </summary>
+        public int Views { get; set; }
 
         /// <summary>
         /// Authors of article

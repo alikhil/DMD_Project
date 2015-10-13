@@ -18,22 +18,22 @@ namespace Project_DMD.Classes
                 new Author()
                 {
                     AuthorId = 0,
-                    Name = "Alik Khil"
+                    AuthorName = "Alik Khil"
                 },
                 new Author()
                 {
                     AuthorId = 1,
-                    Name = "Nikita Shib"
+                    AuthorName = "Nikita Shib"
                 },
                 new Author()
                 {
                     AuthorId = 2,
-                    Name = "Timur Khazh"
+                    AuthorName = "Timur Khazh"
                 },
                 new Author()
                 {
                     AuthorId = 3,
-                    Name = "Ruslan Tush"
+                    AuthorName = "Ruslan Tush"
                 }
             });
 
@@ -47,7 +47,7 @@ namespace Project_DMD.Classes
                     Title = "Geek best 3",
                     Updated = DateTime.Now,
                     Url = "http://vk.com",
-                    Venue = "BBC",
+                    JournalReference = "BBC",
                     Authors = new List<Author>(
                         new[] {
                             Authors[0], 
@@ -63,7 +63,7 @@ namespace Project_DMD.Classes
                     Title = "Best of habr",
                     Updated = DateTime.Now,
                     Url = "http://vk.com",
-                    Venue = "BBC",
+                    JournalReference = "BBC",
                     Authors = new List<Author>(
                         new[] {
                             Authors[2], 
@@ -80,7 +80,7 @@ namespace Project_DMD.Classes
                     Title = "TOuch of class",
                     Updated = DateTime.Now,
                     Url = "http://vk.com/sdf",
-                    Venue = "DSFSD",
+                    JournalReference = "DSFSD",
                     Authors = new List<Author>(
                         new[] {
                             Authors[0], 
@@ -122,7 +122,7 @@ namespace Project_DMD.Classes
             old.DOI = article.DOI;
             old.Title = article.Title;
             old.Url = article.Url;
-            old.Venue = article.Venue;
+            old.JournalReference = article.JournalReference;
         }
 
         public void Delete(Article article)
