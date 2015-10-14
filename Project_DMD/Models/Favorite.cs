@@ -15,6 +15,6 @@ namespace Project_DMD.Models
 
         public Article Article { get; set; }
 
-        public Client User { get; set; }
+        public AppUser User { get; set; }
     }
 }
