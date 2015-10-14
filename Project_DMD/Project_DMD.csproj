@@ -158,6 +158,7 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Classes\AppUserRepository.cs" />
     <Compile Include="Classes\DataRepository.cs" />
     <Compile Include="Classes\FakeGenerator.cs" />
     <Compile Include="Classes\QueryExecutor.cs" />
@@ -223,18 +224,8 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\AppUser\ForgotPassword.cshtml" />
-    <Content Include="Views\AppUser\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\AppUser\Login.cshtml" />
     <Content Include="Views\AppUser\Register.cshtml" />
-    <Content Include="Views\AppUser\ResetPassword.cshtml" />
-    <Content Include="Views\AppUser\ResetPasswordConfirmation.cshtml" />
-    <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
-    <Content Include="Views\Manage\ChangePassword.cshtml" />
-    <Content Include="Views\Manage\Index.cshtml" />
-    <Content Include="Views\Manage\ManageLogins.cshtml" />
-    <Content Include="Views\Manage\SetPassword.cshtml" />
-    <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Articles\Create.cshtml" />
@@ -243,6 +234,8 @@
     <Content Include="Views\Articles\Edit.cshtml" />
     <Content Include="Views\Articles\Index.cshtml" />
     <Content Include="Views\Articles\ShowAuthor.cshtml" />
+    <Content Include="Views\Manage\Index.cshtml" />
+    <Content Include="Views\Manage\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -11,6 +11,7 @@ using Project_DMD.Classes;
 
 namespace Project_DMD.Controllers
 {
+    [Authorize]
     public class ArticlesController : Controller
     {
         private IDataRepository Repository = FakeGenerator.Instance.FakeRepository;

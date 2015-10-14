@@ -18,10 +18,11 @@ namespace Project_DMD.Classes
         }
 
         public FakeDataRepository FakeRepository { get; set; }
-
+        public FakeAppUserRepository FakeUsersRepository { get; set; }
         private FakeGenerator()
         {
             FakeRepository = new FakeDataRepository();
+            FakeUsersRepository = new FakeAppUserRepository();
         }
     }
 }

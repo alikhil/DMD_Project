@@ -9,5 +9,7 @@ namespace Project_DMD.Models
     public class TempDataContext : DbContext
     {
         public DbSet<Article> Articles { get; set; }
+
+        public System.Data.Entity.DbSet<Project_DMD.Models.AppUser> AppUsers { get; set; }
     }
 }

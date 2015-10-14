@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project_DMD.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,16 +20,21 @@ namespace Project_DMD.Models
             }
         }
 
-        public List<AppUser> DummyUsersList { get; set; }
+        public List<AppUser> DummyUsersList {
+            get 
+            {
+                return FakeGenerator.Instance.FakeUsersRepository.GetAppUsers();
+            } 
+        }
 
         private AppUserContext()
         {
-            DummyUsersList = new List<AppUser>();
+            
         }
 
         public bool Add(AppUser user)
         {
-            DummyUsersList.Add(user);
+            FakeGenerator.Instance.FakeUsersRepository.Add(user);
             return true;
         }
     }
