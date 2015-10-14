@@ -51,11 +51,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Venue)
+            @Html.DisplayNameFor(model => model.JournalReference)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Venue)
+            @Html.DisplayFor(model => model.JournalReference)
         </dd>
 
         <dt>
@@ -70,7 +70,7 @@
             {
                 foreach (var author in Model.Authors)
                 {
-                    <p>@Html.ActionLink(author.Name, "ShowAuthor", new { id = author.AuthorId})</p>
+                    <p>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })</p>
                 }
             }
         }
