@@ -9,5 +9,7 @@ namespace Project_DMD.Models
     {
         public int KeywordId { get; set; }
         public string KeywordValue { get; set; }
+
+        public List<Article> Articles { get; set; }
     }
 }
