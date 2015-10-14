@@ -8,6 +8,6 @@ namespace Project_DMD.Models
     public class Keyword
     {
         public int KeywordId { get; set; }
-        public string Keyword { get; set; }
+        public string KeywordValue { get; set; }
     }
 }

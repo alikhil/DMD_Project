@@ -27,6 +27,9 @@ namespace Project_DMD.Classes
         void Dispose();
     }
 
+    /// <summary>
+    /// For repository for articles and authors
+    /// </summary>
     public class DataRepository : IDataRepository
     {
 

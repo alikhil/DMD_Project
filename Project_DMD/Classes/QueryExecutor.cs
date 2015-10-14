@@ -55,5 +55,10 @@ namespace Project_DMD.Classes
         {
             throw new NotImplementedException();
         }
+
+        internal void AddAppUser(AppUser user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

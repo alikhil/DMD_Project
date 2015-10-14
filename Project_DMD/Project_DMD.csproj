@@ -161,7 +161,7 @@
     <Compile Include="Classes\DataRepository.cs" />
     <Compile Include="Classes\FakeGenerator.cs" />
     <Compile Include="Classes\QueryExecutor.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AppUserController.cs" />
     <Compile Include="Controllers\ArticlesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -169,12 +169,20 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ActionHistory.cs" />
+    <Compile Include="Models\AppUserContext.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Author.cs" />
     <Compile Include="Classes\FakeDataRepository.cs" />
+    <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\AppUser.cs" />
+    <Compile Include="Models\CutomUserStore.cs" />
+    <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\Keyword.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\TempDataContext.cs" />
+    <Compile Include="Models\Visit.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -215,18 +223,12 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\ConfirmEmail.cshtml" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
-    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Include="Views\Account\ForgotPassword.cshtml" />
-    <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\ResetPassword.cshtml" />
-    <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
-    <Content Include="Views\Account\SendCode.cshtml" />
-    <Content Include="Views\Account\VerifyCode.cshtml" />
+    <Content Include="Views\AppUser\ForgotPassword.cshtml" />
+    <Content Include="Views\AppUser\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\AppUser\Login.cshtml" />
+    <Content Include="Views\AppUser\Register.cshtml" />
+    <Content Include="Views\AppUser\ResetPassword.cshtml" />
+    <Content Include="Views\AppUser\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Manage\AddPhoneNumber.cshtml" />
     <Content Include="Views\Manage\ChangePassword.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />

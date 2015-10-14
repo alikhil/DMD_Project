@@ -16,5 +16,9 @@ namespace Project_DMD.Models
         public string PasswordHash { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        /// <summary>
+        /// It doesn't necessary, but need for IUser<string>
+        /// </summary>
+        public string UserName { get; set; }
     }
 }
