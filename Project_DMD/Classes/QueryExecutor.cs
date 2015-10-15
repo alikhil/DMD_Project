@@ -137,5 +137,10 @@ namespace Project_DMD.Classes
         {
             throw new NotImplementedException();
         }
+
+        internal AppUser GetAppUserByUserName(string userName)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -14,12 +14,12 @@ namespace Project_DMD.Controllers
     [Authorize]
     public class ArticlesController : Controller
     {
-        private IDataRepository Repository = FakeGenerator.Instance.ArticlesRepository;
-
+        private IDataRepository DataRepository = FakeGenerator.Instance.ArticlesRepository;
+        private IAppUserRepository UsersRepository = FakeGenerator.Instance.UsersRepository;
         // GET: Articles
         public ActionResult Index()
         {
-            return View(Repository.GetArticles());
+            return View(DataRepository.GetArticles());
         }
 
         // GET: Articles/Details/5
@@ -29,11 +29,12 @@ namespace Project_DMD.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Article article = Repository.GetArticle(id.Value);
+            Article article = DataRepository.GetArticle(id.Value);
             if (article == null)
             {
                 return HttpNotFound();
             }
+            ViewBag.Favorite = UsersRepository.FindFavorite(id.Value, User.Identity.GetAppUser().Id) != null;
             return View(article);
         }
 
@@ -52,7 +53,7 @@ namespace Project_DMD.Controllers
         {
             if (ModelState.IsValid)
             {
-                Repository.Add(article);
+                DataRepository.Add(article);
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +67,7 @@ namespace Project_DMD.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Article article = Repository.GetArticle(id.Value);
+            Article article = DataRepository.GetArticle(id.Value);
             if (article == null)
             {
                 return HttpNotFound();
@@ -83,7 +84,7 @@ namespace Project_DMD.Controllers
         {
             if (ModelState.IsValid)
             {
-                Repository.Update(article);
+                DataRepository.Update(article);
                 return RedirectToAction("Index");
             }
             return View(article);
@@ -96,7 +97,7 @@ namespace Project_DMD.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Article article = Repository.GetArticle(id.Value);
+            Article article = DataRepository.GetArticle(id.Value);
             if (article == null)
             {
                 return HttpNotFound();
@@ -109,8 +110,8 @@ namespace Project_DMD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Article article = Repository.GetArticle(id);
-            Repository.Delete(id);
+            Article article = DataRepository.GetArticle(id);
+            DataRepository.Delete(id);
             return RedirectToAction("Index");
         }
 
@@ -118,7 +119,7 @@ namespace Project_DMD.Controllers
         {
             if (id != null)
             {
-                return View(Repository.GetAuthor(id));
+                return View(DataRepository.GetAuthor(id));
             }
             return RedirectToAction("Index");
         }
@@ -130,6 +131,21 @@ namespace Project_DMD.Controllers
                 //Repository.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        [HttpPost]
+        public ActionResult Favorite(int articleId)
+        {
+            var curAppUser = User.Identity.GetAppUser();
+            Favorite fav = new Favorite()
+            {
+                ArticleId = articleId,
+                UserId = curAppUser.Id,
+                AdditionDate = DateTime.Now
+            };
+            if (UsersRepository.FindFavorite(articleId, curAppUser.Id) == null)
+                UsersRepository.AddFavorite(fav);
+            return RedirectToAction("Details", "Articles", new { id = articleId });
         }
     }
 }

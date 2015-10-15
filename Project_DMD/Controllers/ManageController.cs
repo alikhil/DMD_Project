@@ -15,11 +15,11 @@ namespace Project_DMD.Controllers
     [Authorize]
     public class ManageController : Controller
     {
-        UserManager<AppUser> userManager = new UserManager<AppUser>(new CustomUserStore());
+        UserManager<AppUser> userManager = FakeGenerator.Instance.UserManager;
         IAppUserRepository UsersRepository = FakeGenerator.Instance.UsersRepository;
         public ActionResult Index()
         {
-            var curAppUser = userManager.FindByName(User.Identity.Name);
+            var curAppUser = User.Identity.GetAppUser();
             return View(curAppUser);
         }
 
@@ -27,7 +27,7 @@ namespace Project_DMD.Controllers
 
         public ActionResult Edit()
         {
-            var appUser = userManager.FindByName(User.Identity.Name);
+            var appUser = User.Identity.GetAppUser();
             var tmp = new AppUser()
                 {
                     FirstName = appUser.FirstName,
@@ -40,7 +40,7 @@ namespace Project_DMD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "FirstName,LastName")] AppUser appUser)
         {
-            var curAppUser = userManager.FindByName(User.Identity.Name);
+            var curAppUser = User.Identity.GetAppUser();
             appUser.Id = curAppUser.Id;
             appUser.UserName = curAppUser.UserName;
             appUser.Email = curAppUser.Email;
@@ -55,20 +55,5 @@ namespace Project_DMD.Controllers
             return View(appUser);
         }
 
-
-        public ActionResult Favorite(int articleId)
-        {
-            var curAppUser = userManager.FindByName(User.Identity.Name);
-            Favorite fav = new Favorite()
-            {
-                ArticleId = articleId,
-                UserId = curAppUser.Id,
-                AdditionDate = DateTime.Now
-            };
-            if(UsersRepository.FindFavorite(articleId, curAppUser.Id) == null)
-                UsersRepository.AddFavorite(fav);
-            return RedirectToAction("Details", "Articles", new { id = articleId });
-        }
-      
     }
 }

@@ -7,7 +7,25 @@
 
 We must show here article data, authors, related articles, favorite state for current user
 <h2>Details</h2>
-
+@if (Model != null)
+{ 
+    if (!ViewBag.Favorite)
+    {
+        using(Html.BeginForm("Favorite","Articles", FormMethod.Post))
+        {
+            <input type="hidden" name="articleId" value="@Model.ArticleId"/>
+            <input type="submit" value="Add to favorite" />
+        }
+    }
+    else
+    {
+        using (Html.BeginForm("RemoveFavorite", "Articles", FormMethod.Post))
+        {
+            <input type="hidden" name="articleId" value="@Model.ArticleId" />
+            <input type="submit" value="remove from favorite" />
+        }
+    }
+}
 <div>
     <h4>Article</h4>
     <hr />

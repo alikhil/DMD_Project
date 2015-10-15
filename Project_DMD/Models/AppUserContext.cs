@@ -27,9 +27,9 @@ namespace Project_DMD.Models
             } 
         }
 
-        public AppUser Find(string id)
+        public AppUser Find(string uname)
         {
-            return FakeGenerator.Instance.UsersRepository.GetAppUser(id);
+            return FakeGenerator.Instance.UsersRepository.GetAppUserByName(uname);
         }
 
         private AppUserContext()

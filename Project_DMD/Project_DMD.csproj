@@ -161,6 +161,7 @@
     <Compile Include="Classes\AppUserRepository.cs" />
     <Compile Include="Classes\DataRepository.cs" />
     <Compile Include="Classes\FakeGenerator.cs" />
+    <Compile Include="Classes\IdentityExtensions.cs" />
     <Compile Include="Classes\QueryExecutor.cs" />
     <Compile Include="Controllers\AppUserController.cs" />
     <Compile Include="Controllers\ArticlesController.cs" />

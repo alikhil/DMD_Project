@@ -15,6 +15,8 @@ namespace Project_DMD.Classes
 
         AppUser GetAppUser(string id);
 
+        AppUser GetAppUserByName(string userName);
+
         bool UpdateAppUser(AppUser appUser);
 
         void AddFavorite(Favorite favorite);
@@ -76,6 +78,12 @@ namespace Project_DMD.Classes
         public List<Favorite> GetFavorites(string userId)
         {
             return QueryExecutor.Instance.GetFavorites(userId);
+        }
+
+
+        public AppUser GetAppUserByName(string userName)
+        {
+            return QueryExecutor.Instance.GetAppUserByUserName(userName);
         }
     }
 
@@ -144,8 +152,11 @@ namespace Project_DMD.Classes
         public Favorite FindFavorite(int articleId, string userId)
         {
             var result = Favorites.Find(x => x.ArticleId == articleId && x.UserId == userId);
-            result.User = result.User ?? Users.Find(x => x.Id == userId);
-            result.Article = result.Article ?? FakeGenerator.Instance.ArticlesRepository.GetArticle(articleId);
+            if (result != null)
+            {
+                result.User = result.User ?? Users.Find(x => x.Id == userId);
+                result.Article = result.Article ?? FakeGenerator.Instance.ArticlesRepository.GetArticle(articleId);
+            }
             return result;
         }
 
@@ -157,6 +168,12 @@ namespace Project_DMD.Classes
         public List<Favorite> GetFavorites(string userId)
         {
             return Favorites.FindAll(x => x.UserId == userId);
+        }
+
+
+        public AppUser GetAppUserByName(string userName)
+        {
+            return Users.Find(x => x.Email == userName);
         }
     }
 }
