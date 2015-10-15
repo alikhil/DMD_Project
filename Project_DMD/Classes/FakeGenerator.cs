@@ -17,12 +17,12 @@ namespace Project_DMD.Classes
             }
         }
 
-        public FakeDataRepository FakeRepository { get; set; }
-        public FakeAppUserRepository FakeUsersRepository { get; set; }
+        public FakeDataRepository ArticlesRepository { get; set; }
+        public FakeAppUserRepository UsersRepository { get; set; }
         private FakeGenerator()
         {
-            FakeRepository = new FakeDataRepository();
-            FakeUsersRepository = new FakeAppUserRepository();
+            ArticlesRepository = new FakeDataRepository();
+            UsersRepository = new FakeAppUserRepository();
         }
     }
 }

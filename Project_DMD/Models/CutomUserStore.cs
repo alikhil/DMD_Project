@@ -15,7 +15,7 @@ namespace Project_DMD.Models
     {
         public System.Threading.Tasks.Task<AppUser> FindByNameAsync(string userName)
         {
-            AppUser user = AppUserContext.Instance.DummyUsersList.Find(item => item.Email == userName);
+            AppUser user = AppUserContext.Instance.Find(userName);
             return Task.FromResult<AppUser>(user);
         }
 

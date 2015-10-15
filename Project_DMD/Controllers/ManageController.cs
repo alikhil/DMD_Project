@@ -15,6 +15,7 @@ namespace Project_DMD.Controllers
     [Authorize]
     public class ManageController : Controller
     {
+        IAppUserRepository UsersRepository = FakeGenerator.Instance.UsersRepository;
         public ActionResult Index()
         {
             var userManager = new UserManager<AppUser>(new CustomUserStore());
@@ -50,7 +51,7 @@ namespace Project_DMD.Controllers
             if (ModelState.IsValid)
             {
                
-                FakeGenerator.Instance.FakeUsersRepository.UpdateAppUser(appUser);
+                UsersRepository.UpdateAppUser(appUser);
                 return RedirectToAction("Index");
             }
             return View(appUser);

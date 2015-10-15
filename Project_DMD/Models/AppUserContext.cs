@@ -20,11 +20,16 @@ namespace Project_DMD.Models
             }
         }
 
-        public List<AppUser> DummyUsersList {
+        public List<AppUser> AppUsersList {
             get 
             {
-                return FakeGenerator.Instance.FakeUsersRepository.GetAppUsers();
+                return FakeGenerator.Instance.UsersRepository.GetAppUsers();
             } 
+        }
+
+        public AppUser Find(string id)
+        {
+            return FakeGenerator.Instance.UsersRepository.GetAppUser(id);
         }
 
         private AppUserContext()
@@ -34,7 +39,7 @@ namespace Project_DMD.Models
 
         public bool Add(AppUser user)
         {
-            FakeGenerator.Instance.FakeUsersRepository.Add(user);
+            FakeGenerator.Instance.UsersRepository.Add(user);
             return true;
         }
     }

@@ -14,7 +14,7 @@ namespace Project_DMD.Controllers
     [Authorize]
     public class ArticlesController : Controller
     {
-        private IDataRepository Repository = FakeGenerator.Instance.FakeRepository;
+        private IDataRepository Repository = FakeGenerator.Instance.ArticlesRepository;
 
         // GET: Articles
         public ActionResult Index()
