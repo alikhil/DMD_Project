@@ -25,6 +25,8 @@ namespace Project_DMD.Classes
         List<Author> GetAuthors();
 
         void Dispose();
+
+        void VisitArticle(int articleId);
     }
 
     /// <summary>
@@ -75,7 +77,12 @@ namespace Project_DMD.Classes
 
         public void Dispose()
         {
+        }
 
+
+        public void VisitArticle(int articleId)
+        {
+            QueryExecutor.Instance.VisitArticle(articleId);
         }
     }
 }

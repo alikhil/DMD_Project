@@ -26,6 +26,8 @@ namespace Project_DMD.Classes
         void RemoveFavorite(int articleId, string userId);
 
         List<Favorite> GetFavorites(string userId);
+
+        void VisitArticle(int articleId, string userId);
     }
 
     public class AppUserRepository : IAppUserRepository
@@ -85,16 +87,30 @@ namespace Project_DMD.Classes
         {
             return QueryExecutor.Instance.GetAppUserByUserName(userName);
         }
+
+
+        public void VisitArticle(int articleId, string userId)
+        {
+            Visit visit = new Visit(){
+                ArticleId = articleId,
+                UserId = userId,
+                VisitDate = DateTime.Now
+            };
+            QueryExecutor.Instance.CreateVisit(visit);
+            FakeGenerator.Instance.ArticlesRepository.VisitArticle(articleId);
+        }
     }
 
     public class FakeAppUserRepository : IAppUserRepository
     {
         private List<AppUser> Users { get; set; }
         private List<Favorite> Favorites { get; set; }
+        private List<Visit> Visits { get; set; }
 
         public FakeAppUserRepository()
         {
             Favorites = new List<Favorite>();
+            Visits = new List<Visit>();
             #region Generate fake data
             Users = new List<AppUser>(new []{ 
                 new AppUser()
@@ -174,6 +190,19 @@ namespace Project_DMD.Classes
         public AppUser GetAppUserByName(string userName)
         {
             return Users.Find(x => x.Email == userName);
+        }
+
+
+        public void VisitArticle(int articleId, string userId)
+        {
+            Visit visit = new Visit()
+            {
+                ArticleId = articleId,
+                UserId = userId,
+                VisitDate = DateTime.Now
+            };
+            Visits.Add(visit);
+            FakeGenerator.Instance.ArticlesRepository.VisitArticle(articleId);
         }
     }
 }

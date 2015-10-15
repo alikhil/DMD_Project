@@ -35,6 +35,8 @@ namespace Project_DMD.Controllers
                 return HttpNotFound();
             }
             ViewBag.Favorite = UsersRepository.FindFavorite(id.Value, User.Identity.GetAppUser().Id) != null;
+            article.Views++;
+            UsersRepository.VisitArticle(article.ArticleId, User.Identity.GetAppUser().Id);
             return View(article);
         }
 
@@ -136,15 +138,18 @@ namespace Project_DMD.Controllers
         [HttpPost]
         public ActionResult Favorite(int articleId)
         {
-            var curAppUser = User.Identity.GetAppUser();
-            Favorite fav = new Favorite()
+            if (DataRepository.GetArticle(articleId) != null)
             {
-                ArticleId = articleId,
-                UserId = curAppUser.Id,
-                AdditionDate = DateTime.Now
-            };
-            if (UsersRepository.FindFavorite(articleId, curAppUser.Id) == null)
-                UsersRepository.AddFavorite(fav);
+                var curAppUser = User.Identity.GetAppUser();
+                Favorite fav = new Favorite()
+                {
+                    ArticleId = articleId,
+                    UserId = curAppUser.Id,
+                    AdditionDate = DateTime.Now
+                };
+                if (UsersRepository.FindFavorite(articleId, curAppUser.Id) == null)
+                    UsersRepository.AddFavorite(fav);
+            }
             return RedirectToAction("Details", "Articles", new { id = articleId });
         }
     }

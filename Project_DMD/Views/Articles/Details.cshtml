@@ -85,6 +85,14 @@ We must show here article data, authors, related articles, favorite state for cu
         <dd>
             @Html.DisplayFor(model => model.DOI)
         </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Views)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Views)
+        </dd>
         @{
             if (Model != null && Model.Authors != null)
             {

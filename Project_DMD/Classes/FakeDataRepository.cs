@@ -107,7 +107,7 @@ namespace Project_DMD.Classes
 
         public Article GetArticle(int id)
         {
-            return ArticlesList.Find(x => x.ArticleId == id);
+            return (Article)getArticle(id).Clone();
         }
 
         public List<Article> GetArticles()
@@ -132,7 +132,7 @@ namespace Project_DMD.Classes
 
         public void Delete(int id)
         {
-            ArticlesList.Remove(GetArticle(id));
+            ArticlesList.Remove(getArticle(id));
         }
 
         public Author GetAuthor(int id)
@@ -148,6 +148,18 @@ namespace Project_DMD.Classes
         public void Dispose()
         {
             ArticlesList = null;
+        }
+
+
+        public void VisitArticle(int articleId)
+        {
+            var article = getArticle(articleId);
+            article.Views++;
+        }
+
+        private Article getArticle(int articleId)
+        {
+            return ArticlesList.Find(x => x.ArticleId == articleId);
         }
     }
 

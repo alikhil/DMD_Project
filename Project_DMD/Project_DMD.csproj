@@ -159,6 +159,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Classes\AppUserRepository.cs" />
+    <Compile Include="Classes\Cloner.cs" />
     <Compile Include="Classes\DataRepository.cs" />
     <Compile Include="Classes\FakeGenerator.cs" />
     <Compile Include="Classes\IdentityExtensions.cs" />

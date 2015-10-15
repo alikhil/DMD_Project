@@ -142,5 +142,15 @@ namespace Project_DMD.Classes
         {
             throw new NotImplementedException();
         }
+
+        internal void VisitArticle(int articleId)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void CreateVisit(Visit visit)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
