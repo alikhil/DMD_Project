@@ -16,6 +16,14 @@ namespace Project_DMD.Classes
         AppUser GetAppUser(string id);
 
         bool UpdateAppUser(AppUser appUser);
+
+        void AddFavorite(Favorite favorite);
+
+        Favorite FindFavorite(int articleId, string userId);
+
+        void RemoveFavorite(int articleId, string userId);
+
+        List<Favorite> GetFavorites(string userId);
     }
 
     public class AppUserRepository : IAppUserRepository
@@ -47,14 +55,39 @@ namespace Project_DMD.Classes
         {
             return QueryExecutor.Instance.UpdateAppUser(appUser);
         }
+
+
+        public void AddFavorite(Favorite favorite)
+        {
+            QueryExecutor.Instance.AddFavorite(favorite);
+        }
+
+        public Favorite FindFavorite(int articleId, string userId)
+        {
+            return QueryExecutor.Instance.GetFavorite(articleId, userId);
+        }
+
+        public void RemoveFavorite(int articleId, string userId)
+        {
+            QueryExecutor.Instance.RemoveFavorite(articleId, userId);
+        }
+
+
+        public List<Favorite> GetFavorites(string userId)
+        {
+            return QueryExecutor.Instance.GetFavorites(userId);
+        }
     }
 
     public class FakeAppUserRepository : IAppUserRepository
     {
         private List<AppUser> Users { get; set; }
+        private List<Favorite> Favorites { get; set; }
 
         public FakeAppUserRepository()
         {
+            Favorites = new List<Favorite>();
+            #region Generate fake data
             Users = new List<AppUser>(new []{ 
                 new AppUser()
                 {
@@ -75,6 +108,7 @@ namespace Project_DMD.Classes
                     PasswordHash = Crypto.HashPassword("QWEqwe123!@#")
                 }
             });
+            #endregion
         }
         public bool Add(AppUser user)
         {
@@ -99,6 +133,30 @@ namespace Project_DMD.Classes
             curAppUser.FirstName = appUser.FirstName;
             curAppUser.LastName = appUser.LastName;
             return true;
+        }
+
+
+        public void AddFavorite(Favorite favorite)
+        {
+            Favorites.Add(favorite);
+        }
+
+        public Favorite FindFavorite(int articleId, string userId)
+        {
+            var result = Favorites.Find(x => x.ArticleId == articleId && x.UserId == userId);
+            result.User = result.User ?? Users.Find(x => x.Id == userId);
+            result.Article = result.Article ?? FakeGenerator.Instance.ArticlesRepository.GetArticle(articleId);
+            return result;
+        }
+
+        public void RemoveFavorite(int articleId, string userId)
+        {
+            var favorite = Favorites.Find(x => x.ArticleId == articleId && x.UserId == userId);
+        }
+
+        public List<Favorite> GetFavorites(string userId)
+        {
+            return Favorites.FindAll(x => x.UserId == userId);
         }
     }
 }

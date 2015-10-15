@@ -117,5 +117,25 @@ namespace Project_DMD.Classes
         {
             throw new NotImplementedException();
         }
+
+        internal void AddFavorite(Favorite favorite)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal Favorite GetFavorite(int articleId, string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RemoveFavorite(int articleId, string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal List<Favorite> GetFavorites(string userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -15,10 +15,10 @@ namespace Project_DMD.Controllers
     [Authorize]
     public class ManageController : Controller
     {
+        UserManager<AppUser> userManager = new UserManager<AppUser>(new CustomUserStore());
         IAppUserRepository UsersRepository = FakeGenerator.Instance.UsersRepository;
         public ActionResult Index()
         {
-            var userManager = new UserManager<AppUser>(new CustomUserStore());
             var curAppUser = userManager.FindByName(User.Identity.Name);
             return View(curAppUser);
         }
@@ -27,7 +27,6 @@ namespace Project_DMD.Controllers
 
         public ActionResult Edit()
         {
-            var userManager = new UserManager<AppUser>(new CustomUserStore());
             var appUser = userManager.FindByName(User.Identity.Name);
             var tmp = new AppUser()
                 {
@@ -41,7 +40,6 @@ namespace Project_DMD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "FirstName,LastName")] AppUser appUser)
         {
-            var userManager = new UserManager<AppUser>(new CustomUserStore());
             var curAppUser = userManager.FindByName(User.Identity.Name);
             appUser.Id = curAppUser.Id;
             appUser.UserName = curAppUser.UserName;
@@ -57,6 +55,20 @@ namespace Project_DMD.Controllers
             return View(appUser);
         }
 
+
+        public ActionResult Favorite(int articleId)
+        {
+            var curAppUser = userManager.FindByName(User.Identity.Name);
+            Favorite fav = new Favorite()
+            {
+                ArticleId = articleId,
+                UserId = curAppUser.Id,
+                AdditionDate = DateTime.Now
+            };
+            if(UsersRepository.FindFavorite(articleId, curAppUser.Id) == null)
+                UsersRepository.AddFavorite(fav);
+            return RedirectToAction("Details", "Articles", new { id = articleId });
+        }
       
     }
 }
