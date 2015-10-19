@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using Project_DMD.Models;
 using Project_DMD.Classes;
 
@@ -14,8 +15,8 @@ namespace Project_DMD.Controllers
     [Authorize]
     public class ArticlesController : Controller
     {
-        private IDataRepository DataRepository = FakeGenerator.Instance.ArticlesRepository;
-        private IAppUserRepository UsersRepository = FakeGenerator.Instance.UsersRepository;
+        readonly IDataRepository DataRepository = FakeGenerator.Instance.ArticlesRepository;
+        readonly IAppUserRepository UsersRepository = FakeGenerator.Instance.UsersRepository;
         // GET: Articles
         public ActionResult Index()
         {
@@ -112,16 +113,15 @@ namespace Project_DMD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Article article = DataRepository.GetArticle(id);
             DataRepository.Delete(id);
             return RedirectToAction("Index");
         }
 
-        public ActionResult ShowAuthor(int id)
+        public ActionResult ShowAuthor(int? id)
         {
             if (id != null)
             {
-                return View(DataRepository.GetAuthor(id));
+                return View(DataRepository.GetAuthor(id.Value));
             }
             return RedirectToAction("Index");
         }
@@ -138,19 +138,26 @@ namespace Project_DMD.Controllers
         [HttpPost]
         public ActionResult Favorite(int articleId)
         {
-            if (DataRepository.GetArticle(articleId) != null)
+            if (DataRepository.GetArticle(articleId) == null)
+                return RedirectToAction("Details", "Articles", new {id = articleId});
+
+            var curAppUser = User.Identity.GetAppUser();
+            Favorite fav = new Favorite()
             {
-                var curAppUser = User.Identity.GetAppUser();
-                Favorite fav = new Favorite()
-                {
-                    ArticleId = articleId,
-                    UserId = curAppUser.Id,
-                    AdditionDate = DateTime.Now
-                };
-                if (UsersRepository.FindFavorite(articleId, curAppUser.Id) == null)
-                    UsersRepository.AddFavorite(fav);
-            }
+                ArticleId = articleId,
+                UserId = curAppUser.Id,
+                AdditionDate = DateTime.Now
+            };
+            if (UsersRepository.FindFavorite(articleId, curAppUser.Id) == null)
+                UsersRepository.AddFavorite(fav);
             return RedirectToAction("Details", "Articles", new { id = articleId });
+        }
+
+        public ActionResult RemoveFromFavorite(int? articleId, string userId)
+        {
+            if(articleId != null && !userId.IsNullOrWhiteSpace())
+                UsersRepository.RemoveFavorite(articleId.Value, userId);
+            return RedirectToAction("Favorites", "Manage");
         }
     }
 }

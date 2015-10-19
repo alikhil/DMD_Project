@@ -11,5 +11,7 @@ namespace Project_DMD.Models
         public DbSet<Article> Articles { get; set; }
 
         public System.Data.Entity.DbSet<Project_DMD.Models.AppUser> AppUsers { get; set; }
+
+        public System.Data.Entity.DbSet<Project_DMD.Models.Favorite> Favorites { get; set; }
     }
 }

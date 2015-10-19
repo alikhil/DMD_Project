@@ -179,6 +179,7 @@ namespace Project_DMD.Classes
         public void RemoveFavorite(int articleId, string userId)
         {
             var favorite = Favorites.Find(x => x.ArticleId == articleId && x.UserId == userId);
+            Favorites.Remove(favorite);
         }
 
         public List<Favorite> GetFavorites(string userId)

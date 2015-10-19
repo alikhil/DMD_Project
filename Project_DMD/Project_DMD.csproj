@@ -238,6 +238,7 @@
     <Content Include="Views\Articles\ShowAuthor.cshtml" />
     <Content Include="Views\Manage\Index.cshtml" />
     <Content Include="Views\Manage\Edit.cshtml" />
+    <Content Include="Views\Manage\Favorites.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

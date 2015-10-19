@@ -6,7 +6,7 @@ using System.Web;
 namespace Project_DMD.Models
 {
     public class Favorite
-    {
+    {   
         public int ArticleId { get; set; }
 
         public string UserId { get; set; }

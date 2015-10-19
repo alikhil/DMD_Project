@@ -55,5 +55,11 @@ namespace Project_DMD.Controllers
             return View(appUser);
         }
 
+        public ActionResult Favorites()
+        {
+            var appUser = User.Identity.GetAppUser();
+            var favorites = UsersRepository.GetFavorites(appUser.Id);
+            return View(favorites);
+        }
     }
 }
