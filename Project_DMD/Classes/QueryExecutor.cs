@@ -152,5 +152,10 @@ namespace Project_DMD.Classes
         {
             throw new NotImplementedException();
         }
+
+        internal List<Visit> GetVisits(string userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

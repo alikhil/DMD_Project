@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Project_DMD.Models.Visit>
+
+@{
+    ViewBag.Title = "Visits";
+}
+
+<h2>Visits</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Article.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VisitDate)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    
+        var title = item.Article != null ? item.Article.Title : "Article #" + item.ArticleId.ToString();
+    
+    <tr>
+        <td>
+            <a href="~/Articles/Details/@item.ArticleId">@title</a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VisitDate)
+        </td>
+    </tr>
+}
+
+</table>

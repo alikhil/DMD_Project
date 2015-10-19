@@ -12,6 +12,7 @@ namespace Project_DMD.Models
 
         public System.Data.Entity.DbSet<Project_DMD.Models.AppUser> AppUsers { get; set; }
 
-        public System.Data.Entity.DbSet<Project_DMD.Models.Favorite> Favorites { get; set; }
+        public System.Data.Entity.DbSet<Project_DMD.Models.Visit> Visits { get; set; }
+
     }
 }

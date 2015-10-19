@@ -7,6 +7,8 @@ namespace Project_DMD.Models
 {
     public class Visit
     {
+        public int VisitId { get; set; }
+
         public int ArticleId { get; set; }
 
         public string UserId { get; set; }

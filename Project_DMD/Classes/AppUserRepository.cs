@@ -28,6 +28,8 @@ namespace Project_DMD.Classes
         List<Favorite> GetFavorites(string userId);
 
         void VisitArticle(int articleId, string userId);
+
+        List<Visit> GetVisits(string p);
     }
 
     public class AppUserRepository : IAppUserRepository
@@ -98,6 +100,11 @@ namespace Project_DMD.Classes
             };
             QueryExecutor.Instance.CreateVisit(visit);
             FakeGenerator.Instance.ArticlesRepository.VisitArticle(articleId);
+        }
+
+        public List<Visit> GetVisits(string userId)
+        {
+            return QueryExecutor.Instance.GetVisits(userId);
         }
     }
 
@@ -204,6 +211,11 @@ namespace Project_DMD.Classes
             };
             Visits.Add(visit);
             FakeGenerator.Instance.ArticlesRepository.VisitArticle(articleId);
+        }
+
+        public List<Visit> GetVisits(string userId)
+        {
+            return Visits.FindAll((x => x.UserId == userId));
         }
     }
 }

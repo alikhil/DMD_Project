@@ -61,5 +61,12 @@ namespace Project_DMD.Controllers
             var favorites = UsersRepository.GetFavorites(appUser.Id);
             return View(favorites);
         }
+
+        public ActionResult Visits()
+        {
+            var appUser = User.Identity.GetAppUser();
+            var visits = UsersRepository.GetVisits(appUser.Id);
+            return View(visits);
+        }
     }
 }
