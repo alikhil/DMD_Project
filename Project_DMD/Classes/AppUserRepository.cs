@@ -107,7 +107,7 @@ namespace Project_DMD.Classes
                 VisitDate = DateTime.Now
             };
             QueryExecutor.Instance.CreateVisit(visit);
-            FakeGenerator.Instance.ArticlesRepository.VisitArticle(articleId);
+            Global.Instance.ArticlesRepository.VisitArticle(articleId);
         }
 
         public List<Visit> GetVisits(string userId)
@@ -215,7 +215,7 @@ namespace Project_DMD.Classes
             if (result != null)
             {
                 result.User = result.User ?? Users.Find(x => x.Id == userId);
-                result.Article = result.Article ?? FakeGenerator.Instance.ArticlesRepository.GetArticle(articleId);
+                result.Article = result.Article ?? Global.Instance.ArticlesRepository.GetArticle(articleId);
             }
             return result;
         }
@@ -245,11 +245,11 @@ namespace Project_DMD.Classes
                 ArticleId = articleId,
                 UserId = userId,
                 VisitDate = DateTime.Now,
-                Article = FakeGenerator.Instance.ArticlesRepository.GetArticle(articleId),
+                Article = Global.Instance.ArticlesRepository.GetArticle(articleId),
                 User = GetAppUser(userId)
             };
             Visits.Add(visit);
-            FakeGenerator.Instance.ArticlesRepository.VisitArticle(articleId);
+            Global.Instance.ArticlesRepository.VisitArticle(articleId);
         }
 
         public List<Visit> GetVisits(string userId)

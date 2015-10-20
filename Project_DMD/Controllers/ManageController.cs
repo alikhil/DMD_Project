@@ -9,8 +9,8 @@ namespace Project_DMD.Controllers
     [Authorize]
     public class ManageController : Controller
     {
-        UserManager<AppUser> userManager = FakeGenerator.Instance.UserManager;
-        IAppUserRepository UsersRepository = FakeGenerator.Instance.UsersRepository;
+        UserManager<AppUser> userManager = Global.Instance.UserManager;
+        IAppUserRepository UsersRepository = Global.Instance.UsersRepository;
         public ActionResult Index()
         {
             var curAppUser = User.Identity.GetAppUser();
@@ -66,7 +66,7 @@ namespace Project_DMD.Controllers
         public ActionResult Actions()
         {
             var userId = User.Identity.GetUserId();
-            var actions = FakeGenerator.Instance.UsersRepository.GetActionsForUser(userId);
+            var actions = Global.Instance.UsersRepository.GetActionsForUser(userId);
             return View(actions);
         }
     }

@@ -23,13 +23,13 @@ namespace Project_DMD.Models
         public List<AppUser> AppUsersList {
             get 
             {
-                return FakeGenerator.Instance.UsersRepository.GetAppUsers();
+                return Global.Instance.UsersRepository.GetAppUsers();
             } 
         }
 
         public AppUser Find(string uname)
         {
-            return FakeGenerator.Instance.UsersRepository.GetAppUserByName(uname);
+            return Global.Instance.UsersRepository.GetAppUserByName(uname);
         }
 
         private AppUserContext()
@@ -39,7 +39,7 @@ namespace Project_DMD.Models
 
         public bool Add(AppUser user)
         {
-            FakeGenerator.Instance.UsersRepository.Add(user);
+            Global.Instance.UsersRepository.Add(user);
             return true;
         }
     }

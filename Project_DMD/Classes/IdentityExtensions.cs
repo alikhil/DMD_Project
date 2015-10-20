@@ -14,7 +14,7 @@ namespace Project_DMD.Classes
     {
         public static AppUser GetAppUser(this IIdentity identity){
             AppUser appUser = null;
-            appUser = FakeGenerator.Instance.UsersRepository.GetAppUserByName(identity.Name);
+            appUser = Global.Instance.UsersRepository.GetAppUserByName(identity.Name);
             return appUser;
         }
     }

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
@@ -16,8 +11,8 @@ namespace Project_DMD.Controllers
     [Authorize]
     public class ArticlesController : Controller
     {
-        readonly IDataRepository DataRepository = FakeGenerator.Instance.ArticlesRepository;
-        readonly IAppUserRepository UsersRepository = FakeGenerator.Instance.UsersRepository;
+        readonly IDataRepository DataRepository = Global.Instance.ArticlesRepository;
+        readonly IAppUserRepository UsersRepository = Global.Instance.UsersRepository;
         // GET: Articles
         public ActionResult Index()
         {
@@ -48,9 +43,6 @@ namespace Project_DMD.Controllers
             return View();
         }
 
-        // POST: Articles/Create
-        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Url,Title,Summary,JournalReference,DOI")] Article article)
@@ -81,8 +73,6 @@ namespace Project_DMD.Controllers
         }
 
         // POST: Articles/Edit/5
-        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
-        // сведения см. в статье http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,JournalReference,DOI")] Article article)
