@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
+using Microsoft.AspNet.Identity;
 using Project_DMD.Models;
 using Project_DMD.Classes;
 
@@ -35,9 +36,9 @@ namespace Project_DMD.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.Favorite = UsersRepository.FindFavorite(id.Value, User.Identity.GetAppUser().Id) != null;
+            ViewBag.Favorite = UsersRepository.FindFavorite(id.Value, User.Identity.GetUserId()) != null;
             article.Views++;
-            UsersRepository.VisitArticle(article.ArticleId, User.Identity.GetAppUser().Id);
+            UsersRepository.VisitArticle(article.ArticleId, User.Identity.GetUserId());
             return View(article);
         }
 
@@ -56,7 +57,8 @@ namespace Project_DMD.Controllers
         {
             if (ModelState.IsValid)
             {
-                DataRepository.Add(article);
+                var articleId = DataRepository.Add(article);
+                UsersRepository.AddAction(User.Identity.GetUserId(), articleId, ActionType.Add);
                 return RedirectToAction("Index");
             }
 
@@ -88,6 +90,7 @@ namespace Project_DMD.Controllers
             if (ModelState.IsValid)
             {
                 DataRepository.Update(article);
+                UsersRepository.AddAction(User.Identity.GetUserId(),article.ArticleId, ActionType.Edit);
                 return RedirectToAction("Index");
             }
             return View(article);
@@ -111,9 +114,12 @@ namespace Project_DMD.Controllers
         // POST: Articles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int? id)
         {
-            DataRepository.Delete(id);
+            if (DataRepository.GetArticle(id.Value) == null)
+                return RedirectToAction("Index");
+            DataRepository.Delete(id.Value);
+            UsersRepository.AddAction(User.Identity.GetUserId(),id.Value, ActionType.Delete);
             return RedirectToAction("Index");
         }
 
@@ -141,14 +147,14 @@ namespace Project_DMD.Controllers
             if (DataRepository.GetArticle(articleId) == null)
                 return RedirectToAction("Details", "Articles", new {id = articleId});
 
-            var curAppUser = User.Identity.GetAppUser();
+            var curAppUserId = User.Identity.GetUserId();
             Favorite fav = new Favorite()
             {
                 ArticleId = articleId,
-                UserId = curAppUser.Id,
+                UserId = curAppUserId,
                 AdditionDate = DateTime.Now
             };
-            if (UsersRepository.FindFavorite(articleId, curAppUser.Id) == null)
+            if (UsersRepository.FindFavorite(articleId, curAppUserId) == null)
                 UsersRepository.AddFavorite(fav);
             return RedirectToAction("Details", "Articles", new { id = articleId });
         }

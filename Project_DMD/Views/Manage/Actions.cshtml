@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Project_DMD.Models.ActionHistory>
+
+@{
+    ViewBag.Title = "Actions";
+}
+
+<h2>Actions</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Article.Url)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ActionDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ActionDone)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    var title = item.Article != null ? item.Article.Title : "Article #" + item.ArticleId.ToString();
+    <tr>
+        <td>
+            <a href="~/Articles/Details/@item.ArticleId">@title</a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ActionDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ActionDone)
+        </td>
+    </tr>
+}
+
+</table>

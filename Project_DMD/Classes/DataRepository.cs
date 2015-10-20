@@ -16,7 +16,7 @@ namespace Project_DMD.Classes
 
         void Delete(Article article);
 
-        void Add(Article article);
+        int Add(Article article);
 
         void Delete(int id);
 
@@ -35,9 +35,9 @@ namespace Project_DMD.Classes
     public class DataRepository : IDataRepository
     {
 
-        public void Add(Article article)
+        public int Add(Article article)
         {
-            QueryExecutor.Instance.AddArticle(article);
+            return QueryExecutor.Instance.AddArticle(article);
         }
 
         public Article GetArticle(int id)

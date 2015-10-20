@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 using Project_DMD.Models;
 
@@ -44,8 +42,8 @@ namespace Project_DMD.Classes
         /// Adding article to DB
         /// </summary>
         /// <param name="article">Article to add</param>
-        /// <returns>True if article successfully added, else false</returns>
-        public bool AddArticle(Article article)
+        /// <returns>Id of created article</returns>
+        public int AddArticle(Article article)
         {
             throw new NotImplementedException();
         }
@@ -108,52 +106,67 @@ namespace Project_DMD.Classes
             throw new NotImplementedException();
         }
 
-        internal AppUser GetAppUser(string id)
+        public AppUser GetAppUser(string id)
         {
             throw new NotImplementedException();
         }
 
-        internal bool UpdateAppUser(AppUser appUser)
+        public bool UpdateAppUser(AppUser appUser)
         {
             throw new NotImplementedException();
         }
 
-        internal void AddFavorite(Favorite favorite)
+        public void AddFavorite(Favorite favorite)
         {
             throw new NotImplementedException();
         }
 
-        internal Favorite GetFavorite(int articleId, string userId)
+        public Favorite GetFavorite(int articleId, string userId)
         {
             throw new NotImplementedException();
         }
 
-        internal void RemoveFavorite(int articleId, string userId)
+        public void RemoveFavorite(int articleId, string userId)
         {
             throw new NotImplementedException();
         }
 
-        internal List<Favorite> GetFavorites(string userId)
+        public List<Favorite> GetFavorites(string userId)
         {
             throw new NotImplementedException();
         }
 
-        internal AppUser GetAppUserByUserName(string userName)
+        public AppUser GetAppUserByUserName(string userName)
         {
             throw new NotImplementedException();
         }
 
-        internal void VisitArticle(int articleId)
+        public void VisitArticle(int articleId)
         {
             throw new NotImplementedException();
         }
 
-        internal void CreateVisit(Visit visit)
+        public void CreateVisit(Visit visit)
         {
             throw new NotImplementedException();
         }
 
-        internal List<Visit> GetVisits(string userId)
+        public List<Visit> GetVisits(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ActionHistory> GetActionsForUser(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ActionHistory> GetActionsForArticle(int articleId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddAction(ActionHistory action)
         {
             throw new NotImplementedException();
         }

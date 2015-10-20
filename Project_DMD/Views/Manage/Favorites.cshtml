@@ -17,24 +17,26 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    var title = item.Article != null ? item.Article.Title : "Article #" + item.ArticleId.ToString();
-    <tr>
-        <td>
-            <a href="~/Articles/Details/@item.ArticleId">@title</a>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AdditionDate)
-        </td>
-        <td>
-            @using (Html.BeginForm("RemoveFromFavorite", "Articles", FormMethod.Post))
-            {
-                <input type="hidden" value="@item.ArticleId" name="articleId"/>
-                <input type="hidden" value="@item.UserId" name="userId"/>
-                <input type="submit" class="btn btn-primary" value="Delete"/>
-            }
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        var title = item.Article != null ? item.Article.Title : "Article #" + item.ArticleId.ToString();
+        <tr>
+            <td>
+                <a href="~/Articles/Details/@item.ArticleId">@title</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AdditionDate)
+            </td>
+            <td>
+                @using (Html.BeginForm("RemoveFromFavorite", "Articles", FormMethod.Post))
+                {
+                    <input type="hidden" value="@item.ArticleId" name="articleId"/>
+                    <input type="hidden" value="@item.UserId" name="userId"/>
+                    <input type="submit" class="btn btn-primary" value="Delete"/>
+                }
+            </td>
+        </tr>
+    }
 
 </table>
+@Html.ActionLink("Manage", "Index")

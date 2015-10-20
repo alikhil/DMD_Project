@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
-using System.Net;
-using System.Web;
+﻿
 using System.Web.Mvc;
 using Project_DMD.Models;
 using Project_DMD.Classes;
@@ -57,16 +51,23 @@ namespace Project_DMD.Controllers
 
         public ActionResult Favorites()
         {
-            var appUser = User.Identity.GetAppUser();
-            var favorites = UsersRepository.GetFavorites(appUser.Id);
+            var userId = User.Identity.GetUserId();
+            var favorites = UsersRepository.GetFavorites(userId);
             return View(favorites);
         }
 
         public ActionResult Visits()
         {
-            var appUser = User.Identity.GetAppUser();
-            var visits = UsersRepository.GetVisits(appUser.Id);
+            var userId = User.Identity.GetUserId();
+            var visits = UsersRepository.GetVisits(userId);
             return View(visits);
+        }
+
+        public ActionResult Actions()
+        {
+            var userId = User.Identity.GetUserId();
+            var actions = FakeGenerator.Instance.UsersRepository.GetActionsForUser(userId);
+            return View(actions);
         }
     }
 }

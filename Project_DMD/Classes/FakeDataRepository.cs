@@ -100,9 +100,11 @@ namespace Project_DMD.Classes
             #endregion
         }
 
-        public void Add(Article article)
+        public int Add(Article article)
         {
+            article.ArticleId = ArticlesList.Count;
             ArticlesList.Add(article);
+            return article.ArticleId;
         }
 
         public Article GetArticle(int id)

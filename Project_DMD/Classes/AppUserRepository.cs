@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Web;
 using System.Web.Helpers;
 
@@ -30,6 +31,13 @@ namespace Project_DMD.Classes
         void VisitArticle(int articleId, string userId);
 
         List<Visit> GetVisits(string p);
+
+        List<ActionHistory> GetActionsForUser(string userId);
+
+        List<ActionHistory> GetActionsForArticle(int articleId);
+
+        void AddAction(string userId, int articleId, ActionType type);
+       
     }
 
     public class AppUserRepository : IAppUserRepository
@@ -106,6 +114,33 @@ namespace Project_DMD.Classes
         {
             return QueryExecutor.Instance.GetVisits(userId);
         }
+
+        public List<ActionHistory> GetActionsForUser(string userId)
+        {
+            return QueryExecutor.Instance.GetActionsForUser(userId);
+        }
+
+        public List<ActionHistory> GetActionsForArticle(int articleId)
+        {
+            return QueryExecutor.Instance.GetActionsForArticle(articleId);
+        }
+
+        public void AddAction(string userId, int articleId, ActionType type)
+        {
+            var action = MakeAction(userId, articleId, ActionType.Add);
+            QueryExecutor.Instance.AddAction(action);
+        }
+
+        public static ActionHistory MakeAction(string userId, int articleId, ActionType type)
+        {
+            return new ActionHistory()
+            {
+                ArticleId = articleId,
+                UserId = userId,
+                ActionDate = DateTime.Now,
+                ActionDone = type
+            };
+        }
     }
 
     public class FakeAppUserRepository : IAppUserRepository
@@ -113,10 +148,12 @@ namespace Project_DMD.Classes
         private List<AppUser> Users { get; set; }
         private List<Favorite> Favorites { get; set; }
         private List<Visit> Visits { get; set; }
-
+        private List<ActionHistory> Actions { get; set; }
+ 
         public FakeAppUserRepository()
         {
             Favorites = new List<Favorite>();
+            Actions = new List<ActionHistory>();
             Visits = new List<Visit>();
             #region Generate fake data
             Users = new List<AppUser>(new []{ 
@@ -207,7 +244,9 @@ namespace Project_DMD.Classes
             {
                 ArticleId = articleId,
                 UserId = userId,
-                VisitDate = DateTime.Now
+                VisitDate = DateTime.Now,
+                Article = FakeGenerator.Instance.ArticlesRepository.GetArticle(articleId),
+                User = GetAppUser(userId)
             };
             Visits.Add(visit);
             FakeGenerator.Instance.ArticlesRepository.VisitArticle(articleId);
@@ -216,6 +255,23 @@ namespace Project_DMD.Classes
         public List<Visit> GetVisits(string userId)
         {
             return Visits.FindAll((x => x.UserId == userId));
+        }
+
+
+        public List<ActionHistory> GetActionsForUser(string userId)
+        {
+            return Actions.FindAll(x => x.UserId == userId);
+        }
+
+        public List<ActionHistory> GetActionsForArticle(int articleId)
+        {
+            return Actions.FindAll(x => x.ArticleId == articleId);
+        }
+
+        public void AddAction(string userId, int articleId, ActionType type)
+        {
+            Actions.Add(AppUserRepository.MakeAction(userId, articleId, type));
+
         }
     }
 }

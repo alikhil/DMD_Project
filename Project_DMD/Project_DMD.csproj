@@ -182,7 +182,6 @@
     <Compile Include="Models\CutomUserStore.cs" />
     <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\Keyword.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\TempDataContext.cs" />
     <Compile Include="Models\Visit.cs" />
@@ -240,6 +239,7 @@
     <Content Include="Views\Manage\Edit.cshtml" />
     <Content Include="Views\Manage\Favorites.cshtml" />
     <Content Include="Views\Manage\Visits.cshtml" />
+    <Content Include="Views\Manage\Actions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
