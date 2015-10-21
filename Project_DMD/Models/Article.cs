@@ -57,7 +57,12 @@ namespace Project_DMD.Models
         /// <summary>
         /// Authors of article
         /// </summary>
-        public ICollection<Author> Authors { get; set; }
+        public List<Author> Authors { get; set; }
+
+        /// <summary>
+        /// Colection of articles catrgories 
+        /// </summary>
+        public List<Category> Categories { get; set; } 
     }
 
 }

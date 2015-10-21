@@ -14,9 +14,9 @@ namespace Project_DMD.Controllers
         readonly IDataRepository DataRepository = Global.Instance.ArticlesRepository;
         readonly IAppUserRepository UsersRepository = Global.Instance.UsersRepository;
         // GET: Articles
-        public ActionResult Index()
+        public ActionResult Index(string articleName = null, string keyword = null, string authorName = null, int publicationYear = 0, string category = null)
         {
-            return View(DataRepository.GetArticles());
+            return View(DataRepository.GetArticles(articleName, keyword, authorName, publicationYear, category));
         }
 
         // GET: Articles/Details/5

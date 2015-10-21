@@ -27,6 +27,8 @@ namespace Project_DMD.Classes
         void Dispose();
 
         void VisitArticle(int articleId);
+
+        List<Article> GetArticles(string articleName, string keyword, string authorName, int publicationYear, string category);
     }
 
     /// <summary>
@@ -83,6 +85,11 @@ namespace Project_DMD.Classes
         public void VisitArticle(int articleId)
         {
             QueryExecutor.Instance.VisitArticle(articleId);
+        }
+
+        public List<Article> GetArticles(string articleName, string keyword, string authorName, int publicationYear, string category)
+        {
+            return QueryExecutor.Instance.GetArticles(articleName, keyword, authorName, publicationYear, category);
         }
     }
 }

@@ -52,7 +52,15 @@ namespace Project_DMD.Classes
                         new[] {
                             Authors[0], 
                             Authors[1]
-                        })
+                        }),
+                    Categories = new List<Category>()
+                    {
+                        new Category()
+                        {
+                            CategoryId = 0,
+                            CategoryName = "stat.AP"
+                        }
+                    }
                 },
                 new Article()
                 {
@@ -69,7 +77,20 @@ namespace Project_DMD.Classes
                             Authors[2], 
                             Authors[3],
                             Authors[1]
-                        })
+                        }),
+                    Categories = new List<Category>()
+                    {
+                        new Category()
+                        {
+                            CategoryId = 0,
+                            CategoryName = "stat.AP"
+                        },
+                        new Category()
+                        {
+                            CategoryId = 1,
+                            CategoryName = "stat.CO"
+                        }
+                    }
                 },
                 new Article()
                 {
@@ -86,7 +107,15 @@ namespace Project_DMD.Classes
                             Authors[0], 
                             Authors[2],
                             Authors[1]
-                        })
+                        }),
+                    Categories = new List<Category>()
+                    {
+                        new Category()
+                        {
+                            CategoryId = 0,
+                            CategoryName = "stat.CO"
+                        }
+                    }
                 }
             });
             foreach (Article art in ArticlesList)
@@ -157,6 +186,22 @@ namespace Project_DMD.Classes
         {
             var article = getArticle(articleId);
             article.Views++;
+        }
+
+        public List<Article> GetArticles(string articleName, string keyword, string authorName, int publicationYear, string category)
+        {
+            var result = ArticlesList;
+            if(!string.IsNullOrEmpty(articleName))
+                result = result.FindAll(x => x.Title == articleName);
+            if (!string.IsNullOrEmpty(keyword))
+                result = result.FindAll(x => x.Summary.Contains(keyword));
+            if (publicationYear != 0)
+                result = result.FindAll(x => x.Published.Year == publicationYear);
+            if (!string.IsNullOrEmpty(category) && Global.Instance.Categories.ContainsKey(category))
+                result = result.FindAll(x => x.Categories.Exists(y => y.CategoryName == category));
+            if (!string.IsNullOrEmpty(authorName))
+                result = result.FindAll(x => x.Authors.Exists(y => y.AuthorName == authorName));
+            return result;
         }
 
         private Article getArticle(int articleId)

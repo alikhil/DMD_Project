@@ -170,5 +170,10 @@ namespace Project_DMD.Classes
         {
             throw new NotImplementedException();
         }
+
+        public List<Article> GetArticles(string articleName, string keyword, string authorName, int publicationYear, string category)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

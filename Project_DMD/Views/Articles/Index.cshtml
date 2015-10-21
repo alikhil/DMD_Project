@@ -1,14 +1,26 @@
-﻿@model IEnumerable<Project_DMD.Models.Article>
+﻿@using Project_DMD.Classes
+@model IEnumerable<Project_DMD.Models.Article>
 
 @{
     ViewBag.Title = "Index";
+    var dictionary = Global.Instance.Categories;
+   //dictionary.Add("","");
 }
 
 <h2>Index</h2>
-Mark that some articles are favorite for current user
+Mark that some articles are favorite for current user, show some authors name
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+@using (Html.BeginForm())
+{
+    <p>Article Name @Html.TextBox("articleName")</p>
+    <p>Author Name @Html.TextBox("authorName")</p>
+    <p>Publication year @Html.TextBox("publicationYear")</p>
+    <p>Keyword @Html.TextBox("keyword")</p>
+    <p>Category @Html.DropDownList("category", new SelectList(dictionary, "Key", "Value"))</p>
+    <input type="submit" value="Search" />
+}
 <table class="table">
     <tr>
         <th>
