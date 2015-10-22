@@ -53,14 +53,7 @@ namespace Project_DMD.Classes
                             Authors[0], 
                             Authors[1]
                         }),
-                    Categories = new List<Category>()
-                    {
-                        new Category()
-                        {
-                            CategoryId = 0,
-                            CategoryName = "stat.AP"
-                        }
-                    }
+                    Categories = new List<string>(){ "stat.AP" }
                 },
                 new Article()
                 {
@@ -78,19 +71,7 @@ namespace Project_DMD.Classes
                             Authors[3],
                             Authors[1]
                         }),
-                    Categories = new List<Category>()
-                    {
-                        new Category()
-                        {
-                            CategoryId = 0,
-                            CategoryName = "stat.AP"
-                        },
-                        new Category()
-                        {
-                            CategoryId = 1,
-                            CategoryName = "stat.CO"
-                        }
-                    }
+                    Categories = new List<string>(){ "stat.CO", "stat.AP" }
                 },
                 new Article()
                 {
@@ -108,14 +89,7 @@ namespace Project_DMD.Classes
                             Authors[2],
                             Authors[1]
                         }),
-                    Categories = new List<Category>()
-                    {
-                        new Category()
-                        {
-                            CategoryId = 0,
-                            CategoryName = "stat.CO"
-                        }
-                    }
+                    Categories = new List<string>() { "stat.CO" }
                 }
             });
             foreach (Article art in ArticlesList)
@@ -154,6 +128,7 @@ namespace Project_DMD.Classes
             old.Title = article.Title;
             old.Url = article.Url;
             old.JournalReference = article.JournalReference;
+            old.Categories = article.Categories;
         }
 
         public void Delete(Article article)
@@ -198,7 +173,7 @@ namespace Project_DMD.Classes
             if (publicationYear != 0)
                 result = result.FindAll(x => x.Published.Year == publicationYear);
             if (!string.IsNullOrEmpty(category) && Global.Instance.Categories.ContainsKey(category))
-                result = result.FindAll(x => x.Categories.Exists(y => y.CategoryName == category));
+                result = result.FindAll(x => x.Categories.Exists(y => y == category));
             if (!string.IsNullOrEmpty(authorName))
                 result = result.FindAll(x => x.Authors.Exists(y => y.AuthorName == authorName));
             return result;

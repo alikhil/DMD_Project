@@ -3,8 +3,6 @@
 
 @{
     ViewBag.Title = "Index";
-    var dictionary = Global.Instance.Categories;
-   //dictionary.Add("","");
 }
 
 <h2>Index</h2>
@@ -14,11 +12,12 @@ Mark that some articles are favorite for current user, show some authors name
 </p>
 @using (Html.BeginForm())
 {
+    SelectList list = ViewBag.SelectedList;
     <p>Article Name @Html.TextBox("articleName")</p>
     <p>Author Name @Html.TextBox("authorName")</p>
     <p>Publication year @Html.TextBox("publicationYear")</p>
     <p>Keyword @Html.TextBox("keyword")</p>
-    <p>Category @Html.DropDownList("category", new SelectList(dictionary, "Key", "Value"))</p>
+    <p>Category @Html.DropDownList("category", list)</p>
     <input type="submit" value="Search" />
 }
 <table class="table">

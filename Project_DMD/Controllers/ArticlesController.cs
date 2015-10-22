@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
@@ -16,6 +17,9 @@ namespace Project_DMD.Controllers
         // GET: Articles
         public ActionResult Index(string articleName = null, string keyword = null, string authorName = null, int publicationYear = 0, string category = null)
         {
+            var tempDict = Global.Instance.InitCategories();
+            tempDict.Add("","");
+            ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value");
             return View(DataRepository.GetArticles(articleName, keyword, authorName, publicationYear, category));
         }
 
@@ -40,12 +44,13 @@ namespace Project_DMD.Controllers
         // GET: Articles/Create
         public ActionResult Create()
         {
+            ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Url,Title,Summary,JournalReference,DOI")] Article article)
+        public ActionResult Create([Bind(Include = "Url,Title,Summary,JournalReference,DOI,Categories")] Article article)
         {
             if (ModelState.IsValid)
             {
@@ -69,13 +74,14 @@ namespace Project_DMD.Controllers
             {
                 return HttpNotFound();
             }
+            ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
             return View(article);
         }
 
         // POST: Articles/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,JournalReference,DOI")] Article article)
+        public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,JournalReference,DOI,Categories")] Article article)
         {
             if (ModelState.IsValid)
             {

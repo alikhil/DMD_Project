@@ -27,12 +27,11 @@ namespace Project_DMD.Classes
             ArticlesRepository = new FakeDataRepository();
             UsersRepository = new FakeAppUserRepository();
             UserManager = new UserManager<AppUser>(new CustomUserStore());
-            InitCategories();
+            Categories = InitCategories();
         }
 
-        private void InitCategories()
+        public Dictionary<string, string> InitCategories()
         {
-            Categories = new Dictionary<string, string>();
             #region arrays
             var shorts = new string[]
             {
@@ -114,7 +113,7 @@ namespace Project_DMD.Classes
                 "Physics - Popular Physics", "Physics - Space Physics", "Quantum Physics"
             };
 #endregion
-            Categories = longs.Zip(shorts, (s, i) => new { s, i })
+            return  longs.Zip(shorts, (s, i) => new { s, i })
                           .ToDictionary(item => item.i, item => item.s);
         }
     }

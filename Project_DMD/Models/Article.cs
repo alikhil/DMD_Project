@@ -62,7 +62,8 @@ namespace Project_DMD.Models
         /// <summary>
         /// Colection of articles catrgories 
         /// </summary>
-        public List<Category> Categories { get; set; } 
+        public List<string> Categories { get; set; }
+
     }
 
 }

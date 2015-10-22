@@ -1,11 +1,12 @@
-﻿@model Project_DMD.Models.Article
+﻿@using Project_DMD.Classes
+@model Project_DMD.Models.Article
 
 @{
     ViewBag.Title = "Details";
 }
 
 
-We must show here article data, authors, related articles, favorite state for current user
+We must show here article data, authors, related articles, favorite state for current user, categories 
 <h2>Details</h2>
 @if (Model != null)
 { 
@@ -19,7 +20,7 @@ We must show here article data, authors, related articles, favorite state for cu
     }
     else
     {
-        using (Html.BeginForm("RemoveFavorite", "Articles", FormMethod.Post))
+        using (Html.BeginForm("RemoveFromFavorite", "Articles", FormMethod.Post))
         {
             <input type="hidden" name="articleId" value="@Model.ArticleId" />
             <input type="submit" value="remove from favorite" />
@@ -93,15 +94,36 @@ We must show here article data, authors, related articles, favorite state for cu
         <dd>
             @Html.DisplayFor(model => model.Views)
         </dd>
-        @{
-            if (Model != null && Model.Authors != null)
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Categories)
+        </dt>
+
+        <dd>
+            @if (Model.Categories != null)
             {
-                foreach (var author in Model.Authors)
+                <p>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category }) | </span>
+                    }
+                </p>
+            }
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Authors)
+        </dt>
+        <dd>
+            @{
+                if (Model != null && Model.Authors != null)
                 {
-                    <p>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })</p>
+                    foreach (var author in Model.Authors)
+                    {
+                        <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId }) |</span>
+                    }
                 }
             }
-        }
+        </dd>
     </dl>
 </div>
 <p>
