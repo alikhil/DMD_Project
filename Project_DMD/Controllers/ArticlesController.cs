@@ -45,12 +45,13 @@ namespace Project_DMD.Controllers
         public ActionResult Create()
         {
             ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
+            ViewBag.Authors = new SelectList(Global.Instance.ArticlesRepository.GetAuthors(),"AuthorId", "AuthorName");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Url,Title,Summary,JournalReference,DOI,Categories")] Article article)
+        public ActionResult Create([Bind(Include = "Url,Title,Summary,JournalReference,DOI,Categories,Authors")] Article article)
         {
             if (ModelState.IsValid)
             {
@@ -81,7 +82,7 @@ namespace Project_DMD.Controllers
         // POST: Articles/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,JournalReference,DOI,Categories")] Article article)
+        public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,JournalReference,DOI,Categories,Authors")] Article article)
         {
             if (ModelState.IsValid)
             {

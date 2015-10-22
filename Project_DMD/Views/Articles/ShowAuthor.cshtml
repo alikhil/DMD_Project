@@ -17,17 +17,20 @@
         <dd>
             @Html.DisplayFor(model => model.AuthorName)
         </dd>
-        Articles:
-        <br/>
-        @{
-            if(Model !=null && Model.PublishedArticles != null)
-            {
-                foreach (var article in Model.PublishedArticles)
+        <dt>
+            @Html.DisplayNameFor(model => model.PublishedArticles)
+        </dt>
+        <dd>
+            @{
+                if (Model != null && Model.PublishedArticles != null)
                 {
-                    <p>@Html.ActionLink(article.Title, "Details", new { id = article.ArticleId })</p>
+                    foreach (var article in Model.PublishedArticles)
+                    {
+                        <span>@Html.ActionLink(article.Title, "Details", new { id = article.ArticleId }) |</span>
+                    }
                 }
             }
-        }
+        </dd>
     </dl>
 </div>
 <p>

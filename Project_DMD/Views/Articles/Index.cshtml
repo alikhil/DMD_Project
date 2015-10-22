@@ -7,6 +7,7 @@
 
 <h2>Index</h2>
 Mark that some articles are favorite for current user, show some authors name
+<p>[WARNING!] Don't show a lot of data! Kevin, you should decide which attributes need to show, which not necessary </p>
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
@@ -43,6 +44,12 @@ Mark that some articles are favorite for current user, show some authors name
         <th>
             @Html.DisplayNameFor(model => model.DOI)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Authors)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Categories)
+        </th>
         <th></th>
     </tr>
 
@@ -68,6 +75,28 @@ Mark that some articles are favorite for current user, show some authors name
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.DOI)
+        </td>
+        <td>
+            @{
+                if (item != null && item.Authors != null)
+                {
+                    foreach (var author in item.Authors)
+                    {
+                        <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new {id = author.AuthorId}) |</span>
+                    }
+                }
+            }
+        </td>
+        <td>
+            @if (item.Categories != null)
+            {
+                <p>
+                    @foreach (var category in item.Categories)
+                    {
+                        <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category }) | </span>
+                    }
+                </p>
+            }
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ArticleId }) |
