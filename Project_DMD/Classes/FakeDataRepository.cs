@@ -9,36 +9,20 @@ namespace Project_DMD.Classes
 {
     public class FakeDataRepository : IDataRepository
     {
-        private List<Article> ArticlesList = new List<Article>();
-        private List<Author> Authors = new List<Author>();
+        private List<Article> _articlesList = new List<Article>();
+        private readonly List<Author> _authors = new List<Author>();
 
         public FakeDataRepository()
         {
             #region Generating fake data
-            Authors = new List<Author>(new[] {
-                new Author()
-                {
-                    AuthorId = 0,
-                    AuthorName = "Alik Khil"
-                },
-                new Author()
-                {
-                    AuthorId = 1,
-                    AuthorName = "Nikita Shib"
-                },
-                new Author()
-                {
-                    AuthorId = 2,
-                    AuthorName = "Timur Khazh"
-                },
-                new Author()
-                {
-                    AuthorId = 3,
-                    AuthorName = "Ruslan Tush"
-                }
+            _authors = new List<Author>(new[] {
+                new Author(0, "Alik Khil"),
+                new Author(1, "Nikita Shib"),
+                new Author(2, "Timur Khazh"),
+                new Author(3, "Ruslan Tush")
             });
 
-            ArticlesList.AddRange(new [] {
+            _articlesList.AddRange(new [] {
                 new Article()
                 .WithId(0)
                 .WithDoi("asda")
@@ -52,7 +36,7 @@ namespace Project_DMD.Classes
                 .WithAuthors(
                     new List<Author>
                     {
-                        Authors[0],Authors[1]
+                        _authors[0],_authors[1]
                     }),
 
                 new Article()
@@ -68,7 +52,7 @@ namespace Project_DMD.Classes
                     .WithAuthors(
                         new List<Author>
                         {
-                            Authors[2], Authors[3], Authors[1]
+                            _authors[2], _authors[3], _authors[1]
                         }),
 
                 new Article()
@@ -84,11 +68,11 @@ namespace Project_DMD.Classes
                         new List<string>{ "stat.CO" })
                         .WithAuthors(new List<Author>
                         {
-                            Authors[0], Authors[2], Authors[1]
+                            _authors[0], _authors[2], _authors[1]
                         })
             });
 
-            foreach (var art in ArticlesList)
+            foreach (var art in _articlesList)
             {
                 foreach (var auth in art.AuthorsList)
                 {
@@ -101,9 +85,9 @@ namespace Project_DMD.Classes
 
         public int Add(Article article)
         {
-            article.ArticleId = ArticlesList.Count;
+            article.ArticleId = _articlesList.Count;
             article.AuthorsList = article.Authors.Select(GetAuthor).ToList();
-            ArticlesList.Add(article);
+            _articlesList.Add(article);
             return article.ArticleId;
         }
 
@@ -114,50 +98,45 @@ namespace Project_DMD.Classes
 
         public List<Article> GetArticles()
         {
-            return ArticlesList;
+            return _articlesList;
         }
 
         public void Update(Article article)
         {
-            int index = ArticlesList.FindIndex(x => x.ArticleId == article.ArticleId);
-            var old = ArticlesList[index];
-            old.WithDoi(article.DOI)
+            int articleIndex = _articlesList.FindIndex(x => x.ArticleId == article.ArticleId);
+            var oldArticleVersion = _articlesList[articleIndex];
+            oldArticleVersion.WithDoi(article.DOI)
                 .WithUrl(article.Url)
                 .WithJournalReference(article.JournalReference)
                 .WithCategories(article.Categories)
                 .WithTitle(article.Title)
                 .WithAuthors(article.AuthorsList);
-            old.DOI = article.DOI;
-            old.Title = article.Title;
-            old.Url = article.Url;
-            old.JournalReference = article.JournalReference;
-            old.Categories = article.Categories;
         }
 
         public void Delete(Article article)
         {
-            ArticlesList.Remove(article);
+            _articlesList.Remove(article);
         }
 
         public void Delete(int id)
         {
-            ArticlesList.Remove(getArticle(id));
+            _articlesList.Remove(getArticle(id));
         }
 
         public Author GetAuthor(int id)
         {
-            id = (id + Authors.Count) % Authors.Count;
-            return Authors[id];
+            id = (id + _authors.Count) % _authors.Count;
+            return _authors[id];
         }
 
         public List<Author> GetAuthors()
         {
-            return Authors;
+            return _authors;
         }
 
         public void Dispose()
         {
-            ArticlesList = null;
+            _articlesList = null;
         }
 
 
@@ -169,7 +148,7 @@ namespace Project_DMD.Classes
 
         public List<Article> GetArticles(string articleName, string keyword, string authorName, int publicationYear, string category)
         {
-            var result = ArticlesList;
+            var result = _articlesList;
             if(!string.IsNullOrEmpty(articleName))
                 result = result.FindAll(x => x.Title == articleName);
             if (!string.IsNullOrEmpty(keyword))
@@ -185,7 +164,7 @@ namespace Project_DMD.Classes
 
         private Article getArticle(int articleId)
         {
-            return ArticlesList.Find(x => x.ArticleId == articleId);
+            return _articlesList.Find(x => x.ArticleId == articleId);
         }
     }
 

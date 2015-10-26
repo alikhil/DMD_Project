@@ -21,5 +21,11 @@ namespace Project_DMD.Models
         /// Articles published by this author
         /// </summary>
         public ICollection<Article> PublishedArticles { get; set; }
+
+        public Author(int authorId, string authorName)
+        {
+            AuthorId = authorId;
+            AuthorName = authorName;
+        }
     }
 }
