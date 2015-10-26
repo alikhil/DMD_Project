@@ -61,7 +61,8 @@ namespace Project_DMD.Controllers
                 UsersRepository.AddAction(User.Identity.GetUserId(), articleId, ActionType.Add);
                 return RedirectToAction("Index");
             }
-
+            ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
+            ViewBag.Authors = new SelectList(Global.Instance.ArticlesRepository.GetAuthors(), "AuthorId", "AuthorName");
             return View(article);
         }
 
@@ -91,6 +92,7 @@ namespace Project_DMD.Controllers
                 UsersRepository.AddAction(User.Identity.GetUserId(),article.ArticleId, ActionType.Edit);
                 return RedirectToAction("Index");
             }
+            ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
             return View(article);
         }
 
