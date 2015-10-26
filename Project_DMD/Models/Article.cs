@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Web.Mvc;
+using Microsoft.Owin.Security.OAuth.Messages;
 
 namespace Project_DMD.Models
 {
@@ -58,7 +60,7 @@ namespace Project_DMD.Models
         public List<Author> AuthorsList { get; set; }
 
         [Required]
-        public List<int> Authors { get; set; }
+        public int[] Authors { get; set; }
 
         [Required]
         public List<string> Categories { get; set; }
@@ -118,13 +120,14 @@ namespace Project_DMD.Models
             Updated = updateTime;
             return this;
         }
-        #endregion
 
         public Article WithPublished(DateTime publishedDate)
         {
             Published = publishedDate;
             return this;
         }
+        #endregion
+
     }
 
     public static class ArticleExtension
@@ -132,6 +135,11 @@ namespace Project_DMD.Models
         public static void ParseAuthors(this Article article)
         {
             article.AuthorsList = article.Authors.Select(author => new Author() { AuthorId = author}).ToList();
+        }
+
+        public static void ParseAuthorIds(this Article article)
+        {
+            article.Authors = article.AuthorsList.Select(author => author.AuthorId).ToArray();
         }
     }
 }

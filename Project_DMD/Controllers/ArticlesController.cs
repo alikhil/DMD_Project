@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using Microsoft.Ajax.Utilities;
@@ -15,12 +16,13 @@ namespace Project_DMD.Controllers
         readonly IDataRepository DataRepository = Global.Instance.ArticlesRepository;
         readonly IAppUserRepository UsersRepository = Global.Instance.UsersRepository;
         
-        public ActionResult Index(string articleName = null, string keyword = null, string authorName = null, int publicationYear = 0, string category = null)
+        public ActionResult Index(int page = 0, string articleName = null, string keyword = null, string authorName = null, int publicationYear = 0, string category = null, string journalReference = null)
         {
             var tempDict = Global.Instance.InitCategories();
             tempDict.Add("","");
             ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value");
-            return View(DataRepository.GetArticles(articleName, keyword, authorName, publicationYear, category));
+            ViewBag.Page = page;
+            return View(DataRepository.GetArticles(page, articleName, keyword, authorName, publicationYear, category, journalReference));
         }
 
         
@@ -79,12 +81,13 @@ namespace Project_DMD.Controllers
                 return HttpNotFound();
             }
             ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
+           
             return View(article);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,JournalReference,DOI,Categories,Authors")] Article article)
+        public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,JournalReference,DOI,Categories")] Article article)
         {
             if (ModelState.IsValid)
             {   
@@ -93,6 +96,7 @@ namespace Project_DMD.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
+            
             return View(article);
         }
 

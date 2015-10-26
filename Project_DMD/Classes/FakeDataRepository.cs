@@ -86,9 +86,14 @@ namespace Project_DMD.Classes
         public int Add(Article article)
         {
             article.ArticleId = _articlesList.Count;
-            article.AuthorsList = article.Authors.Select(GetAuthor).ToList();
+            article.AuthorsList = GetFullAuthorInfo(article);
             _articlesList.Add(article);
             return article.ArticleId;
+        }
+
+        private List<Author> GetFullAuthorInfo(Article article)
+        {
+            return article.AuthorsList.Select(author => GetAuthor(author.AuthorId)).ToList();
         }
 
         public Article GetArticle(int id)
@@ -109,8 +114,7 @@ namespace Project_DMD.Classes
                 .WithUrl(article.Url)
                 .WithJournalReference(article.JournalReference)
                 .WithCategories(article.Categories)
-                .WithTitle(article.Title)
-                .WithAuthors(article.AuthorsList);
+                .WithTitle(article.Title);
         }
 
         public void Delete(Article article)
@@ -146,7 +150,7 @@ namespace Project_DMD.Classes
             article.Views++;
         }
 
-        public List<Article> GetArticles(string articleName, string keyword, string authorName, int publicationYear, string category)
+        public List<Article> GetArticles(int page, string articleName, string keyword, string authorName, int publicationYear, string category, string journalReference)
         {
             var result = _articlesList;
             if(!string.IsNullOrEmpty(articleName))
@@ -159,7 +163,12 @@ namespace Project_DMD.Classes
                 result = result.FindAll(x => x.Categories.Exists(y => y == category));
             if (!string.IsNullOrEmpty(authorName))
                 result = result.FindAll(x => x.AuthorsList.Exists(y => y.AuthorName == authorName));
-            return result;
+            if (!string.IsNullOrEmpty(journalReference))
+                result = result.FindAll(x => x.JournalReference.Contains(journalReference));
+
+            int takeFrom = (page - 1) * Global.ArticlePerPage;
+            
+            return result.Skip(takeFrom).Take(Global.ArticlePerPage).ToList();
         }
 
         private Article getArticle(int articleId)

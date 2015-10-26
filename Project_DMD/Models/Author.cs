@@ -22,6 +22,8 @@ namespace Project_DMD.Models
         /// </summary>
         public ICollection<Article> PublishedArticles { get; set; }
 
+        public Author() { }
+
         public Author(int authorId, string authorName)
         {
             AuthorId = authorId;
