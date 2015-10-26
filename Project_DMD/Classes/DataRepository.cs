@@ -28,7 +28,7 @@ namespace Project_DMD.Classes
 
         void VisitArticle(int articleId);
 
-        List<Article> GetArticles(string articleName, string keyword, string authorName, int publicationYear, string category);
+        List<Article> GetArticles(int page, string articleName, string keyword, string authorName, int publicationYear, string category, string journalReference);
     }
 
     /// <summary>
@@ -87,9 +87,9 @@ namespace Project_DMD.Classes
             QueryExecutor.Instance.VisitArticle(articleId);
         }
 
-        public List<Article> GetArticles(string articleName, string keyword, string authorName, int publicationYear, string category)
+        public List<Article> GetArticles(int page, string articleName, string keyword, string authorName, int publicationYear, string category, string journalReference)
         {
-            return QueryExecutor.Instance.GetArticles(articleName, keyword, authorName, publicationYear, category);
+            return QueryExecutor.Instance.GetArticles(page, articleName, keyword, authorName, publicationYear, category);
         }
     }
 }

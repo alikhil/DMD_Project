@@ -8,7 +8,7 @@ namespace Project_DMD.Classes
     public sealed class Global
     {
         static readonly Global _instance = new Global();
-        
+        public static readonly int ArticlePerPage = 30;
         public static Global Instance
         {
             get
