@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Web;
 using Project_DMD.Models;
 
@@ -39,62 +40,57 @@ namespace Project_DMD.Classes
 
             ArticlesList.AddRange(new [] {
                 new Article()
-                {
-                    ArticleId = 0,
-                    DOI = "ADAD",
-                    Published = DateTime.Now,
-                    Summary = "Summary",
-                    Title = "Geek best 3",
-                    Updated = DateTime.Now,
-                    Url = "http://vk.com",
-                    JournalReference = "BBC",
-                    Authors = new List<Author>(
-                        new[] {
-                            Authors[0], 
-                            Authors[1]
-                        }),
-                    Categories = new List<string>(){ "stat.AP" }
-                },
+                .WithId(0)
+                .WithDoi("asda")
+                .WithTitle("Geek best 3")
+                .WithSummary("Summary")
+                .WithUrl("vk.com/alikgil")
+                .WithUpdate(DateTime.Now)
+                .WithPublished(DateTime.Now)
+                .WithCategories(new List<string>{"stat.AP"})
+                .WithJournalReference("HAKATONE")
+                .WithAuthors(
+                    new List<Author>
+                    {
+                        Authors[0],Authors[1]
+                    }),
+
                 new Article()
-                {
-                    ArticleId = 1,
-                    DOI = "ADAD",
-                    Published = DateTime.Now,
-                    Summary = "Summary",
-                    Title = "Best of habr",
-                    Updated = DateTime.Now,
-                    Url = "http://vk.com",
-                    JournalReference = "BBC",
-                    Authors = new List<Author>(
-                        new[] {
-                            Authors[2], 
-                            Authors[3],
-                            Authors[1]
+                    .WithId(1)
+                    .WithTitle("Best of habr")
+                    .WithSummary("Sum dary")
+                    .WithUrl("vk.com/habr")
+                    .WithJournalReference("Zum la")
+                    .WithPublished(DateTime.Now)
+                    .WithUpdate(DateTime.Now)
+                    .WithDoi("asdij")
+                    .WithCategories(new List<string>{"stat.CO","stat.AP"})
+                    .WithAuthors(
+                        new List<Author>
+                        {
+                            Authors[2], Authors[3], Authors[1]
                         }),
-                    Categories = new List<string>(){ "stat.CO", "stat.AP" }
-                },
+
                 new Article()
-                {
-                    ArticleId = 2,
-                    DOI = "EWWG",
-                    Published = DateTime.Now,
-                    Summary = "SuSDFmmary",
-                    Title = "TOuch of class",
-                    Updated = DateTime.Now,
-                    Url = "http://vk.com/sdf",
-                    JournalReference = "DSFSD",
-                    Authors = new List<Author>(
-                        new[] {
-                            Authors[0], 
-                            Authors[2],
-                            Authors[1]
-                        }),
-                    Categories = new List<string>() { "stat.CO" }
-                }
+                    .WithId(2)
+                    .WithTitle("Touch of class")
+                    .WithSummary("Super book")
+                    .WithDoi("Azaaz")
+                    .WithUpdate(DateTime.Now)
+                    .WithPublished(DateTime.Now)
+                    .WithUrl("habr.com")
+                    .WithJournalReference("Eifil studi")
+                    .WithCategories(
+                        new List<string>{ "stat.CO" })
+                        .WithAuthors(new List<Author>
+                        {
+                            Authors[0], Authors[2], Authors[1]
+                        })
             });
-            foreach (Article art in ArticlesList)
+
+            foreach (var art in ArticlesList)
             {
-                foreach (Author auth in art.Authors)
+                foreach (var auth in art.AuthorsList)
                 {
                     auth.PublishedArticles = auth.PublishedArticles ?? new List<Article>();
                     auth.PublishedArticles.Add(art);
@@ -106,6 +102,7 @@ namespace Project_DMD.Classes
         public int Add(Article article)
         {
             article.ArticleId = ArticlesList.Count;
+            article.AuthorsList = article.Authors.Select(GetAuthor).ToList();
             ArticlesList.Add(article);
             return article.ArticleId;
         }
@@ -124,6 +121,12 @@ namespace Project_DMD.Classes
         {
             int index = ArticlesList.FindIndex(x => x.ArticleId == article.ArticleId);
             var old = ArticlesList[index];
+            old.WithDoi(article.DOI)
+                .WithUrl(article.Url)
+                .WithJournalReference(article.JournalReference)
+                .WithCategories(article.Categories)
+                .WithTitle(article.Title)
+                .WithAuthors(article.AuthorsList);
             old.DOI = article.DOI;
             old.Title = article.Title;
             old.Url = article.Url;
@@ -143,6 +146,7 @@ namespace Project_DMD.Classes
 
         public Author GetAuthor(int id)
         {
+            id = (id + Authors.Count) % Authors.Count;
             return Authors[id];
         }
 
@@ -175,7 +179,7 @@ namespace Project_DMD.Classes
             if (!string.IsNullOrEmpty(category) && Global.Instance.Categories.ContainsKey(category))
                 result = result.FindAll(x => x.Categories.Exists(y => y == category));
             if (!string.IsNullOrEmpty(authorName))
-                result = result.FindAll(x => x.Authors.Exists(y => y.AuthorName == authorName));
+                result = result.FindAll(x => x.AuthorsList.Exists(y => y.AuthorName == authorName));
             return result;
         }
 

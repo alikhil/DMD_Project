@@ -45,7 +45,7 @@ Mark that some articles are favorite for current user, show some authors name
             @Html.DisplayNameFor(model => model.DOI)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Authors)
+            @Html.DisplayNameFor(model => model.AuthorsList)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Categories)
@@ -78,9 +78,9 @@ Mark that some articles are favorite for current user, show some authors name
         </td>
         <td>
             @{
-                if (item != null && item.Authors != null)
+                if (item != null && item.AuthorsList != null)
                 {
-                    foreach (var author in item.Authors)
+                    foreach (var author in item.AuthorsList)
                     {
                         <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new {id = author.AuthorId}) |</span>
                     }

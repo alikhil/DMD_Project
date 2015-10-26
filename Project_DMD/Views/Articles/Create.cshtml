@@ -62,16 +62,16 @@
             <div class="col-md-10">
                 @{ SelectList list = ViewBag.SelectedList;}
                 @Html.ListBoxFor(model => model.Categories, list)
-                @Html.ValidationMessageFor(model => model.DOI, "", new {@class = "text-danger"})
+                @Html.ValidationMessageFor(model => model.Categories, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-        @Html.LabelFor(model => model.Authors, htmlAttributes: new { @class = "control-label col-md-2" })
+        @Html.LabelFor(model => model.AuthorsList, htmlAttributes: new { @class = "control-label col-md-2" })
         <div class="col-md-10">
             @{ SelectList authors = ViewBag.Authors;}
             @Html.ListBoxFor(model => model.Authors, authors)
-            @Html.ValidationMessageFor(model => model.DOI, "", new { @class = "text-danger" })
+            @Html.ValidationMessageFor(model => model.Authors, "", new { @class = "text-danger" })
         </div>
     </div>
         <div class="form-group">

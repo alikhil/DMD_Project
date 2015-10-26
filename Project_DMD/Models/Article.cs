@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
-using System.Data.Entity;
+using System.Web.Mvc;
 
 namespace Project_DMD.Models
 {
     public class Article
     {
-        /// <summary>
-        /// Id of an article
-        /// </summary>
-        
         public int ArticleId { get; set; }
 
         /// <summary>
@@ -21,9 +16,6 @@ namespace Project_DMD.Models
         [MaxLength(65356)]
         public string Url { get; set; }
 
-        /// <summary>
-        /// Title of an article
-        /// </summary>
         [Required]
         [StringLength(512, MinimumLength = 5)]
         public string Title { get; set; }
@@ -63,18 +55,83 @@ namespace Project_DMD.Models
         /// </summary>
         public int Views { get; set; }
 
-        /// <summary>
-        /// Authors of article
-        /// </summary>
-        [Required]
-        public List<Author> Authors { get; set; }
+        public List<Author> AuthorsList { get; set; }
 
-        /// <summary>
-        /// Colection of articles catrgories 
-        /// </summary>
+        [Required]
+        public List<int> Authors { get; set; }
+
         [Required]
         public List<string> Categories { get; set; }
 
+        #region fluent interface
+
+        public Article WithId(int id)
+        {
+            ArticleId = id;
+            return this;
+        }
+
+        public Article WithDoi(string doi)
+        {
+            DOI = doi;
+            return this;
+        }
+
+        public Article WithSummary(string summary)
+        {
+            Summary = summary;
+            return this;
+        }
+
+        public Article WithTitle(string title)
+        {
+            Title = title;
+            return this;
+        }
+
+        public Article WithUrl(string url)
+        {
+            Url = url;
+            return this;
+        }
+
+        public Article WithAuthors(List<Author> authors)
+        {
+            AuthorsList = authors;
+            return this;
+        }
+
+        public Article WithCategories(List<string> categories)
+        {
+            Categories = categories;
+            return this;
+        }
+
+        public Article WithJournalReference(string journalReference)
+        {
+            JournalReference = journalReference;
+            return this;
+        }
+
+        public Article WithUpdate(DateTime updateTime)
+        {
+            Updated = updateTime;
+            return this;
+        }
+        #endregion
+
+        public Article WithPublished(DateTime publishedDate)
+        {
+            Published = publishedDate;
+            return this;
+        }
     }
 
+    public static class ArticleExtension
+    {
+        public static void ParseAuthors(this Article article)
+        {
+            article.AuthorsList = article.Authors.Select(author => new Author() { AuthorId = author}).ToList();
+        }
+    }
 }

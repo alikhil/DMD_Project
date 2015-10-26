@@ -14,7 +14,7 @@ namespace Project_DMD.Controllers
     {
         readonly IDataRepository DataRepository = Global.Instance.ArticlesRepository;
         readonly IAppUserRepository UsersRepository = Global.Instance.UsersRepository;
-        // GET: Articles
+        
         public ActionResult Index(string articleName = null, string keyword = null, string authorName = null, int publicationYear = 0, string category = null)
         {
             var tempDict = Global.Instance.InitCategories();
@@ -23,7 +23,7 @@ namespace Project_DMD.Controllers
             return View(DataRepository.GetArticles(articleName, keyword, authorName, publicationYear, category));
         }
 
-        // GET: Articles/Details/5
+        
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -41,7 +41,7 @@ namespace Project_DMD.Controllers
             return View(article);
         }
 
-        // GET: Articles/Create
+       
         public ActionResult Create()
         {
             ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
@@ -53,8 +53,10 @@ namespace Project_DMD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Url,Title,Summary,JournalReference,DOI,Categories,Authors")] Article article)
         {
+            
             if (ModelState.IsValid)
             {
+                article.ParseAuthors();
                 var articleId = DataRepository.Add(article);
                 UsersRepository.AddAction(User.Identity.GetUserId(), articleId, ActionType.Add);
                 return RedirectToAction("Index");
@@ -63,7 +65,7 @@ namespace Project_DMD.Controllers
             return View(article);
         }
 
-        // GET: Articles/Edit/5
+        
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -79,13 +81,12 @@ namespace Project_DMD.Controllers
             return View(article);
         }
 
-        // POST: Articles/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,JournalReference,DOI,Categories,Authors")] Article article)
         {
             if (ModelState.IsValid)
-            {
+            {   
                 DataRepository.Update(article);
                 UsersRepository.AddAction(User.Identity.GetUserId(),article.ArticleId, ActionType.Edit);
                 return RedirectToAction("Index");
@@ -93,7 +94,6 @@ namespace Project_DMD.Controllers
             return View(article);
         }
 
-        // GET: Articles/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -108,7 +108,6 @@ namespace Project_DMD.Controllers
             return View(article);
         }
 
-        // POST: Articles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int? id)
