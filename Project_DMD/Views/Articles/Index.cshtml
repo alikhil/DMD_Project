@@ -8,95 +8,99 @@
 <div class="well">
     <h2>Index</h2>
 </div>
-
-<p>[WARNING!] Don't show a lot of data! Kevin, you should decide which attributes need to show, which not necessary </p>
-<p>Окей, не ссы, братан!</p>
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Add New Article", "Create")
 </p>
 @using (Html.BeginForm())
 {
     SelectList list = ViewBag.SelectedList;
-    <table>
-        <tr>
-            <th class="col-md-4">Article Name @Html.TextBox("articleName")</th>
-            <th>Author Name @Html.TextBox("authorName")</th>
-            <th>Publication year @Html.TextBox("publicationYear")</th>
-            <th>Keyword @Html.TextBox("keyword")</th>
-            <th>Journal reference @Html.TextBox("journalReference")</th>
-            <th>Category @Html.DropDownList("category", list)</th>
-            <th>
-                <div class="col-lg-offset-1">
-                    <input type="submit" value="Search" class="btn btn-success"/>
-                </div>
-            </th>
-        </tr>
-    </table>
-}
-<hr />
-<div class="col-lg-12">
-    <table class="table-bordered table-condensed table-hover">
-        <tr>
+    <div class="container">
+        <div class="row">
+            <div>
+                <table class="table table-bordered table-hover table-sortable" id="tab_logic">
+                    <thead>
+                        <tr>
+                            <th>Article Name @Html.TextBox("articleName", "", new { @class = "wide" })</th>
+                            <th>Author Name @Html.TextBox("authorName", "", new { @class = "wide" })</th>
+                            <th>Publication year @Html.TextBox("publicationYear", "", new { @class = "wide" })</th>
+                            <th>Keyword @Html.TextBox("keyword", "", new { @class = "wide" })</th>
+                            <th>Journal reference @Html.TextBox("journalReference", "", new { @class = "wide" })</th>
+                            <th>Category @Html.DropDownList("category", list, new { @class = "high" })</th>
+                            <th>
+                                <div>
+                                    <input type="submit" value="Search" class="btn btn-success" />
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table-bordered table-condensed table-hover">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Title)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Published)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.AuthorsList)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Categories)
+                        </th>
+                        <th>
+                            Operations
+                        </th>
+                    </tr>
 
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Published)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AuthorsList)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Categories)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Url)
-            </th>
-            <th></th>
-        </tr>
-
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Published)
-                </td>
-                <td>
-                    @{
-            if (item != null && item.AuthorsList != null)
-            {
-                foreach (var author in item.AuthorsList)
-                {
-                    <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId }) |</span>
-                }
-            }
-                    }
-                </td>
-                <td>
-                    @if (item.Categories != null)
+                    @foreach (var item in Model)
                     {
-                        <p>
-                            @foreach (var category in item.Categories)
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Published)
+                            </td>
+                            <td>
+                                @{
+                        if (item != null && item.AuthorsList != null)
+                        {
+                            var count = 0;
+                            foreach (var author in item.AuthorsList)
                             {
-                                <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category }) | </span>
+                                var str = ++count == item.AuthorsList.Count ? "" : ",";
+                                <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
                             }
-                        </p>
+                        }
+                                }
+                            </td>
+                            <td>
+                                @if (item.Categories != null)
+                                {
+                                    <p>
+                                        @{var count = 0;}
+                                        @foreach (var category in item.Categories)
+                                        {
+                                            var str = ++count == item.Categories.Count ? "" : ",";
+                                            <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category })@str </span>
+                                        }
+                                    </p>
+                                }
+                            </td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-success" })
+                                @Html.ActionLink("Info", "Details", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-info" })
+                                @Html.ActionLink("Delete", "Delete", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-danger" })
+                            </td>
+                        </tr>
                     }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Url)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.ArticleId }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.ArticleId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.ArticleId })
-                </td>
-            </tr>
-        }
-
-    </table>
-</div>
+                </table>
+            </div>
+        </div>
+    </div>
+}

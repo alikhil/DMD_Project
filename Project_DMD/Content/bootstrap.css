@@ -42,6 +42,13 @@ video {
   display: inline-block;
 }
 
+.wide {
+    width:130px;
+}
+.high {
+    height:26px;
+}
+
 audio:not([controls]) {
   display: none;
   height: 0;
