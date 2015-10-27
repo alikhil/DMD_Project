@@ -42,6 +42,14 @@ video {
   display: inline-block;
 }
 
+.widefortable {
+    width:1110px;
+}
+
+.heightfortable {
+    height:initial 1000px; 
+}
+
 .wide {
     width:130px;
 }
