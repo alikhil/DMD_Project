@@ -14,6 +14,7 @@
 @using (Html.BeginForm())
 {
     SelectList list = ViewBag.SelectedList;
+    SelectList sortes = ViewBag.Sortes;
     <div class="container">
         @Html.Hidden("page")
         <div class="row">
@@ -26,7 +27,8 @@
                             <th>Publication year @Html.TextBox("publicationYear", "", new { @class = "wide" })</th>
                             <th>Keyword @Html.TextBox("keyword", "", new { @class = "wide" })</th>
                             <th>Journal reference @Html.TextBox("journalReference", "", new { @class = "wide" })</th>
-                            <th>Category @Html.DropDownList("category", list, new { @class = "high" })</th>
+                            <th>Category @Html.DropDownList("category", list, new {@class = "high"})</th>
+                            <th>Order by @Html.DropDownList("sortType", sortes)</th>
                             <th>
                                 <div>
                                     <input type="submit" value="Search" class="btn btn-success" />

@@ -23,6 +23,8 @@ namespace Project_DMD.Controllers
             var tempDict = Global.Instance.InitCategories();
             tempDict.Add("","");
             ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value", category);
+            var sortes = new Dictionary<string, string> {{"0", "Article Title"}, {"1", "Publication Date"}};
+            ViewBag.Sortes = new SelectList(sortes, "Key", "Value", sortType.ToString());
             ViewBag.Page = page;
             return View(DataRepository.GetArticles(page, articleName, keyword, authorName, publicationYear, category, journalReference, sortType, orderByDescending));
         }
