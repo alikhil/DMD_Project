@@ -129,8 +129,8 @@ We must show here article data, authors, related articles, favorite state for cu
 <p>
     @if (Model != null)
     {
-        <span>@Html.ActionLink("Show related by published year", "Index", new { publicationYear = Model.Published.Year }) |</span>
-        <span>@Html.ActionLink("Show related by author", "Index", new { authorName = String.Join(",", Model.AuthorsList.Select(a => a.AuthorName)) })</span>
+        <span>@Html.ActionLink("Show related by published year", "Index", new {publicationYear = Model.Published.Year }) |</span>
+        <span>@Html.ActionLink("Show related by author", "Index", new {authorName = String.Join(",", Model.AuthorsList.Select(a => a.AuthorName)) })</span>
     }
 </p>
 <p>

@@ -171,10 +171,10 @@ namespace Project_DMD.Classes
             throw new NotImplementedException();
         }
 
-        public List<Article> GetArticles(int page, string articleName, string keyword, string authorName, int publicationYear, string category)
+        public List<Article> GetArticles(int page, string articleName, string keyword, string authorName,
+            int publicationYear, string category, int sortType, bool orderByDescending)
         {
             throw new NotImplementedException();
         }
-
     }
 }

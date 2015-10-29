@@ -150,26 +150,34 @@ namespace Project_DMD.Classes
             article.Views++;
         }
 
-        public List<Article> GetArticles(int page, string articleName, string keyword, string authorName, int publicationYear, string category, string journalReference)
-        {
-            var result = _articlesList;
-            if(!string.IsNullOrEmpty(articleName))
-                result = result.FindAll(x => x.Title == articleName);
-            if (!string.IsNullOrEmpty(keyword))
-                result = result.FindAll(x => x.Summary.Contains(keyword));
-            if (publicationYear != 0)
-                result = result.FindAll(x => x.Published.Year == publicationYear);
-            if (!string.IsNullOrEmpty(category) && Global.Instance.Categories.ContainsKey(category))
-                result = result.FindAll(x => x.Categories.Exists(y => y == category));
-            if (!string.IsNullOrEmpty(authorName))
-                result = result.FindAll(x => x.AuthorsList.Exists(y => authorName.Contains(y.AuthorName)));
-            if (!string.IsNullOrEmpty(journalReference))
-                result = result.FindAll(x => x.JournalReference.Contains(journalReference));
+        
+      public List<Article> GetArticles(int page, string articleName, string keyword, string authorName, int publicationYear, string category,
+            string journalReference, int sortType, bool orderByDescending)
+      {
+            var result = _articlesList.FilterByArticleName(articleName)
+                .FilterByAuthors(authorName)
+                .FilterByCategory(category)
+                .FilterByKeyword(keyword)
+                .FilterByPublicationYear(publicationYear)
+                .FilterByJournalReference(journalReference);
+           
+            var takeFrom = (page - 1) * Global.ArticlePerPage;
 
-            int takeFrom = (page - 1) * Global.ArticlePerPage;
-            
+          // by publish date
+          if (sortType == 1)
+              result = orderByDescending
+                  ? result.OrderByDescending(article => article.Published).ToList()
+                  : result.OrderBy(article => article.Published).ToList();
+          else
+              //by article title
+              result = orderByDescending
+                  ? result.OrderByDescending(article => article.Title).ToList()
+                  : result.OrderBy(article => article.Title).ToList();
+                  
             return result.Skip(takeFrom).Take(Global.ArticlePerPage).ToList();
         }
+
+        
 
         private Article getArticle(int articleId)
         {
@@ -177,4 +185,51 @@ namespace Project_DMD.Classes
         }
     }
 
+    /// <summary>
+    /// Extension class for list of articles, for more efficeint filtering articles
+    /// </summary>
+    public static class Filter
+    {
+        public static List<Article> FilterByJournalReference(this List<Article> result, string journalReference)
+        {
+            if (!string.IsNullOrEmpty(journalReference))
+                result = result.FindAll(x => x.JournalReference.Contains(journalReference));
+            return result;
+        }
+
+        public static List<Article> FilterByAuthors(this List<Article> result, string authorName)
+        {
+            if (!string.IsNullOrEmpty(authorName))
+                result = result.FindAll(x => x.AuthorsList.Exists(y => authorName.Contains(y.AuthorName)));
+            return result;
+        }
+
+        public static List<Article> FilterByCategory(this List<Article> result, string category)
+        {
+            if (!string.IsNullOrEmpty(category) && Global.Instance.Categories.ContainsKey(category))
+                result = result.FindAll(x => x.Categories.Exists(y => y == category));
+            return result;
+        }
+
+        public static List<Article> FilterByPublicationYear(this List<Article> result, int publicationYear)
+        {
+            if (publicationYear != 0)
+                result = result.FindAll(x => x.Published.Year == publicationYear);
+            return result;
+        }
+
+        public static List<Article> FilterByKeyword(this List<Article> result,string keyword)
+        {
+            if (!string.IsNullOrEmpty(keyword))
+                result = result.FindAll(x => x.Summary.Contains(keyword));
+            return result;
+        }
+
+        public static List<Article> FilterByArticleName(this List<Article> result, string articleName)
+        {
+            if (!string.IsNullOrEmpty(articleName))
+                result = result.FindAll(x => x.Title == articleName);
+            return result;
+        }
+    }
 }
