@@ -6,30 +6,13 @@
 }
 
 
-We must show here article data, authors, related articles, favorite state for current user, categories 
-<h2>Details</h2>
-@if (Model != null)
-{ 
-    if (!ViewBag.Favorite)
-    {
-        using(Html.BeginForm("Favorite","Articles", FormMethod.Post))
-        {
-            <input type="hidden" name="articleId" value="@Model.ArticleId"/>
-            <input type="submit" value="Add to favorite" />
-        }
-    }
-    else
-    {
-        using (Html.BeginForm("RemoveFromFavorite", "Articles", FormMethod.Post))
-        {
-            <input type="hidden" name="articleId" value="@Model.ArticleId" />
-            <input type="submit" value="remove from favorite" />
-        }
-    }
-}
+<div class="well">
+    <h2>Details</h2>
+</div>
+
 <div>
     <h4>Article</h4>
-    <hr/>
+    <hr />
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Url)
@@ -98,14 +81,15 @@ We must show here article data, authors, related articles, favorite state for cu
         <dt>
             @Html.DisplayNameFor(model => model.Categories)
         </dt>
-
         <dd>
             @if (Model.Categories != null)
             {
+                var count = 0;
                 <p>
                     @foreach (var category in Model.Categories)
                     {
-                        <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new {category = category}) | </span>
+                        var str = ++count == Model.Categories.Count ? "" : ",";
+                        <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category })@str</span>
                     }
                 </p>
             }
@@ -117,9 +101,11 @@ We must show here article data, authors, related articles, favorite state for cu
             @{
                 if (Model != null && Model.AuthorsList != null)
                 {
+                    var count = 0;
                     foreach (var author in Model.AuthorsList)
                     {
-                        <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new {id = author.AuthorId}) |</span>
+                        var str = ++count == Model.AuthorsList.Count ? "" : ",";
+                        <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
                     }
                 }
             }
@@ -134,6 +120,27 @@ We must show here article data, authors, related articles, favorite state for cu
     }
 </p>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ArticleId }) |
-    @Html.ActionLink("Back to List", "Index")
+    <div style="display:inline-block;">
+        @if (Model != null)
+        {
+            if (!ViewBag.Favorite)
+            {
+                using (Html.BeginForm("Favorite", "Articles", FormMethod.Post))
+                {
+                    <input type="hidden" name="articleId" value="@Model.ArticleId" />
+                    <input type="submit" value="Add to favorite" class="btn btn-success" />
+                }
+            }
+            else
+            {
+                using (Html.BeginForm("RemoveFromFavorite", "Articles", FormMethod.Post))
+                {
+                    <input type="hidden" name="articleId" value="@Model.ArticleId" />
+                    <input type="submit" value="remove from favorite" class="btn btn-danger" />
+                }
+            }
+        }
+    </div>
+    <div style="display:inline-block;">@Html.ActionLink("Edit", "Edit", new { id = Model.ArticleId }, new { @class = "btn btn-info" })</div>
+    <div style="display:inline-block;">@Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-warning" })</div>
 </p>

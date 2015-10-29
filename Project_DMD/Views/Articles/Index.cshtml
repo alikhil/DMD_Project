@@ -8,8 +8,6 @@
 <div class="well">
     <h2>You have access to more than one million articles. Use it!</h2>
 </div>
-
-[WARNING!!!] Still looking for a method to show limited number of articles that appear.
 <p>
     @Html.ActionLink("Add New Article", "Create")
 </p>
@@ -17,6 +15,7 @@
 {
     SelectList list = ViewBag.SelectedList;
     <div class="container">
+        @Html.Hidden("page")
         <div class="row">
             <div>
                 <table class="table table-bordered table-hover table-sortable" id="tab_logic">
@@ -63,12 +62,12 @@
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Title)
+                                @Html.ActionLink(item.Title, "Details", new { id = item.ArticleId })
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Published)
                             </td>
-                            <td>
+                            <td width="300">
                                 @{
                         if (item != null && item.AuthorsList != null)
                         {
@@ -81,7 +80,7 @@
                         }
                                 }
                             </td>
-                            <td>
+                            <td width="400">
                                 @if (item.Categories != null)
                                 {
                                     <p>
@@ -95,9 +94,9 @@
                                 }
                             </td>
                             <td>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-success" })
-                                @Html.ActionLink("Info", "Details", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-info" })
-                                @Html.ActionLink("Delete", "Delete", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-danger" })
+                                <div style="display:inline-block;">@Html.ActionLink("Edit", "Edit", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-success" })</div>
+                                <div style="display:inline-block;"> @Html.ActionLink("Info", "Details", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-info" })</div>
+                                <div style="display:inline-block;">@Html.ActionLink("Delete", "Delete", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-danger" })</div>
                             </td>
                         </tr>
                     }
@@ -105,4 +104,35 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-offset-10">
+        @if (ViewBag.Page != 1) {
+        <div style="display:inline-block;">
+            <input type="submit" value="&laquo Previous" onclick="PreviousPage()" class="btn btn-default">
+        </div>
+        }
+        @if (ViewBag.Page == 1)
+        {
+            <div>
+                <input type="submit" value="Next &raquo" onclick="NextPage()" class="btn btn-default">
+            </div>
+        }
+        else
+        {
+            <div style="display:inline-block;">
+                <input type="submit" value="Next &raquo" onclick="NextPage()" class="btn btn-default">
+            </div>
+        }
+    </div>
 }
+<script>
+    function PreviousPage() {
+        $("#page").val("@(ViewBag.Page-1)");
+        $("form").submit();
+    }
+
+    function NextPage() {
+        $("#page").val("@(ViewBag.Page+1)");
+        $("form").submit();
+    }
+</script>

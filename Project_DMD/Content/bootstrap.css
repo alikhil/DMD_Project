@@ -46,8 +46,19 @@ video {
     width:1110px;
 }
 
-.heightfortable {
-    height:initial 1000px; 
+.editbtn {
+    vertical-align:middle;
+    text-align:left;
+}
+
+.infobtn {
+    vertical-align:middle;
+    text-align:center;
+}
+
+.delbtn {
+    vertical-align:middle;
+    text-align:right;
 }
 
 .wide {

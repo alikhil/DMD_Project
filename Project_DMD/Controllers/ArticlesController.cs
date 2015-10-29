@@ -16,7 +16,7 @@ namespace Project_DMD.Controllers
         readonly IDataRepository DataRepository = Global.Instance.ArticlesRepository;
         readonly IAppUserRepository UsersRepository = Global.Instance.UsersRepository;
         
-        public ActionResult Index(int page = 0, string articleName = null, string keyword = null, string authorName = null, int publicationYear = 0, string category = null, string journalReference = null)
+        public ActionResult Index(int page = 1, string articleName = null, string keyword = null, string authorName = null, int publicationYear = 0, string category = null, string journalReference = null)
         {
             var tempDict = Global.Instance.InitCategories();
             tempDict.Add("","");
