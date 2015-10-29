@@ -17,12 +17,12 @@ namespace Project_DMD.Controllers
         readonly IAppUserRepository UsersRepository = Global.Instance.UsersRepository;
         
         public ActionResult Index(int page = 1, string articleName = null, string keyword = null,
-            string authorName = null, int publicationYear = 0, string category = null,
+            string authorName = null, int publicationYear = 0, string category = "",
             string journalReference = null, bool orderByDescending = false, int sortType = 0)
         {
             var tempDict = Global.Instance.InitCategories();
             tempDict.Add("","");
-            ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value");
+            ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value", category);
             ViewBag.Page = page;
             return View(DataRepository.GetArticles(page, articleName, keyword, authorName, publicationYear, category, journalReference, sortType, orderByDescending));
         }
