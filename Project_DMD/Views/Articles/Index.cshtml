@@ -28,18 +28,22 @@
                             <th>Publication year @Html.TextBox("publicationYear", "", new { @class = "wide" })</th>
                             <th>Keyword @Html.TextBox("keyword", "", new { @class = "wide" })</th>
                             <th>Journal reference @Html.TextBox("journalReference", "", new { @class = "wide" })</th>
-                            <th>Category @Html.DropDownList("category", list, new {@class = "high"})</th>
-                            <th>Order by @Html.DropDownList("sortType", sortes)</th>
+                            <th>Category @Html.DropDownList("category", list, new { @class = "wideforcategories" })</th>
+                            <th>Order by @Html.DropDownList("sortType", sortes, new { @class = "high" })</th>
                             <th>
-                                <div>
-                                    <input type="submit" value="Search" class="btn btn-success" />
+                                <div style="display:inline-block;" id="order"></div>
+                            </th>
+                            <th>
+                                <div style="display:inline-block;">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <span class="glyphicon glyphicon-search"></span>
+                                    </button>
                                 </div>
                             </th>
                         </tr>
                     </thead>
                 </table>
             </div>
-            <div id="order"></div>
         </div>
         <div class="row">
             <div class="col-lg-12">
@@ -133,13 +137,13 @@
 <script type="text/javascript">
     $(function () {
         if ($("#orderByDescending").val() == "true") {
-            $("#order").append("<button class='glyphicon glyphicon-menu-up'/>").click(function () {
-                $("#orderByDescending").val() = "false";
+            $("#order").append("<button class='btn btn-sm btn-warning'><span class='glyphicon glyphicon-arrow-up'></span></button>").click(function () {
+                $("#orderByDescending").val("false");
                 $("form").submit();
             })
         } else {
-            $("#order").append("<button class='glyphicon-menu-down'/>").click(function () {
-                $("#orderByDescending").val() = "true";
+            $("#order").append("<button class='btn btn-sm btn-warning'><span class='glyphicon glyphicon-arrow-down'></span></button>").click(function () {
+                $("#orderByDescending").val("true");
                 $("form").submit();
             });
         }

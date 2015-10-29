@@ -11,112 +11,118 @@
 </div>
 
 <div>
-    <h4>Article</h4>
+    <h4>@Html.DisplayFor(model => model.Title)</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Url)
-        </dt>
+    <table class="table table-bordered table-hover table-sortable" id="tab_logic">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Url)
+                </th>
 
-        <dd>
-            @Html.DisplayFor(model => model.Url)
-        </dd>
+                <th>
+                    @Html.DisplayNameFor(model => model.Published)
+                </th>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
+                <th>
+                    @Html.DisplayNameFor(model => model.Updated)
+                </th>
 
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
+                <th>
+                    @Html.DisplayNameFor(model => model.JournalReference)
+                </th>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Summary)
-        </dt>
+                <th>
+                    @Html.DisplayNameFor(model => model.DOI)
+                </th>
 
-        <dd>
-            @Html.DisplayFor(model => model.Summary)
-        </dd>
+                <th>
+                    @Html.DisplayNameFor(model => model.Views)
+                </th>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Published)
-        </dt>
+                <th>
+                    @Html.DisplayNameFor(model => model.Categories)
+                </th>
 
-        <dd>
-            @Html.DisplayFor(model => model.Published)
-        </dd>
+                <th>
+                    @Html.DisplayNameFor(model => model.AuthorsList)
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <a href="@Model.Url">@Model.Url</a>
+                </td>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Updated)
-        </dt>
+                <td>
+                    @Html.DisplayFor(model => model.Published)
+                </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.Updated)
-        </dd>
+                <td>
+                    @Html.DisplayFor(model => model.Updated)
+                </td>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.JournalReference)
-        </dt>
+                <td>
+                    @Html.DisplayFor(model => model.JournalReference)
+                </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.JournalReference)
-        </dd>
+                <td>
+                    @Html.DisplayFor(model => model.DOI)
+                </td>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DOI)
-        </dt>
+                <td>
+                    @Html.DisplayFor(model => model.Views)
+                </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.DOI)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Views)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Views)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Categories)
-        </dt>
-        <dd>
-            @if (Model.Categories != null)
-            {
-                var count = 0;
-                <p>
-                    @foreach (var category in Model.Categories)
+                <td>
+                    @if (Model.Categories != null)
                     {
-                        var str = ++count == Model.Categories.Count ? "" : ",";
-                        <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category })@str</span>
+                        var count = 0;
+                        <p>
+                            @foreach (var category in Model.Categories)
+                            {
+                                var str = ++count == Model.Categories.Count ? "" : ",";
+                                <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category })@str</span>
+                            }
+                        </p>
                     }
-                </p>
-            }
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AuthorsList)
-        </dt>
-        <dd>
-            @{
-                if (Model != null && Model.AuthorsList != null)
-                {
-                    var count = 0;
-                    foreach (var author in Model.AuthorsList)
-                    {
-                        var str = ++count == Model.AuthorsList.Count ? "" : ",";
-                        <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
+                </td>
+
+                <td>
+                    @{
+                        if (Model != null && Model.AuthorsList != null)
+                        {
+                            var count = 0;
+                            foreach (var author in Model.AuthorsList)
+                            {
+                                var str = ++count == Model.AuthorsList.Count ? "" : ",";
+                                <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
+                            }
+                        }
                     }
-                }
-            }
-        </dd>
-    </dl>
+                </td>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div>
+    <table class="table table-bordered table-hover table-sortable" id="tab_logic">
+        <tr>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.Summary)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(model => model.Summary)
+            </td>
+        </tr>
+    </table>
 </div>
 <p>
     @if (Model != null)
     {
-        <span>@Html.ActionLink("Show related by published year", "Index", new {publicationYear = Model.Published.Year }) |</span>
-        <span>@Html.ActionLink("Show related by author", "Index", new {authorName = String.Join(",", Model.AuthorsList.Select(a => a.AuthorName)) })</span>
+        <span>@Html.ActionLink("Show related by published year", "Index", new { publicationYear = Model.Published.Year }) |</span>
+        <span>@Html.ActionLink("Show related by author", "Index", new { authorName = String.Join(",", Model.AuthorsList.Select(a => a.AuthorName)) })</span>
     }
 </p>
 <p>

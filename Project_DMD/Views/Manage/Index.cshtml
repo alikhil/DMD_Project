@@ -3,9 +3,9 @@
 @{
     ViewBag.Title = "Details";
 }
-
-<h2>Details</h2>
-<p>THere must be all information about this user(favorite articles, action history, data, visits, etc)</p>
+<div class="well">
+    <h2>My account information</h2>
+</div>
 <div>
     <h4>AppUser</h4>
     <hr />
@@ -36,6 +36,7 @@
 
     </dl>
 </div>
+<hr />
 <p>
     @Html.ActionLink("Favorites", "Favorites") |
     @Html.ActionLink("Visits", "Visits") |

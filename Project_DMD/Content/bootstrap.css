@@ -46,6 +46,11 @@ video {
     width:1110px;
 }
 
+.wideforcategories {
+    height:26px;
+    max-width:130px;
+}
+
 .editbtn {
     vertical-align:middle;
     text-align:left;
