@@ -107,19 +107,19 @@
 
     <div class="col-lg-offset-10">
         @if (ViewBag.Page != 1) {
-        <div style="display:inline-block;">
+        <div style="display:inline-block;" class="col-lg-offset-0">
             <input type="submit" value="&laquo Previous" onclick="PreviousPage()" class="btn btn-default">
         </div>
         }
         @if (ViewBag.Page == 1)
         {
-            <div>
+            <div class="col-lg-offset-7">
                 <input type="submit" value="Next &raquo" onclick="NextPage()" class="btn btn-default">
             </div>
         }
         else
         {
-            <div style="display:inline-block;">
+            <div style="display:inline-block;" class="col-lg-offset-1">
                 <input type="submit" value="Next &raquo" onclick="NextPage()" class="btn btn-default">
             </div>
         }
