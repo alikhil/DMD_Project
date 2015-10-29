@@ -29,7 +29,7 @@ We must show here article data, authors, related articles, favorite state for cu
 }
 <div>
     <h4>Article</h4>
-    <hr />
+    <hr/>
     <dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Url)
@@ -105,7 +105,7 @@ We must show here article data, authors, related articles, favorite state for cu
                 <p>
                     @foreach (var category in Model.Categories)
                     {
-                        <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category }) | </span>
+                        <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new {category = category}) | </span>
                     }
                 </p>
             }
@@ -119,13 +119,20 @@ We must show here article data, authors, related articles, favorite state for cu
                 {
                     foreach (var author in Model.AuthorsList)
                     {
-                        <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId }) |</span>
+                        <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new {id = author.AuthorId}) |</span>
                     }
                 }
             }
         </dd>
     </dl>
 </div>
+<p>
+    @if (Model != null)
+    {
+        <span>@Html.ActionLink("Show related by published year", "Index", new { publicationYear = Model.Published.Year }) |</span>
+        <span>@Html.ActionLink("Show related by author", "Index", new { authorName = String.Join(",", Model.AuthorsList.Select(a => a.AuthorName)) })</span>
+    }
+</p>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.ArticleId }) |
     @Html.ActionLink("Back to List", "Index")

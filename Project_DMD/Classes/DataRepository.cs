@@ -91,5 +91,6 @@ namespace Project_DMD.Classes
         {
             return QueryExecutor.Instance.GetArticles(page, articleName, keyword, authorName, publicationYear, category);
         }
+
     }
 }

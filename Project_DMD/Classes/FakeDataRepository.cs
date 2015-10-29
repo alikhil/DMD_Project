@@ -162,7 +162,7 @@ namespace Project_DMD.Classes
             if (!string.IsNullOrEmpty(category) && Global.Instance.Categories.ContainsKey(category))
                 result = result.FindAll(x => x.Categories.Exists(y => y == category));
             if (!string.IsNullOrEmpty(authorName))
-                result = result.FindAll(x => x.AuthorsList.Exists(y => y.AuthorName == authorName));
+                result = result.FindAll(x => x.AuthorsList.Exists(y => authorName.Contains(y.AuthorName)));
             if (!string.IsNullOrEmpty(journalReference))
                 result = result.FindAll(x => x.JournalReference.Contains(journalReference));
 
