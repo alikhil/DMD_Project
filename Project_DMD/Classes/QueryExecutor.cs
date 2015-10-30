@@ -162,7 +162,11 @@ namespace Project_DMD.Classes
 
         public AppUser GetAppUserByUserName(string userName)
         {
-            throw new NotImplementedException();
+            var query = new Dictionary<string, string> {{"email", userName.PutIntoQuotes()}};
+            var list = AutoSqlGenerator.Instance.FindAll<AppUser>(query);
+            if(list == null || list.Count == 0)
+                return null;
+            return list[0];
         }
 
         public void VisitArticle(int articleId)

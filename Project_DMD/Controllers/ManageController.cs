@@ -36,7 +36,6 @@ namespace Project_DMD.Controllers
         {
             var curAppUser = User.Identity.GetAppUser();
             appUser.Id = curAppUser.Id;
-            appUser.UserName = curAppUser.UserName;
             appUser.Email = curAppUser.Email;
             appUser.PasswordHash = curAppUser.PasswordHash;
 

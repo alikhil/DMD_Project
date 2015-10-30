@@ -18,14 +18,14 @@ namespace Project_DMD.Classes
         }
 
         public FakeDataRepository ArticlesRepository { get; set; }
-        public FakeAppUserRepository UsersRepository { get; set; }
+        public IAppUserRepository UsersRepository { get; set; }
         public UserManager<AppUser> UserManager { get; set; }
         public Dictionary<string, string> Categories { get; set; }
  
         private Global()
         {
             ArticlesRepository = new FakeDataRepository();
-            UsersRepository = new FakeAppUserRepository();
+            UsersRepository = new AppUserRepository();
             UserManager = new UserManager<AppUser>(new CustomUserStore());
             Categories = InitCategories();
         }

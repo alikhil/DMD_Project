@@ -176,7 +176,7 @@ namespace Project_DMD.Classes
         /// <typeparam name="T">type of entity</typeparam>
         /// <param name="query">list of key and value</param>
         /// <returns>list of entity which matchs query</returns>
-        public List<T> FindAll<T>(List<KeyValuePair<string, string>> query) where T : new()
+        public List<T> FindAll<T>(Dictionary<string, string> query) where T : new()
         {
             var result = new List<T>();
             var tableName = GetTableName(new T());

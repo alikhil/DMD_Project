@@ -44,7 +44,7 @@ namespace Project_DMD.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new AppUser() { Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, UserName = model.Email };
+                var user = new AppUser() { Email = model.Email, FirstName = model.FirstName, LastName = model.LastName };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
