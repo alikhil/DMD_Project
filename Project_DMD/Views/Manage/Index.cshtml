@@ -7,34 +7,36 @@
     <h2>My account information</h2>
 </div>
 <div>
-    <h4>AppUser</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
+    <table class="table table-bordered" style="width:400px">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
 
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(model => model.Email)
+            </td>
 
-        <dd>
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
+            <td>
+                @Html.DisplayFor(model => model.LastName)
+            </td>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
+            <td>
+                @Html.DisplayFor(model => model.FirstName)
+            </td>
+        </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-
-    </dl>
+    </table>
 </div>
 <hr />
 <p>
@@ -43,5 +45,5 @@
     @Html.ActionLink("Actions", "Actions")
 </p>
 <p>
-    @Html.ActionLink("Edit", "Edit")
+    <a href="Manage/Edit" class="btn btn-info">Edit</a>
 </p>
