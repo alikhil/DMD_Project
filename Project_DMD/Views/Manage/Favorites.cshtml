@@ -3,10 +3,10 @@
 @{
     ViewBag.Title = "Favorites";
 }
-
-<h2>Favorites</h2>
-
-<table class="table">
+<div class="well">
+    <h2>Favorites</h2>
+</div>
+<table class="table table-bordered">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Article.Url)
@@ -14,7 +14,9 @@
         <th>
             @Html.DisplayNameFor(model => model.AdditionDate)
         </th>
-        <th></th>
+        <th>
+            Action
+        </th>
     </tr>
 
     @foreach (var item in Model)
@@ -32,7 +34,7 @@
                 {
                     <input type="hidden" value="@item.ArticleId" name="articleId"/>
                     <input type="hidden" value="@item.UserId" name="userId"/>
-                    <input type="submit" class="btn btn-primary" value="Delete"/>
+                    <input type="submit" class="btn btn-danger" value="Delete"/>
                 }
             </td>
         </tr>

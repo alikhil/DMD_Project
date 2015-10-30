@@ -3,10 +3,11 @@
 @{
     ViewBag.Title = "Visits";
 }
+<div class="well">
+    <h2>Visits</h2>
+</div>
 
-<h2>Visits</h2>
-
-<table class="table">
+<table class="table table-bordered" table-hover table-sortable" id="tab_logic">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.Article.Title)
@@ -17,19 +18,20 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    
+    @foreach (var item in Model)
+    {
+
         var title = item.Article != null ? item.Article.Title : "Article #" + item.ArticleId.ToString();
-    
-    <tr>
-        <td>
-            <a href="~/Articles/Details/@item.ArticleId">@title</a>
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.VisitDate)
-        </td>
-    </tr>
-}
+
+        <tr>
+            <td>
+                <a href="~/Articles/Details/@item.ArticleId">@title</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VisitDate)
+            </td>
+        </tr>
+    }
 
 </table>
 @Html.ActionLink("Manage", "Index")
