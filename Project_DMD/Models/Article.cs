@@ -130,16 +130,5 @@ namespace Project_DMD.Models
 
     }
 
-    public static class ArticleExtension
-    {
-        public static void ParseAuthors(this Article article)
-        {
-            article.AuthorsList = article.Authors.Select(author => new Author() { AuthorId = author}).ToList();
-        }
-
-        public static void ParseAuthorIds(this Article article)
-        {
-            article.Authors = article.AuthorsList.Select(author => author.AuthorId).ToArray();
-        }
-    }
+    
 }

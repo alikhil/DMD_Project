@@ -13,13 +13,13 @@ namespace Project_DMD.Models
 {
     public class CustomUserStore : IUserStore<AppUser>, IUserPasswordStore<AppUser>
     {
-        public System.Threading.Tasks.Task<AppUser> FindByNameAsync(string userName)
+        public Task<AppUser> FindByNameAsync(string userName)
         {
             AppUser user = AppUserContext.Instance.Find(userName);
             return Task.FromResult<AppUser>(user);
         }
 
-        public System.Threading.Tasks.Task CreateAsync(AppUser user)
+        public Task CreateAsync(AppUser user)
         {
             user.Id = Guid.NewGuid().ToString();
             return Task.FromResult<bool>(AppUserContext.Instance.Add(user));

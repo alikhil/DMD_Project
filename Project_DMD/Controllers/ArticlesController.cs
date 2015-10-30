@@ -57,12 +57,11 @@ namespace Project_DMD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Url,Title,Summary,JournalReference,DOI,Categories,Authors")] Article article)
+        public ActionResult Create([Bind(Include = "Url,Title,Summary,JournalReference,DOI,Categories")] Article article)
         {
             
             if (ModelState.IsValid)
             {
-                article.ParseAuthors();
                 var articleId = DataRepository.Add(article);
                 UsersRepository.AddAction(User.Identity.GetUserId(), articleId, ActionType.Add);
                 return RedirectToAction("Index");
