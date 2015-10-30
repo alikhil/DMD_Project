@@ -24,7 +24,7 @@ namespace Project_DMD.Classes
         }
         public static class Constants
         {
-            public readonly static string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=postgres";
+            public readonly static string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=PMS";
 
             public readonly static string AppUsersTableName = "Client";
 
