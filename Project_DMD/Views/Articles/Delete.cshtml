@@ -7,7 +7,7 @@
     <h2>Delete</h2>
 </div>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Are you sure you want to delete this article?</h3>
 <div>
     <h4>@Html.DisplayFor(model => model.Title)</h4>
     <hr />
@@ -68,8 +68,10 @@
         <div class="col-lg-1">
             <input type="submit" value="Delete" class="btn btn-danger" />
         </div>
-        <p>
-            @Html.ActionLink("Back to List", "Index")
-        </p>
     }
+</div>
+<div>
+    <p>
+        @Html.ActionLink("Back to List", "Index")
+    </p>
 </div>
