@@ -28,15 +28,44 @@ namespace Project_DMD.Classes
 
             public readonly static string AppUsersTableName = "Client";
 
-            public readonly static string DropTableTemplate = "Drop table {0};";
+            /// <summary>
+            /// Template string in order to drop table.
+            /// You should use String.Formater, where 
+            /// {0} - Table Name
+            /// </summary>
+            public readonly static string DropTableTemplate = "DROP TABLE {0};";
 
-            public static readonly string InsertTableTemplate = "Insert into {0}({1}) values {2} RETURNING {3};";
+            /// <summary>
+            /// Template string for insertion into POSTGRESQL. 
+            /// You should use String.Formater, where 
+            /// {0} - Table Name
+            /// {1} - Ordered Name Columns (For Example: Column1, Column2)
+            /// {2} - Ordered Values For Columns (For Example: (Column1Value, Column2Value) )
+            /// {3} - Column Name of returning value.
+            /// </summary>
+            public static readonly string InsertTableTemplate = "INSERT INTO {0}({1}) VALUES {2} RETURNING {3};";
 
-            public static readonly string SelectFromTableWhereTemplate = "Select * from {0} where {1};";
+            /// <summary>
+            /// Template string for selection.
+            /// You should use String.Formater, where
+            /// {0} - From what table we select (TableName)
+            /// {1} - Selection Filters (ColumnName = SomeValue or ColumnName1 = SomeValue1...)
+            /// </summary>
+            public static readonly string SelectFromTableWhereTemplate = "SELECT * FROM {0} WHERE {1};";
 
-            public static readonly string SelectAllFromTableTemplate = "Select * from {0};";
+            /// <summary>
+            /// Template string for selection.
+            /// You should use String.Formater, where
+            /// {0} - From what table we select (TableName)
+            /// </summary>
+            public static readonly string SelectAllFromTableTemplate = "SELECT * FROM {0};";
 
-            public static readonly string UpdateOnTemplate = "Update {0} SET ";
+            /// <summary>
+            /// Template string for update.
+            /// You should use String.Formater, where
+            /// {0} - What table we refresh (TableName)
+            /// </summary>
+            public static readonly string UpdateOnTemplate = "UPDATE {0} SET ";
         }
 
         public Dictionary<string,string> ExecuteCommand(string command)

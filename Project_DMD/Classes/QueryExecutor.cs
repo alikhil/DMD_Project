@@ -53,21 +53,13 @@ namespace Project_DMD.Classes
         }
 
         /// <summary>
-        /// Getting all articles in DB
-        /// </summary>
-        /// <returns>List of articles</returns>
-        public List<Article> GetArticles()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Adding article to DB
         /// </summary>
         /// <param name="article">Article to add</param>
         /// <returns>Id of created article</returns>
         public int AddArticle(Article article)
         {
+            string query = AutoSqlGenerator.Constants.InsertTableTemplate
             throw new NotImplementedException();
         }
 
