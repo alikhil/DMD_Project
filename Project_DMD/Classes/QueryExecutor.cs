@@ -129,7 +129,8 @@ namespace Project_DMD.Classes
 
         public bool UpdateAppUser(AppUser appUser)
         {
-            throw new NotImplementedException();
+            AutoSqlGenerator.Instance.Update(appUser,appUser.Id.PutIntoQuotes());
+            return true;
         }
 
         public void AddFavorite(Favorite favorite)
