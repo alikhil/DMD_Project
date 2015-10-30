@@ -26,7 +26,30 @@ namespace Project_DMD.Classes
         /// <returns>Article if it exists else null</returns>
         public Article GetArticleById(int id)
         {
-            throw new NotImplementedException();
+            string query = "SELECT * FROM Article WHERE Article.ArticleID = " + id.ToString() + " LIMIT 1;";
+            var articleData = AutoSqlGenerator.Instance.ExecuteCommand(query);
+
+            if(articleData.Count == 0)
+                return null;
+
+            return new Article()
+                .WithId(Convert.ToInt32(articleData["articleid"]))
+                .WithTitle(articleData["title"])
+                .WithSummary(articleData["summary"])
+                .WithPublished(parseDateTime(articleData["published"]))
+                .WithUpdate(parseDateTime(articleData["updated"]))
+                .WithViews(Convert.ToInt32(articleData["views"]))
+                .WithDoi(articleData["doi"])
+                .WithJournalReference(articleData["journalreference"]);
+        }
+
+        private DateTime parseDateTime(string postgresFormatDate)
+        {
+            if(String.IsNullOrEmpty(postgresFormatDate))
+                return DateTime.MinValue;
+
+            return DateTime.ParseExact(postgresFormatDate, "dd.MM.yyyy H:mm:ss",
+                System.Globalization.CultureInfo.CurrentCulture);
         }
 
         /// <summary>

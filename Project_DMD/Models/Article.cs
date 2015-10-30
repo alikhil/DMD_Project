@@ -126,6 +126,13 @@ namespace Project_DMD.Models
             Published = publishedDate;
             return this;
         }
+
+        public Article WithViews(int viewsNumber)
+        {
+            Views = viewsNumber;
+            return this;
+        }
+
         #endregion
 
     }
