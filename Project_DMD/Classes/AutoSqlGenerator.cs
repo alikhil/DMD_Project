@@ -24,7 +24,7 @@ namespace Project_DMD.Classes
         }
         public static class Constants
         {
-            public readonly static string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=PMS";
+            public readonly static string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=PMS;";
 
             public readonly static string AppUsersTableName = "Client";
 
@@ -65,7 +65,7 @@ namespace Project_DMD.Classes
             /// You should use String.Formater, where
             /// {0} - What table we refresh (TableName)
             /// </summary>
-            public static readonly string UpdateOnTemplate = "UPDATE {0} SET ";
+            public static readonly string UpdateOnTemplate = "Update {0} SET {1} WHERE {2};";
         }
 
         public Dictionary<string,string> ExecuteCommand(string command)
@@ -88,13 +88,21 @@ namespace Project_DMD.Classes
             }
         }
 
-        public void Update(object entity)
+        public void Update(object entity, string primaryKey)
         {
             var tableName = GetTableName(entity);
             string primaryProperty;
             List<string> values;
-            var columns = GetColumnsAndValues(entity, out values, out primaryProperty);
-    
+            var columns = GetColumnsAndValues(entity, out values, out primaryProperty, true);
+            using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+            {
+                connection.Open();
+                var command = new NpgsqlCommand(String.Format(Constants.UpdateOnTemplate,tableName,
+                    String.Join(",", columns.Zip(values,(column, value) => column + "=" + value)), 
+                    primaryProperty + "=" + primaryKey), connection);
+                Console.WriteLine(command.CommandText);
+                command.ExecuteScalar();
+            }
 
         }
 
@@ -240,7 +248,7 @@ namespace Project_DMD.Classes
             return entity;
         }
 
-        private static List<string> GetColumnsAndValues(object entity, out List<string> values, out string primaryProperty)
+        private static List<string> GetColumnsAndValues(object entity, out List<string> values, out string primaryProperty, bool format = false)
         {
             Type typeOfObject = entity.GetType();
             var columns = new List<string>();
@@ -265,14 +273,25 @@ namespace Project_DMD.Classes
 
                     var propValue = propertyInfo.GetValue(entity);
                     if (propValue is string)
-                        values.Add(String.Format("{0}", propValue.ToString()));
+                        values.Add(format ? propValue.ToString().PutIntoQuotes() : propValue.ToString());
                     else if (propValue is DateTime)
-                        values.Add(String.Format("{0}", Convert.ToDateTime(propValue.ToString()).ToShortDateString()));
+                    {
+                        var dt = Convert.ToDateTime(propValue.ToString()).ToShortDateString();
+                        values.Add(format ? dt.PutIntoQuotes() : dt);
+                    }
                     else
                         values.Add(propValue.ToString());
                 }
             }
             return columns;
+        }
+    }
+
+    public static class StringExtensions
+    {
+        public static string PutIntoQuotes(this string value)
+        {
+            return "'" + value + "'";
         }
     }
 }
