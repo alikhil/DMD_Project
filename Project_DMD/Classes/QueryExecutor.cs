@@ -94,7 +94,8 @@ namespace Project_DMD.Classes
         /// <returns>True if appUser successfully added into table, otherwise false </returns>
         public bool AddAppUser(AppUser user)
         {
-            throw new NotImplementedException();
+            AutoSqlGenerator.Instance.Add(user);
+            return false;
         }
 
         /// <summary>
@@ -103,12 +104,12 @@ namespace Project_DMD.Classes
         /// <returns>List of AppUsers</returns>
         public List<AppUser> GetAppUsers()
         {
-            throw new NotImplementedException();
+            return AutoSqlGenerator.Instance.FindAll<AppUser>(null);
         }
 
         public AppUser GetAppUser(string id)
         {
-            throw new NotImplementedException();
+            return AutoSqlGenerator.Instance.Get<AppUser>(id);
         }
 
         public bool UpdateAppUser(AppUser appUser)

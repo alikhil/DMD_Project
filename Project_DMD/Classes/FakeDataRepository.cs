@@ -87,7 +87,7 @@ namespace Project_DMD.Classes
         {
             article.ArticleId = _articlesList.Count;
             article.AuthorsList = GetFullAuthorInfo(article);
-            _articlesList.Add(article);
+            _articlesList.Add(article.WithPublished(DateTime.Now));
             return article.ArticleId;
         }
 
@@ -114,7 +114,8 @@ namespace Project_DMD.Classes
                 .WithUrl(article.Url)
                 .WithJournalReference(article.JournalReference)
                 .WithCategories(article.Categories)
-                .WithTitle(article.Title);
+                .WithTitle(article.Title)
+                .WithUpdate(DateTime.Now);
         }
 
         public void Delete(Article article)
