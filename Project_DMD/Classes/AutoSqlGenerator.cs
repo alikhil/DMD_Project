@@ -31,7 +31,7 @@ namespace Project_DMD.Classes
             /// <summary>
             /// Template string in order to drop table.
             /// You should use String.Formater, where 
-            /// {0} - Table Name
+            /// {0} - Table Name.
             /// </summary>
             public readonly static string DropTableTemplate = "DROP TABLE {0};";
 
@@ -49,14 +49,14 @@ namespace Project_DMD.Classes
             /// Template string for selection.
             /// You should use String.Formater, where
             /// {0} - From what table we select (TableName)
-            /// {1} - Selection Filters (ColumnName = SomeValue or ColumnName1 = SomeValue1...)
+            /// {1} - Selection Filters (ColumnName = SomeValue or ColumnName1 = SomeValue1...).
             /// </summary>
             public static readonly string SelectFromTableWhereTemplate = "SELECT * FROM {0} WHERE {1};";
 
             /// <summary>
             /// Template string for selection.
             /// You should use String.Formater, where
-            /// {0} - From what table we select (TableName)
+            /// {0} - From what table we select (TableName).
             /// </summary>
             public static readonly string SelectAllFromTableTemplate = "SELECT * FROM {0};";
 
@@ -64,6 +64,8 @@ namespace Project_DMD.Classes
             /// Template string for update.
             /// You should use String.Formater, where
             /// {0} - What table we refresh (TableName)
+            /// {1} - Refresh expression (i.e Views = 0)
+            /// {2} - Update filter, on what records refresh expression will be applied.
             /// </summary>
             public static readonly string UpdateOnTemplate = "Update {0} SET {1} WHERE {2};";
         }
