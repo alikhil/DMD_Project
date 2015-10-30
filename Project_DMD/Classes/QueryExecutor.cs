@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.IO;
 using Project_DMD.Models;
 
 namespace Project_DMD.Classes
@@ -59,8 +59,15 @@ namespace Project_DMD.Classes
         /// <returns>Id of created article</returns>
         public int AddArticle(Article article)
         {
-            string query = AutoSqlGenerator.Constants.InsertTableTemplate
-            throw new NotImplementedException();
+            string query = AutoSqlGenerator.Constants.InsertTableTemplate;
+            query = String.Format(query, "Article", "", article.ToString(), "ArticleID");
+
+            var queryData = AutoSqlGenerator.Instance.ExecuteCommand(query);
+
+            if (queryData == null)
+                throw new InvalidDataException("Given article is not valid. (ID isn't presented in table, invalid date and so on)");
+
+            return Convert.ToInt32(queryData["articleid"]);
         }
 
         /// <summary>

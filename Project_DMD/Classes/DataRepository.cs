@@ -10,8 +10,6 @@ namespace Project_DMD.Classes
     {
         Article GetArticle(int id);
 
-        List<Article> GetArticles();
-
         void Update(Article article);
 
         void Delete(Article article);
@@ -45,11 +43,6 @@ namespace Project_DMD.Classes
         public Article GetArticle(int id)
         {
             return QueryExecutor.Instance.GetArticleById(id);
-        }
-
-        public List<Article> GetArticles()
-        {
-            return QueryExecutor.Instance.GetArticles();
         }
 
         public void Update(Article article)
