@@ -134,7 +134,7 @@ namespace Project_DMD.Classes
             return _authors[id];
         }
 
-        public List<Author> GetAuthors()
+        public IEnumerable<Author> GetAuthors()
         {
             return _authors;
         }

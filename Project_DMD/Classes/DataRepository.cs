@@ -20,7 +20,7 @@ namespace Project_DMD.Classes
 
         Author GetAuthor(int id);
 
-        List<Author> GetAuthors();
+        IEnumerable<Author> GetAuthors();
 
         void Dispose();
 
@@ -65,7 +65,7 @@ namespace Project_DMD.Classes
             return QueryExecutor.Instance.GetAuthorById(id);
         }
 
-        public List<Author> GetAuthors()
+        public IEnumerable<Author> GetAuthors()
         {
             return QueryExecutor.Instance.GetAuthors();
         }
