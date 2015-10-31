@@ -72,7 +72,6 @@ namespace Project_DMD.Models
         [AgsForeign(Name = "ArticlId", TableName = "ArticleAuthors")]
         public List<Author> AuthorsList { get; set; }
 
-        [Required]
         public int[] Authors { get; set; }
 
         [Required]
