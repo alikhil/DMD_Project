@@ -69,13 +69,13 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>
+                            <td style="width:300px">
                                 @Html.ActionLink(item.Title, "Details", new { id = item.ArticleId })
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Published)
                             </td>
-                            <td width="300">
+                            <td style="width:300px">
                                 @{
                         if (item != null && item.AuthorsList != null)
                         {
@@ -88,7 +88,7 @@
                         }
                                 }
                             </td>
-                            <td width="400">
+                            <td style="width:300px">
                                 @if (item.Categories != null)
                                 {
                                     <p>
@@ -101,7 +101,7 @@
                                     </p>
                                 }
                             </td>
-                            <td>
+                            <td style="width:180px">
                                 <div style="display:inline-block;">@Html.ActionLink("Edit", "Edit", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-success" })</div>
                                 <div style="display:inline-block;"> @Html.ActionLink("Info", "Details", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-info" })</div>
                                 <div style="display:inline-block;">@Html.ActionLink("Delete", "Delete", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-danger" })</div>
