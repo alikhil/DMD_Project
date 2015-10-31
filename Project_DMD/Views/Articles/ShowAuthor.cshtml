@@ -4,36 +4,44 @@
     ViewBag.Title = "ShowAuthor";
 }
 
-<h2>ShowAuthor</h2>
+<div class="well">
+    <h2>ShowAuthor</h2>
+</div>
 
 <div>
-    <h4>Author</h4>
+    <h4>@Html.DisplayFor(model => model.AuthorName)</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.AuthorName)
-        </dt>
+    <table class="table table-bordered" style="width:400px">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AuthorName)
+            </th>
 
-        <dd>
+            <th>
+                @Html.DisplayNameFor(model => model.PublishedArticles)
+            </th>
+        </tr>
+        <tr>
+            <td>
             @Html.DisplayFor(model => model.AuthorName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PublishedArticles)
-        </dt>
-        <dd>
-            @{
-                if (Model != null && Model.PublishedArticles != null)
-                {
-                    foreach (var article in Model.PublishedArticles)
+            </td>
+
+            <td>
+                @{
+                    if (Model != null && Model.PublishedArticles != null)
                     {
-                        <span>@Html.ActionLink(article.Title, "Details", new { id = article.ArticleId }) |</span>
+                        var count = 0;
+                        foreach (var article in Model.PublishedArticles)
+                        {
+                            var str = ++count == Model.PublishedArticles.Count ? "" : ",";
+                            <span>@Html.ActionLink(article.Title, "Details", new { id = article.ArticleId })@str</span>
+                        }
                     }
                 }
-            }
-        </dd>
-    </dl>
+            </td>
+        </tr>
+    </table>
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.AuthorId }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-warning" })
 </p>

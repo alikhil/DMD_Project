@@ -249,12 +249,15 @@ namespace Project_DMD.Classes
 
         public void RemoveFavorite(int articleId, string userId)
         {
-            throw new NotImplementedException();
+            var sql = String.Format("DELETE FROM favorite WHERE articleid={0} AND userid={1};", articleId, userId);
+            AutoSqlGenerator.Instance.ExecuteCommand(sql);
         }
 
         public List<Favorite> GetFavorites(string userId)
         {
-            throw new NotImplementedException();
+            var query = new Dictionary<string, string> { { "userid", userId } };
+            var favorites = AutoSqlGenerator.Instance.FindAll<Favorite>(query);
+            return favorites;
         }
 
         public AppUser GetAppUserByUserName(string userName)
@@ -280,7 +283,9 @@ namespace Project_DMD.Classes
 
         public List<Visit> GetVisits(string userId)
         {
-            throw new NotImplementedException();
+            var query = new Dictionary<string, string> {{"userid", userId}};
+            var visits = AutoSqlGenerator.Instance.FindAll<Visit>(query);
+            return visits;
         }
 
         public List<ActionHistory> GetActionsForUser(string userId)
@@ -295,7 +300,8 @@ namespace Project_DMD.Classes
 
         public void AddAction(ActionHistory action)
         {
-            throw new NotImplementedException();
+            action.ActionDate = DateTime.Now;
+            AutoSqlGenerator.Instance.Add(action);
         }
 
         public List<Article> GetArticles(int page, string articleName, string keyword, string authorName,

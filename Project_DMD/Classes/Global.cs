@@ -15,7 +15,7 @@ namespace Project_DMD.Classes
             {
                 return _instance;
             }
-        }
+        } 
 
         public FakeDataRepository ArticlesRepository { get; set; }
         public IAppUserRepository UsersRepository { get; set; }

@@ -8,6 +8,7 @@ using System.Web.DynamicData;
 using Npgsql;
 using NpgsqlTypes;
 using Project_DMD.Attributes;
+using Project_DMD.Models;
 
 namespace Project_DMD.Classes
 {
@@ -82,9 +83,8 @@ namespace Project_DMD.Classes
 
         public Dictionary<string,string> ExecuteCommand(string command)
         {
-            using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+            using (var connection = CreateConnection())
             {
-                connection.Open();
                 
                 var query = new NpgsqlCommand(command, connection);
                 Console.WriteLine(query.CommandText);
@@ -103,9 +103,8 @@ namespace Project_DMD.Classes
 
         public IEnumerable<Dictionary<string, string>> LazyExecute(string command)
         {
-            using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+            using (var connection = CreateConnection())
             {
-                connection.Open();
 
                 var query = new NpgsqlCommand(command, connection);
                 Console.WriteLine(query.CommandText);
@@ -125,9 +124,8 @@ namespace Project_DMD.Classes
         public List<Dictionary<string, string>> ExecuteCommandReturnList(string command)
         {
             var result = new List<Dictionary<string, string>>();
-            using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+            using (var connection = CreateConnection())
             {
-                connection.Open();
 
                 var query = new NpgsqlCommand(command, connection);
                 Console.WriteLine(query.CommandText);
@@ -151,9 +149,8 @@ namespace Project_DMD.Classes
             string primaryProperty;
             List<object> values;
             var columns = GetColumnsAndValues(entity, out values, out primaryProperty, true);
-            using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+            using (var connection = CreateConnection())
             {
-                connection.Open();
                 var command = new NpgsqlCommand(String.Format(Constants.UpdateOnTemplate,tableName,
                     String.Join(",", columns.Zip(values,(column, value) => column + "=" + value)), 
                     primaryProperty + "=" + primaryKey), connection);
@@ -170,10 +167,8 @@ namespace Project_DMD.Classes
             string primaryProperty;
             List<object> values;
             var columns = GetColumnsAndValues(entity, out values, out primaryProperty);
-            using (var conn = new NpgsqlConnection(Constants.ConnectionString))
+            using (var conn = CreateConnection())
             {
-                conn.Open();
-
                 NpgsqlCommand query = new NpgsqlCommand(
                     String.Format(Constants.InsertTableTemplate, tableName,
                         String.Join(",", columns),
@@ -191,6 +186,14 @@ namespace Project_DMD.Classes
             }
         }
 
+        private static NpgsqlConnection CreateConnection()
+        {
+            var conn = new NpgsqlConnection(Constants.ConnectionString);
+            conn.Open();
+            conn.RegisterEnum<ActionType>("actiontype");
+            return conn;
+        }
+
         public T Get<T>(object primaryKey) where T : new()
         {
             T entity = new T();
@@ -202,9 +205,8 @@ namespace Project_DMD.Classes
             if (primaryProperty == "")
                 throw new ArgumentException("Model does not have primary property");
 
-            using (var conn = new NpgsqlConnection(Constants.ConnectionString))
+            using (var conn = CreateConnection())
             {
-                conn.Open();
                 var query = new NpgsqlCommand(String.Format(Constants.SelectFromTableWhereTemplate, tableName,
                     primaryProperty + "=" + primaryKey), conn);
                 //query.Parameters.AddWithValue("@" + primaryProperty, "'" + primaryKey + "'");
@@ -235,9 +237,8 @@ namespace Project_DMD.Classes
         {
             var result = new List<T>();
             var tableName = GetTableName(new T());
-            using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+            using (var connection = CreateConnection())
             {
-                connection.Open();
                 NpgsqlCommand sqlQuery;
                 if (query != null && query.Count > 0)
                 {
