@@ -44,7 +44,16 @@ namespace Project_DMD.Classes
             /// <para>{2} - Ordered Values For Columns (For Example: (Column1Value, Column2Value) ) </para>
             /// <para>{3} - Column Name of returning value. </para>
             /// </summary>
-            public static readonly string InsertTableTemplate = "INSERT INTO {0}({1}) VALUES {2} RETURNING {3};";
+            public static readonly string InsertTableTemplate = "INSERT INTO {0} ({1}) VALUES {2} RETURNING {3};";
+
+            /// <summary>
+            /// Template string for insertion into POSTGRESQL. 
+            /// <para>You should use String.Formater, where </para>
+            /// <para>{0} - Table Name </para>
+            /// <para>{1} - Ordered Values For Columns (For Example: (Column1Value, Column2Value) ) </para>
+            /// <para>{2} - Column Name of returning value. </para>
+            /// </summary>
+            public static readonly string InsertTableTemplateWithoutColumns = "INSERT INTO {0} VALUES {1} RETURNING {2};";
 
             /// <summary>
             /// Template string for selection.

@@ -190,11 +190,11 @@ namespace Project_DMD.Models
         /// <returns></returns>
         public string ToSql()
         {
-            string articleData = "(" + ArticleId.ToString() + ", $myTokken$"
+            string articleData = "(DEFAULT, $myTokken$"
                                  + Title.ToString() + "$myTokken$, $myTokken$"
                                  + Summary.ToString() + "$myTokken$, "
-                                 + Published.ToString("dd.MM.yyyy") + ", "
-                                 + Updated.ToString("dd.MM.yyyy") + ", "
+                                 + Published.ToString("dd.MM.yyyy").PutIntoQuotes() + ", "
+                                 + Updated.ToString("dd.MM.yyyy").PutIntoQuotes() + ", "
                                  + Views.ToString() + ", $myTokken$s"
                                  + Url.ToString() + "$myTokken$, $myTokken$"
                                  + DOI.ToString() + "$myTokken$, $myTokken$"

@@ -77,10 +77,31 @@ namespace Project_DMD.Classes
                 authorsValues += "(" + article.ArticleId.ToString() + ", "
                                  + author.AuthorId.ToString() + "),";
             }
-            authorsValues.Remove(authorsValues.Length - 1);
+            authorsValues = authorsValues.Remove(authorsValues.Length - 1);
 
-            String.Format(query, "ArticleAuthors", "(ArticleID, AuthorID)", authorsValues, "1");
+            query = String.Format(query, "ArticleAuthors", "ArticleID, AuthorID", authorsValues, "1");
             AutoSqlGenerator.Instance.ExecuteCommand(query);
+        }
+        private void AddArticleCategories(Article article)
+        {
+            if (article == null)
+                throw new ArgumentNullException("Given article cannot be null.");
+            if (article.Categories.Count == 0)
+                return;
+
+            var query = AutoSqlGenerator.Constants.InsertTableTemplate;
+            var categoriesValue = "";
+            var categories = Global.Instance.Categories.Keys.ToList();
+            foreach (var category in article.Categories)
+            {
+                categoriesValue += "(" + article.ArticleId.ToString() + ", "
+                                 + (categories.IndexOf(category)+1) + "),";
+            }
+            categoriesValue = categoriesValue.Remove(categoriesValue.Length - 1);
+
+            query = String.Format(query, "ArticleCategories", "ArticleID, CategoryID", categoriesValue, "1");
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+
         }
 
         /// <summary>
@@ -119,17 +140,20 @@ namespace Project_DMD.Classes
         /// <returns>Id of created article</returns>
         public int AddArticle(Article article)
         {
-            string query = AutoSqlGenerator.Constants.InsertTableTemplate;
-            query = String.Format(query, "Article", "", article.ToSql(), "ArticleID");
+            string query = AutoSqlGenerator.Constants.InsertTableTemplateWithoutColumns;
+            query = String.Format(query, "Article",  article.ToSql(), "ArticleID");
 
             var queryData = AutoSqlGenerator.Instance.ExecuteCommand(query);
             
             if (queryData == null)
                 throw new InvalidDataException("Given article is not valid. (ID isn't presented in table, invalid date and so on)");
 
-            AddArticleAuthors(article);
+            article.WithId(Convert.ToInt32(queryData["articleid"]));
 
-            return Convert.ToInt32(queryData["articleid"]);
+            AddArticleAuthors(article);
+            AddArticleCategories(article);
+
+            return article.ArticleId;
         }
 
         /// <summary>
