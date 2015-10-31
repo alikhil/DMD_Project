@@ -67,7 +67,7 @@ namespace Project_DMD.Classes
 
         public IEnumerable<Author> GetAuthors()
         {
-            return QueryExecutor.Instance.GetAuthors();
+            return QueryExecutor.Instance.GetAllAuthors();
         }
 
         public void Dispose()
