@@ -127,7 +127,7 @@ namespace Project_DMD.Classes
 
         public void AddAction(string userId, int articleId, ActionType type)
         {
-            var action = MakeAction(userId, articleId, ActionType.Add);
+            var action = MakeAction(userId, articleId, type);
             QueryExecutor.Instance.AddAction(action);
         }
 
