@@ -202,7 +202,13 @@ namespace Project_DMD.Classes
         /// <returns>true if article successfully deleted, else false</returns>
         public bool DeleteArticle(int id)
         {
-            throw new NotImplementedException();
+            var query = "DELETE FROM ArticleCategories WHERE ArticleID = " + id.ToString() + ";"
+                       + "DELETE FROM ArticleAuthors WHERE ArticleID = " + id.ToString() + ";"
+                        + "DELETE FROM Favorite WHERE ArticleID = " + id.ToString() + ";"
+                        + "DELETE FROM Article WHERE ArticleID = " + id.ToString() + ";";
+
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+            return true;
         }
 
         /// <summary>
