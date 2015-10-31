@@ -83,7 +83,7 @@ namespace Project_DMD.Classes
         public List<Article> GetArticles(int page, string articleName, string keyword, string authorName, int publicationYear, string category,
             string journalReference, int sortType, bool orderByDescending)
         {
-            return QueryExecutor.Instance.GetArticles(page, articleName, keyword, authorName, publicationYear, category, sortType, orderByDescending);
+            return QueryExecutor.Instance.GetArticles(page, articleName, keyword, authorName, publicationYear, category, journalReference, sortType, orderByDescending);
 
         }
 
