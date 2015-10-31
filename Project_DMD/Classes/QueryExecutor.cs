@@ -21,6 +21,68 @@ namespace Project_DMD.Classes
         {
 
         }
+
+        private DateTime parseDateTime(string postgresFormatDate)
+        {
+            if (String.IsNullOrEmpty(postgresFormatDate))
+                return DateTime.MinValue;
+
+            return DateTime.ParseExact(postgresFormatDate, "dd.MM.yyyy H:mm:ss",
+                System.Globalization.CultureInfo.CurrentCulture);
+        }
+        private List<Author> GetAuthorsByArticleID(int id)
+        {
+            var commandGetAuthors = "SELECT a.* " +
+                                    "FROM Author a, ArticleAuthors au " +
+                                    "WHERE au.ArticleID = " + id.ToString() +
+                                    " and a.AuthorID = au.AuthorID;";
+            var articleAuthors = AutoSqlGenerator.Instance.ExecuteCommandReturnList(commandGetAuthors);
+            var authors = new List<Author>();
+            foreach (var row in articleAuthors)
+            {
+                var author = new Author(Convert.ToInt32(row["authorid"]), row["authorname"]);
+                authors.Add(author);
+            }
+
+            return authors;
+        }
+        private List<string> GetCategoriesByArticleID(int id)
+        {
+            var commandGetCategories = "SELECT c.* " +
+                                       "FROM Category c, ArticleCategories ac " +
+                                       "WHERE ac.ArticleID = " + id.ToString() +
+                                       " and c.CategoryID = ac.CategoryID;";
+            var articleCategories = AutoSqlGenerator.Instance.ExecuteCommandReturnList(commandGetCategories);
+            var categories = new List<string>();
+            foreach (var row in articleCategories)
+            {
+                var category = row["categoryname"];
+                categories.Add(category);
+            }
+
+            return categories;
+        }
+
+        private void AddArticleAuthors(Article article)
+        {
+            if (article == null)
+                throw new ArgumentNullException("Given article cannot be null.");
+            if (article.AuthorsList.Count == 0)
+                return;
+
+            var query = AutoSqlGenerator.Constants.InsertTableTemplate;
+            var authorsValues = "";
+            foreach (Author author in article.AuthorsList)
+            {
+                authorsValues += "(" + article.ArticleId.ToString() + ", "
+                                 + author.AuthorId.ToString() + "),";
+            }
+            authorsValues.Remove(authorsValues.Length - 1);
+
+            String.Format(query, "ArticleAuthors", "(ArticleID, AuthorID)", authorsValues, "1");
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+        }
+
         /// <summary>
         /// Find article by id
         /// </summary>
@@ -28,11 +90,14 @@ namespace Project_DMD.Classes
         /// <returns>Article if it exists else null</returns>
         public Article GetArticleById(int id)
         {
-            string query = "SELECT * FROM Article WHERE Article.ArticleID = " + id.ToString() + " LIMIT 1;";
-            var articleData = AutoSqlGenerator.Instance.ExecuteCommand(query);
+            var commandGetArticle = "SELECT * FROM Article WHERE Article.ArticleID = " + id.ToString() + " LIMIT 1;";
+            var articleData = AutoSqlGenerator.Instance.ExecuteCommand(commandGetArticle);
 
             if(articleData.Count == 0)
                 return null;
+
+            var authors = GetAuthorsByArticleID(id);
+            var categories = GetCategoriesByArticleID(id);
 
             return new Article()
                 .WithId(Convert.ToInt32(articleData["articleid"]))
@@ -42,16 +107,9 @@ namespace Project_DMD.Classes
                 .WithUpdate(parseDateTime(articleData["updated"]))
                 .WithViews(Convert.ToInt32(articleData["views"]))
                 .WithDoi(articleData["doi"])
-                .WithJournalReference(articleData["journalreference"]);
-        }
-
-        private DateTime parseDateTime(string postgresFormatDate)
-        {
-            if(String.IsNullOrEmpty(postgresFormatDate))
-                return DateTime.MinValue;
-
-            return DateTime.ParseExact(postgresFormatDate, "dd.MM.yyyy H:mm:ss",
-                System.Globalization.CultureInfo.CurrentCulture);
+                .WithJournalReference(articleData["journalreference"])
+                .WithAuthors(authors)
+                .WithCategories(categories);
         }
 
         /// <summary>
@@ -68,6 +126,8 @@ namespace Project_DMD.Classes
             
             if (queryData == null)
                 throw new InvalidDataException("Given article is not valid. (ID isn't presented in table, invalid date and so on)");
+
+            AddArticleAuthors(article);
 
             return Convert.ToInt32(queryData["articleid"]);
         }
@@ -100,7 +160,7 @@ namespace Project_DMD.Classes
         public Author GetAuthorById(int id)
         {
             var author = AutoSqlGenerator.Instance.Get<Author>(id);
-            var sql = String.Format("select a.* from article a, articleauthors au where a.articleid = au.articleid and au.authorid ={0} ;",
+            var sql = String.Format("SELECT a.* FROM article a, ArticleAuthors au WHERE a.articleid = au.articleid and au.authorid ={0} ;",
                       id);
             author.PublishedArticles =
                 AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql)
@@ -112,7 +172,7 @@ namespace Project_DMD.Classes
         /// Get list of authors
         /// </summary>
         /// <returns>List of authors</returns>
-        public IEnumerable<Author> GetAuthors()
+        public IEnumerable<Author> GetAllAuthors()
         {
             var sql = "Select * from author;";
             var authorsData = AutoSqlGenerator.Instance.LazyExecute(sql);
@@ -158,12 +218,15 @@ namespace Project_DMD.Classes
 
         public Favorite GetFavorite(int articleId, string userId)
         {
-            throw new NotImplementedException();
+            var sql = String.Format("SELECT * FROM favorite WHERE articleid={0} AND userid={1} LIMIT 1;", articleId, userId);
+            var favoriteData = AutoSqlGenerator.Instance.ExecuteCommand(sql);
+            return AutoSqlGenerator.Instance.ParseDictionary<Favorite>(favoriteData);
         }
 
         public void RemoveFavorite(int articleId, string userId)
         {
-            throw new NotImplementedException();
+            var sql = String.Format("DELETE FROM favorite WHERE articleid={0} AND userid={1};", articleId, userId);
+            AutoSqlGenerator.Instance.ExecuteCommand(sql);
         }
 
         public List<Favorite> GetFavorites(string userId)
@@ -182,7 +245,8 @@ namespace Project_DMD.Classes
 
         public void VisitArticle(int articleId)
         {
-            throw new NotImplementedException();
+            var sql = String.Format("UPDATE article SET views=views + 1 WHERE articleid={0};", articleId);
+            AutoSqlGenerator.Instance.ExecuteCommand(sql);
         }
 
         public void CreateVisit(Visit visit)

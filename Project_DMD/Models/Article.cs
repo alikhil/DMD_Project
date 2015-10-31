@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Microsoft.Owin.Security.OAuth.Messages;
 using Project_DMD.Attributes;
+using Project_DMD.Classes;
 
 namespace Project_DMD.Models
 {
@@ -172,7 +173,14 @@ namespace Project_DMD.Models
                                  + Views.ToString() + ", "
                                  + Url.ToString() + ", "
                                  + DOI.ToString() + ", "
-                                 + JournalReference.ToString() + ")";
+                                 + JournalReference.ToString() + ")"
+                                 + "\nAuthors: ";
+            if(AuthorsList != null)
+                AuthorsList.ForEach((author) => articleData += "\nID: " + author.AuthorId + "; Name: " + author.AuthorName + "; ");
+            articleData += "\nCategories: ";
+            if(Categories != null)
+                Categories.ForEach((category) => articleData += "\nName: " + category + "; Description: " + Global.Instance.Categories[category] + "; ");
+
             return articleData;
         }
 
@@ -195,6 +203,12 @@ namespace Project_DMD.Models
         }
 
     }
-
+    public static class ArticleExtension
+    {
+        public static void ParseAuthors(this Article article)
+        {
+            article.AuthorsList = article.Authors.Select(author => new Author() { AuthorId = author }).ToList();
+        }
+    }
     
 }
