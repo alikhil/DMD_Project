@@ -78,6 +78,16 @@ namespace Project_DMD.Models
         [AgsForeign(Name = "ArticleId", TableName = "ArticleCategories")]
         public List<string> Categories { get; set; }
 
+        public Article()
+        {
+            Views = 0;
+            DOI = String.Empty;
+            JournalReference = String.Empty;
+            Url = String.Empty;
+            Summary = String.Empty;
+            Title = String.Empty;
+        }
+
         #region fluent interface
 
         public Article WithId(int id)
@@ -147,6 +157,42 @@ namespace Project_DMD.Models
         }
 
         #endregion
+
+        /// <summary>
+        /// Returns string in tuple format. (Column1Value, Column2Value, ColumnNValue)
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            string articleData = "(" + ArticleId.ToString() + ", "
+                                 + Title.ToString() + ", "
+                                 + Summary.ToString() + ", "
+                                 + Published.ToString("dd.MM.yyyy") + ", "
+                                 + Updated.ToString("dd.MM.yyyy") + ", "
+                                 + Views.ToString() + ", "
+                                 + Url.ToString() + ", "
+                                 + DOI.ToString() + ", "
+                                 + JournalReference.ToString() + ")";
+            return articleData;
+        }
+
+        /// <summary>
+        /// Returns string in tuple format with $myTokken$ for some fields.
+        /// </summary>
+        /// <returns></returns>
+        public string ToSql()
+        {
+            string articleData = "(" + ArticleId.ToString() + ", $myTokken$"
+                                 + Title.ToString() + "$myTokken$, $myTokken$"
+                                 + Summary.ToString() + "$myTokken$, "
+                                 + Published.ToString("dd.MM.yyyy") + ", "
+                                 + Updated.ToString("dd.MM.yyyy") + ", "
+                                 + Views.ToString() + ", $myTokken$s"
+                                 + Url.ToString() + "$myTokken$, $myTokken$"
+                                 + DOI.ToString() + "$myTokken$, $myTokken$"
+                                 + JournalReference.ToString() + "$myTokken$)";
+            return articleData;
+        }
 
     }
 
