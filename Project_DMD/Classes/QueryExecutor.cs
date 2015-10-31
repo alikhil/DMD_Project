@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using Project_DMD.Models;
 
 namespace Project_DMD.Classes
@@ -97,16 +99,24 @@ namespace Project_DMD.Classes
         /// <returns>Null if author doesn't exist in table, else author data</returns>
         public Author GetAuthorById(int id)
         {
-            throw new NotImplementedException();
+            var author = AutoSqlGenerator.Instance.Get<Author>(id);
+            var sql = String.Format("select a.* from article a, articleauthors au where a.articleid = au.articleid and au.authorid ={0} ;",
+                      id);
+            author.PublishedArticles =
+                AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql)
+                    .Select(data => AutoSqlGenerator.Instance.ParseDictionary<Article>(data)).ToList();
+            return author;
         }
 
         /// <summary>
         /// Get list of authors
         /// </summary>
         /// <returns>List of authors</returns>
-        public List<Author> GetAuthors()
+        public IEnumerable<Author> GetAuthors()
         {
-            throw new NotImplementedException();
+            var sql = "Select * from author;";
+            var authorsData = AutoSqlGenerator.Instance.LazyExecute(sql);
+            return authorsData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Author>(data));
         }
 
         /// <summary>
