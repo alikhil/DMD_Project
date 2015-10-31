@@ -307,11 +307,67 @@ namespace Project_DMD.Classes
             action.ActionDate = DateTime.Now;
             AutoSqlGenerator.Instance.Add(action);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="articleName"></param>
+        /// <param name="keyword"></param>
+        /// <param name="authorName"></param>
+        /// <param name="publicationYear"></param>
+        /// <param name="category"></param>
+        /// <param name="sortType">1 - sort by date; 0 - sort by title</param>
+        /// <param name="orderByDescending"></param>
+        /// <returns></returns>
         public List<Article> GetArticles(int page, string articleName, string keyword, string authorName,
             int publicationYear, string category, int sortType, bool orderByDescending)
         {
-            throw new NotImplementedException();
+            var conditions = new List<string>();
+            if (!string.IsNullOrEmpty(articleName))
+                conditions.Add(String.Format(" a.title ILIKE {0} ",makeStringFilter(articleName)));
+
+            if (!string.IsNullOrEmpty(keyword))
+                conditions.Add(String.Format(" a.summary ILIKE {0} ",makeStringFilter(keyword)));
+            string sort = "ORDER BY " + (sortType == 1 ? "a.published " : "a.title ");
+            sort = orderByDescending ? sort + " DESC " : sort;
+            bool authors = false;
+            bool categories = false;
+            int offset = (page - 1)*Global.ArticlePerPage;
+            if (!string.IsNullOrEmpty(authorName))
+            {
+                conditions.Add(String.Format(" au.articleid = a.articleId AND aa.authorid = au.authorid AND {0} ILIKE '%' || aa.authorname || '%'", authorName.PutIntoQuotes()));
+                authors = true;
+            }
+            if (!string.IsNullOrEmpty(category))
+            {
+                conditions.Add(String.Format(
+                    " ac.articleid = a.articleid AND ac.categoryid = c.categoryId AND c.categoryName = {0} ", category.PutIntoQuotes()));
+                categories = true;
+            }
+           if(publicationYear != 0)
+               conditions.Add(" date_part('year', a.published) = " + publicationYear);
+
+            var sql = String.Format("SELECT DISTINCT a.* " +
+                                    "FROM article a " + (authors
+                                        ? ", articleauthors au, author aa "
+                                        : "") + (categories ? " ,articlecategories ac, category c " : "") +
+                                    " WHERE {0} {1} LIMIT {2} OFFSET {3};", String.Join(" AND ", conditions), sort, Global.ArticlePerPage, offset);
+
+            var articles = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
+            return articles.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Article>(data)).ToList();
+        }
+
+        private string makeStringFilter(string value)
+        {
+            var filter = "";
+            if (!string.IsNullOrEmpty(value))
+            {
+                filter = value + "%";
+                if (value.Length > 2)
+                    filter = "%" + filter;
+                filter = filter.PutIntoQuotes();
+            }
+            return filter;
         }
     }
 }
