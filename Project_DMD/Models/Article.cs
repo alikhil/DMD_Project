@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Microsoft.Owin.Security.OAuth.Messages;
 using Project_DMD.Attributes;
+using Project_DMD.Classes;
 
 namespace Project_DMD.Models
 {
@@ -176,6 +177,9 @@ namespace Project_DMD.Models
                                  + "\nAuthors: ";
             if(AuthorsList != null)
                 AuthorsList.ForEach((author) => articleData += "\nID: " + author.AuthorId + "; Name: " + author.AuthorName + "; ");
+            articleData += "\nCategories: ";
+            if(Categories != null)
+                Categories.ForEach((category) => articleData += "\nName: " + category + "; Description: " + Global.Instance.Categories[category] + "; ");
 
             return articleData;
         }

@@ -30,7 +30,6 @@ namespace Project_DMD.Classes
             return DateTime.ParseExact(postgresFormatDate, "dd.MM.yyyy H:mm:ss",
                 System.Globalization.CultureInfo.CurrentCulture);
         }
-
         private List<Author> GetAuthorsByArticleID(int id)
         {
             var commandGetAuthors = "SELECT a.* " +
@@ -47,6 +46,42 @@ namespace Project_DMD.Classes
 
             return authors;
         }
+        private List<string> GetCategoriesByArticleID(int id)
+        {
+            var commandGetCategories = "SELECT c.* " +
+                                       "FROM Category c, ArticleCategories ac " +
+                                       "WHERE ac.ArticleID = " + id.ToString() +
+                                       " and c.CategoryID = ac.CategoryID;";
+            var articleCategories = AutoSqlGenerator.Instance.ExecuteCommandReturnList(commandGetCategories);
+            var categories = new List<string>();
+            foreach (var row in articleCategories)
+            {
+                var category = row["categoryname"];
+                categories.Add(category);
+            }
+
+            return categories;
+        }
+
+        private void AddArticleAuthors(Article article)
+        {
+            if (article == null)
+                throw new ArgumentNullException("Given article cannot be null.");
+            if (article.AuthorsList.Count == 0)
+                return;
+
+            var query = AutoSqlGenerator.Constants.InsertTableTemplate;
+            var authorsValues = "";
+            foreach (Author author in article.AuthorsList)
+            {
+                authorsValues += "(" + article.ArticleId.ToString() + ", "
+                                 + author.AuthorId.ToString() + "),";
+            }
+            authorsValues.Remove(authorsValues.Length - 1);
+
+            String.Format(query, "ArticleAuthors", "(ArticleID, AuthorID)", authorsValues, "1");
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+        }
 
         /// <summary>
         /// Find article by id
@@ -61,7 +96,8 @@ namespace Project_DMD.Classes
             if(articleData.Count == 0)
                 return null;
 
-            var authors = GetAuthorsByArticleID(Convert.ToInt32(articleData["articleid"]));
+            var authors = GetAuthorsByArticleID(id);
+            var categories = GetCategoriesByArticleID(id);
 
             return new Article()
                 .WithId(Convert.ToInt32(articleData["articleid"]))
@@ -72,7 +108,8 @@ namespace Project_DMD.Classes
                 .WithViews(Convert.ToInt32(articleData["views"]))
                 .WithDoi(articleData["doi"])
                 .WithJournalReference(articleData["journalreference"])
-                .WithAuthors(authors);
+                .WithAuthors(authors)
+                .WithCategories(categories);
         }
 
         /// <summary>
@@ -89,6 +126,8 @@ namespace Project_DMD.Classes
             
             if (queryData == null)
                 throw new InvalidDataException("Given article is not valid. (ID isn't presented in table, invalid date and so on)");
+
+            AddArticleAuthors(article);
 
             return Convert.ToInt32(queryData["articleid"]);
         }
