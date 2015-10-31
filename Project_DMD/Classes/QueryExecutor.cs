@@ -276,7 +276,8 @@ namespace Project_DMD.Classes
 
         public void AddAction(ActionHistory action)
         {
-            throw new NotImplementedException();
+            action.ActionDate = DateTime.Now;
+            AutoSqlGenerator.Instance.Add(action);
         }
 
         public List<Article> GetArticles(int page, string articleName, string keyword, string authorName,
