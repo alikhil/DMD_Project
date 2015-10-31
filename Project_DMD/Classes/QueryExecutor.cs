@@ -257,7 +257,9 @@ namespace Project_DMD.Classes
 
         public List<Visit> GetVisits(string userId)
         {
-            throw new NotImplementedException();
+            var query = new Dictionary<string, string> {{"userid", userId}};
+            var visits = AutoSqlGenerator.Instance.FindAll<Visit>(query);
+            return visits;
         }
 
         public List<ActionHistory> GetActionsForUser(string userId)
