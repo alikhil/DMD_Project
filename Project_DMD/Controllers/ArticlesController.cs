@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Project_DMD.Models;
@@ -167,8 +168,9 @@ namespace Project_DMD.Controllers
             return RedirectToAction("Details", "Articles", new { id = articleId });
         }
 
-        public ActionResult RemoveFromFavorite(int? articleId, string userId)
+        public ActionResult RemoveFromFavorite(int? articleId)
         {
+            var userId = User.Identity.GetUserId();
             if(articleId != null && !userId.IsNullOrWhiteSpace())
                 UsersRepository.RemoveFavorite(articleId.Value, userId);
             return RedirectToAction("Favorites", "Manage");
