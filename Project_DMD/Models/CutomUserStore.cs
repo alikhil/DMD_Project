@@ -21,7 +21,6 @@ namespace Project_DMD.Models
 
         public Task CreateAsync(AppUser user)
         {
-            user.Id = Guid.NewGuid().ToString();
             return Task.FromResult<bool>(AppUserContext.Instance.Add(user));
         }
 
