@@ -218,7 +218,9 @@ namespace Project_DMD.Classes
 
         public Favorite GetFavorite(int articleId, string userId)
         {
-            throw new NotImplementedException();
+            var sql = String.Format("SELECT * FROM favorite WHERE articleid={0} AND userid={1} LIMIT 1;", articleId, userId);
+            var favoriteData = AutoSqlGenerator.Instance.ExecuteCommand(sql);
+            return AutoSqlGenerator.Instance.ParseDictionary<Favorite>(favoriteData);
         }
 
         public void RemoveFavorite(int articleId, string userId)
@@ -242,7 +244,8 @@ namespace Project_DMD.Classes
 
         public void VisitArticle(int articleId)
         {
-            throw new NotImplementedException();
+            var sql = String.Format("UPDATE article SET views=views + 1 WHERE articleid={0};", articleId);
+            AutoSqlGenerator.Instance.ExecuteCommand(sql);
         }
 
         public void CreateVisit(Visit visit)
