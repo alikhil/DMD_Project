@@ -5,21 +5,26 @@ using System.Drawing.Printing;
 using System.Linq;
 using System.Web.Mvc;
 using Microsoft.Owin.Security.OAuth.Messages;
+using Project_DMD.Attributes;
 
 namespace Project_DMD.Models
 {
+    [AgsModel]
     public class Article
     {
+        [AgsPrimary]
         public int ArticleId { get; set; }
 
         /// <summary>
         /// Link to the article in arxiv
         /// </summary>
         [MaxLength(65356)]
+        [AgsAttribute]
         public string Url { get; set; }
 
         [Required]
         [StringLength(512, MinimumLength = 5)]
+        [AgsAttribute]
         public string Title { get; set; }
 
         /// <summary>
@@ -27,42 +32,50 @@ namespace Project_DMD.Models
         /// </summary>
         [Required]
         [MaxLength(2048)]
+        [AgsAttribute]
         public string Summary { get; set; }
 
         /// <summary>
         /// Date of publishing an article
         /// </summary>
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd.MM.yyyy}")]
+        [AgsAttribute]
         public DateTime Published { get; set; }
 
         /// <summary>
         /// Date of updating article
         /// </summary>
+        [AgsAttribute]
         public DateTime Updated { get; set; }
 
         /// <summary>
         /// Conference or journal name
         /// </summary>
         [MaxLength(512)]
+        [AgsAttribute]
         public string JournalReference { get; set; }
 
         /// <summary>
         /// DOI
         /// </summary>
         [MaxLength(512)]
+        [AgsAttribute]
         public string DOI { get; set; }
 
         /// <summary>
         /// Number of article view 
         /// </summary>
+        [AgsAttribute]
         public int Views { get; set; }
 
+        [AgsForeign(Name = "ArticlId", TableName = "ArticleAuthors")]
         public List<Author> AuthorsList { get; set; }
 
         [Required]
         public int[] Authors { get; set; }
 
         [Required]
+        [AgsForeign(Name = "ArticleId", TableName = "ArticleCategories")]
         public List<string> Categories { get; set; }
 
         public Article()

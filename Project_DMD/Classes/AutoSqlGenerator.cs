@@ -77,6 +77,7 @@ namespace Project_DMD.Classes
                 connection.Open();
                 
                 var query = new NpgsqlCommand(command, connection);
+                Console.WriteLine(query.CommandText);
                 var reader = query.ExecuteReader();
                 var dictionary = new Dictionary<string, string>();
                 while (reader.Read())
@@ -87,6 +88,50 @@ namespace Project_DMD.Classes
                     }
                 }
                 return dictionary;
+            }
+        }
+
+        public IEnumerable<Dictionary<string, string>> LazyExecute(string command)
+        {
+            using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+            {
+                connection.Open();
+
+                var query = new NpgsqlCommand(command, connection);
+                Console.WriteLine(query.CommandText);
+                var reader = query.ExecuteReader();
+                while (reader.Read())
+                {
+                    var dictionary = new Dictionary<string, string>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        dictionary[reader.GetName(i)] = reader[i].ToString();
+                    }
+                   yield return     dictionary;
+                }
+            }
+        }
+
+        public List<Dictionary<string, string>> ExecuteCommandReturnList(string command)
+        {
+            var result = new List<Dictionary<string, string>>();
+            using (var connection = new NpgsqlConnection(Constants.ConnectionString))
+            {
+                connection.Open();
+
+                var query = new NpgsqlCommand(command, connection);
+                Console.WriteLine(query.CommandText);
+                var reader = query.ExecuteReader();
+                while (reader.Read())
+                {
+                    var dictionary = new Dictionary<string, string>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        dictionary[reader.GetName(i)] = reader[i].ToString();
+                    }
+                    result.Add(dictionary);
+                }
+                return result;
             }
         }
 
@@ -176,7 +221,7 @@ namespace Project_DMD.Classes
         /// <typeparam name="T">type of entity</typeparam>
         /// <param name="query">list of key and value</param>
         /// <returns>list of entity which matchs query</returns>
-        public List<T> FindAll<T>(List<KeyValuePair<string, string>> query) where T : new()
+        public List<T> FindAll<T>(Dictionary<string, string> query) where T : new()
         {
             var result = new List<T>();
             var tableName = GetTableName(new T());
@@ -233,7 +278,7 @@ namespace Project_DMD.Classes
             return primaryProperty;
         }
 
-        private T ParseDictionary<T>(Dictionary<string, string> dictionary) where T : new()
+        public T ParseDictionary<T>(Dictionary<string, string> dictionary) where T : new()
         {
             var entity = new T();
             var type = entity.GetType();
@@ -244,8 +289,8 @@ namespace Project_DMD.Classes
                     continue;
                 
                 var fieldName = (attribute.Name ?? propertyInfo.Name).ToLower();
-                if(dictionary.ContainsKey(fieldName))
-                    propertyInfo.SetValue(entity, dictionary[fieldName]);
+                if(dictionary.ContainsKey(fieldName) && !string.IsNullOrEmpty(dictionary[fieldName]))
+                    propertyInfo.SetValue(entity, Convert.ChangeType(dictionary[fieldName],propertyInfo.PropertyType));
             }
             return entity;
         }

@@ -13,6 +13,8 @@ namespace Project_DMD.Models
     [AgsModel(TableName = "Client")]
     public class AppUser : IUser<string>
     {
+        private string _temp;
+
         [AgsPrimary(Name = "UserID", Insert = false)]
         public string Id { get; set; }
 
@@ -30,6 +32,8 @@ namespace Project_DMD.Models
         /// <summary>
         /// It doesn't necessary, but need for IUser<string>
         /// </summary>
-        public string UserName { get; set; }
+        public string UserName {
+            get { return Email; }
+            set { _temp = value; }}
     }
 }

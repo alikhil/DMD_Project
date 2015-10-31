@@ -53,11 +53,7 @@ namespace Project_DMD
             // Настройка логики проверки паролей
             manager.PasswordValidator = new PasswordValidator
             {
-                RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
-                RequireDigit = true,
-                RequireLowercase = true,
-                RequireUppercase = true,
+                RequiredLength = 6
             };
 
             // Настройка параметров блокировки по умолчанию
@@ -67,17 +63,7 @@ namespace Project_DMD
 
             // Регистрация поставщиков двухфакторной проверки подлинности. Для получения кода проверки пользователя в данном приложении используется телефон и сообщения электронной почты
             // Здесь можно указать собственный поставщик и подключить его.
-            manager.RegisterTwoFactorProvider("Код, полученный по телефону", new PhoneNumberTokenProvider<ApplicationUser>
-            {
-                MessageFormat = "Ваш код безопасности: {0}"
-            });
-            manager.RegisterTwoFactorProvider("Код из сообщения", new EmailTokenProvider<ApplicationUser>
-            {
-                Subject = "Код безопасности",
-                BodyFormat = "Ваш код безопасности: {0}"
-            });
-            manager.EmailService = new EmailService();
-            manager.SmsService = new SmsService();
+            
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {
