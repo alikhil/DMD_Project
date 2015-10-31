@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
 using Project_DMD.Models;
+using WebGrease.Css.Extensions;
 
 namespace Project_DMD.Classes
 {
@@ -142,7 +143,8 @@ namespace Project_DMD.Classes
                 .WithDoi(articleData["doi"])
                 .WithJournalReference(articleData["journalreference"])
                 .WithAuthors(authors)
-                .WithCategories(categories);
+                .WithCategories(categories)
+                .WithUrl(articleData["url"]);
         }
 
         /// <summary>
@@ -245,7 +247,7 @@ namespace Project_DMD.Classes
         /// <returns>True if appUser successfully added into table, otherwise false </returns>
         public bool AddAppUser(AppUser user)
         {
-            AutoSqlGenerator.Instance.Add(user);
+            user.Id = AutoSqlGenerator.Instance.Add(user);
             return false;
         }
 
@@ -360,7 +362,7 @@ namespace Project_DMD.Classes
             var conditions = new List<string>();
             if (!string.IsNullOrEmpty(articleName))
                 conditions.Add(String.Format(" a.title ILIKE {0} ",makeStringFilter(articleName)));
-
+            conditions.Add("true");
             if (!string.IsNullOrEmpty(keyword))
                 conditions.Add(String.Format(" a.summary ILIKE {0} ",makeStringFilter(keyword)));
             string sort = "ORDER BY " + (sortType == 1 ? "a.published " : "a.title ");
@@ -370,7 +372,7 @@ namespace Project_DMD.Classes
             int offset = (page - 1)*Global.ArticlePerPage;
             if (!string.IsNullOrEmpty(authorName))
             {
-                conditions.Add(String.Format(" au.articleid = a.articleId AND aa.authorid = au.authorid AND {0} ILIKE '%' || aa.authorname || '%'", authorName.PutIntoQuotes()));
+                conditions.Add(String.Format(" au.articleid = a.articleId AND aa.authorid = au.authorid AND ({0} ILIKE '%' || aa.authorname || '%' OR  aa.authorname ILIKE '%'{0}'%')", authorName.PutIntoQuotes()));
                 authors = true;
             }
             if (!string.IsNullOrEmpty(category))
@@ -388,8 +390,14 @@ namespace Project_DMD.Classes
                                         : "") + (categories ? " ,articlecategories ac, category c " : "") +
                                     " WHERE {0} {1} LIMIT {2} OFFSET {3};", String.Join(" AND ", conditions), sort, Global.ArticlePerPage, offset);
 
-            var articles = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
-            return articles.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Article>(data)).ToList();
+            var articlesData = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
+            var articles = articlesData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Article>(data)).ToList();
+            foreach (var a in articles)
+            {
+                 a.AuthorsList = GetAuthorsByArticleID(a.ArticleId);
+                a.Categories = GetCategoriesByArticleID(a.ArticleId);
+            }
+            return articles;
         }
 
         private string makeStringFilter(string value)
