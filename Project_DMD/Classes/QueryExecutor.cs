@@ -182,7 +182,8 @@ namespace Project_DMD.Classes
 
         public void VisitArticle(int articleId)
         {
-            throw new NotImplementedException();
+            var sql = String.Format("UPDATE article SET views=views + 1 WHERE articleid={0};", articleId);
+            AutoSqlGenerator.Instance.ExecuteCommand(sql);
         }
 
         public void CreateVisit(Visit visit)
