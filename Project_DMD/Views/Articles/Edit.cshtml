@@ -37,17 +37,9 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Summary, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Summary, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
             @Html.LabelFor(model => model.JournalReference, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.JournalReference, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.EditorFor(model => model.JournalReference, new { htmlAttributes = new { @class = "form-control"}})
                 @Html.ValidationMessageFor(model => model.JournalReference, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -68,18 +60,31 @@
                 @Html.ValidationMessageFor(model => model.DOI, "", new { @class = "text-danger" })
             </div>
         </div>
+    </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-success" />
-            </div>
-        </div>
+    <div>
+        <table class="table table-bordered">
+            <tr>
+                <th>
+                    @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <textarea name="Summary" style="min-width:1120px; min-height:100px;">@Model.Summary</textarea>
+                    @Html.ValidationMessageFor(model => model.Summary, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="display:inline-block">
+        <input type="submit" value="Save" class="btn btn-success" />
+    </div>
+    <div style="display:inline-block">
+        @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-warning" })
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-warning" })
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
