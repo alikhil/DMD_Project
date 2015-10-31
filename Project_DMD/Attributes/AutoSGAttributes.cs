@@ -12,6 +12,7 @@ namespace Project_DMD.Attributes
         /// Name of table for model, default value the same as class name
         /// </summary>
         public string TableName { get; set; }
+
     }
 
     [AttributeUsage(AttributeTargets.Property)]
@@ -21,6 +22,12 @@ namespace Project_DMD.Attributes
         /// Name of column in table, default value the same as property name
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// This attibute means thar property in database must be int type
+        /// </summary>
+        public bool Int { get; set; }
+
     }
 
     public class AgsPrimary : AgsAttribute
@@ -41,4 +48,5 @@ namespace Project_DMD.Attributes
         /// </summary>
         public string TableName { get; set; }
     }
+    
 }

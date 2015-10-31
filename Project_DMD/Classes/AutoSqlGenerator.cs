@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.DynamicData;
 using Npgsql;
+using NpgsqlTypes;
 using Project_DMD.Attributes;
 
 namespace Project_DMD.Classes
@@ -139,7 +140,7 @@ namespace Project_DMD.Classes
         {
             var tableName = GetTableName(entity);
             string primaryProperty;
-            List<string> values;
+            List<object> values;
             var columns = GetColumnsAndValues(entity, out values, out primaryProperty, true);
             using (var connection = new NpgsqlConnection(Constants.ConnectionString))
             {
@@ -158,7 +159,7 @@ namespace Project_DMD.Classes
             var tableName = GetTableName(entity);
 
             string primaryProperty;
-            List<string> values;
+            List<object> values;
             var columns = GetColumnsAndValues(entity, out values, out primaryProperty);
             using (var conn = new NpgsqlConnection(Constants.ConnectionString))
             {
@@ -172,7 +173,7 @@ namespace Project_DMD.Classes
                 var i = 0;
                 foreach (var value in values)
                 {
-                    query.Parameters.AddWithValue("@" + columns[i++], value);
+                        query.Parameters.AddWithValue("@" + columns[i++], value);
                 }
                 Console.WriteLine(query.CommandText);
 
@@ -295,12 +296,12 @@ namespace Project_DMD.Classes
             return entity;
         }
 
-        private static List<string> GetColumnsAndValues(object entity, out List<string> values, out string primaryProperty, bool format = false)
+        private static List<string> GetColumnsAndValues(object entity, out List<object> values, out string primaryProperty, bool format = false)
         {
             Type typeOfObject = entity.GetType();
             var columns = new List<string>();
-            values = new List<string>();
-            primaryProperty = "";
+            values = new List<object>();
+            primaryProperty = "1";
             foreach (var propertyInfo in typeOfObject.GetProperties())
             {
                 foreach (var customAttribute in propertyInfo.GetCustomAttributes(typeof (AgsAttribute)))
@@ -319,15 +320,17 @@ namespace Project_DMD.Classes
                     columns.Add(columnName);
 
                     var propValue = propertyInfo.GetValue(entity);
-                    if (propValue is string)
+                    if (propValue is string && !agsAttribute.Int)
                         values.Add(format ? propValue.ToString().PutIntoQuotes() : propValue.ToString());
                     else if (propValue is DateTime)
                     {
-                        var dt = Convert.ToDateTime(propValue.ToString()).ToShortDateString();
-                        values.Add(format ? dt.PutIntoQuotes() : dt);
+                        var dt = Convert.ToDateTime(propValue.ToString());
+                        values.Add(dt);
                     }
                     else
-                        values.Add(propValue.ToString());
+                    {
+                        values.Add(agsAttribute.Int ? Convert.ToInt32(propValue) : propValue);
+                    }
                 }
             }
             return columns;
