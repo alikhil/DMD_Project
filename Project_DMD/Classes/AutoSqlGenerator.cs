@@ -281,6 +281,8 @@ namespace Project_DMD.Classes
 
         public T ParseDictionary<T>(Dictionary<string, string> dictionary) where T : new()
         {
+            if (dictionary == null || dictionary.Count == 0)
+                return default(T);
             var entity = new T();
             var type = entity.GetType();
             foreach (var propertyInfo in type.GetProperties())
