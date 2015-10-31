@@ -231,7 +231,9 @@ namespace Project_DMD.Classes
 
         public List<Favorite> GetFavorites(string userId)
         {
-            throw new NotImplementedException();
+            var query = new Dictionary<string, string> { { "userid", userId } };
+            var favorites = AutoSqlGenerator.Instance.FindAll<Favorite>(query);
+            return favorites;
         }
 
         public AppUser GetAppUserByUserName(string userName)
