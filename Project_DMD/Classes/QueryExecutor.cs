@@ -294,6 +294,7 @@ namespace Project_DMD.Classes
         {
             var query = new Dictionary<string, string> { { "userid", userId } };
             var favorites = AutoSqlGenerator.Instance.FindAll<Favorite>(query);
+            favorites.ForEach(favorite => favorite.Article = GetArticleById(favorite.ArticleId));
             return favorites;
         }
 
@@ -322,6 +323,7 @@ namespace Project_DMD.Classes
         {
             var query = new Dictionary<string, string> {{"userid", userId}};
             var visits = AutoSqlGenerator.Instance.FindAll<Visit>(query);
+            visits.ForEach(data => data.Article = GetArticleById(data.ArticleId));
             return visits;
         }
 
@@ -329,6 +331,7 @@ namespace Project_DMD.Classes
         {
             var query = new Dictionary<string, string> { { "userid", userId } };
             var actions = AutoSqlGenerator.Instance.FindAll<ActionHistory>(query);
+            actions.ForEach(action => action.Article = GetArticleById(action.ArticleId));
             return actions;
         }
 
@@ -357,32 +360,40 @@ namespace Project_DMD.Classes
         /// <param name="orderByDescending"></param>
         /// <returns></returns>
         public List<Article> GetArticles(int page, string articleName, string keyword, string authorName,
-            int publicationYear, string category, int sortType, bool orderByDescending)
+            int publicationYear, string category, string journalReference, int sortType, bool orderByDescending)
         {
-            var conditions = new List<string>();
-            if (!string.IsNullOrEmpty(articleName))
-                conditions.Add(String.Format(" a.title ILIKE {0} ",makeStringFilter(articleName)));
-            conditions.Add("true");
-            if (!string.IsNullOrEmpty(keyword))
-                conditions.Add(String.Format(" a.summary ILIKE {0} ",makeStringFilter(keyword)));
-            string sort = "ORDER BY " + (sortType == 1 ? "a.published " : "a.title ");
-            sort = orderByDescending ? sort + " DESC " : sort;
             bool authors = false;
             bool categories = false;
-            int offset = (page - 1)*Global.ArticlePerPage;
-            if (!string.IsNullOrEmpty(authorName))
-            {
-                conditions.Add(String.Format(" articleauthors.articleid = a.articleId AND author.authorid = articleauthors.authorid AND ({0} ILIKE '%' || author.authorname || '%' OR  author.authorname ILIKE '%{1}%')", authorName.PutIntoQuotes(), authorName));
-                authors = true;
-            }
-            if (!string.IsNullOrEmpty(category))
-            {
-                conditions.Add(String.Format(
-                    " articlecategories.articleid = a.articleid AND articlecategories.categoryid = c.categoryId AND c.categoryName = {0} ", category.PutIntoQuotes()));
-                categories = true;
-            }
-           if(publicationYear != 0)
-               conditions.Add(" date_part('year', a.published) = " + publicationYear);
+
+            int offset = (page - 1) * Global.ArticlePerPage;
+            string sort = "ORDER BY " + (sortType == 1 ? "a.published " : "a.title ");
+            sort = orderByDescending ? sort + " DESC " : sort;
+
+            var conditions = new List<string>();
+
+            #region Generating conditions
+                        if (!string.IsNullOrEmpty(articleName))
+                            conditions.Add(String.Format(" a.title ILIKE {0} ",makeStringFilter(articleName)));
+                        conditions.Add("true");
+                        if (!string.IsNullOrEmpty(keyword))
+                            conditions.Add(String.Format(" a.summary ILIKE {0} ",makeStringFilter(keyword)));
+                        if(!string.IsNullOrEmpty(journalReference))
+                            conditions.Add(String.Format(" a.journalreference ILIKE {0}", makeStringFilter(journalReference)));
+           
+                        if (!string.IsNullOrEmpty(authorName))
+                        {
+                            conditions.Add(String.Format(" articleauthors.articleid = a.articleId AND author.authorid = articleauthors.authorid AND ({0} ILIKE '%' || author.authorname || '%' OR  author.authorname ILIKE '%{1}%')", authorName.PutIntoQuotes(), authorName));
+                            authors = true;
+                        }
+                        if (!string.IsNullOrEmpty(category))
+                        {
+                            conditions.Add(String.Format(
+                                " articlecategories.articleid = a.articleid AND articlecategories.categoryid = c.categoryId AND c.categoryName = {0} ", category.PutIntoQuotes()));
+                            categories = true;
+                        }
+                       if(publicationYear != 0)
+                           conditions.Add(" date_part('year', a.published) = " + publicationYear);
+            #endregion
 
             var sql = String.Format("SELECT DISTINCT a.* " +
                                     "FROM article a " + (authors
