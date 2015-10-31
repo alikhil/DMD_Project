@@ -152,7 +152,8 @@ namespace Project_DMD.Classes
 
         public void AddFavorite(Favorite favorite)
         {
-            throw new NotImplementedException();
+            favorite.AdditionDate = DateTime.Now;
+            AutoSqlGenerator.Instance.Add(favorite);
         }
 
         public Favorite GetFavorite(int articleId, string userId)
@@ -186,7 +187,8 @@ namespace Project_DMD.Classes
 
         public void CreateVisit(Visit visit)
         {
-            throw new NotImplementedException();
+            visit.VisitDate = DateTime.Now;
+            AutoSqlGenerator.Instance.Add(visit);
         }
 
         public List<Visit> GetVisits(string userId)
