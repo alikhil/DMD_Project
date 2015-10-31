@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Web.UI.WebControls;
 using Project_DMD.Models;
 
 namespace Project_DMD.Classes
@@ -103,6 +104,17 @@ namespace Project_DMD.Classes
             AutoSqlGenerator.Instance.ExecuteCommand(query);
 
         }
+        private void RemoveArticleCategories(Article article)
+        {
+            if (article == null)
+                throw new ArgumentNullException("Given article cannot be null.");
+
+            var query = "DELETE FROM ArticleCategories WHERE ArticleID = "
+                        + article.ArticleId.ToString() + ";";
+
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+
+        }
 
         /// <summary>
         /// Find article by id
@@ -140,6 +152,8 @@ namespace Project_DMD.Classes
         /// <returns>Id of created article</returns>
         public int AddArticle(Article article)
         {
+            article.WithPublished(DateTime.Now);
+
             string query = AutoSqlGenerator.Constants.InsertTableTemplateWithoutColumns;
             query = String.Format(query, "Article",  article.ToSql(), "ArticleID");
 
@@ -163,7 +177,22 @@ namespace Project_DMD.Classes
         /// <returns>True if article successfully updated, else false</returns>
         public bool UpdateArticle(Article article)
         {
-            throw new NotImplementedException();
+            Article oldArticle = GetArticleById(article.ArticleId);
+
+            article.WithUpdate(DateTime.Now)
+                .WithPublished(oldArticle.Published);
+
+            var query = AutoSqlGenerator.Constants.UpdateOnTemplate;
+            var values = "(ArticleID, Title, Summary, Published, Updated, Views, URL, DOI, JournalReference) = " +
+                         article.ToSql();
+
+            query = String.Format(query, "Article", values, "ArticleID = " + article.ArticleId.ToString());
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+
+            RemoveArticleCategories(article);
+            AddArticleCategories(article);
+
+            return true;
         }
 
         /// <summary>
@@ -173,7 +202,13 @@ namespace Project_DMD.Classes
         /// <returns>true if article successfully deleted, else false</returns>
         public bool DeleteArticle(int id)
         {
-            throw new NotImplementedException();
+            var query = "DELETE FROM ArticleCategories WHERE ArticleID = " + id.ToString() + ";"
+                       + "DELETE FROM ArticleAuthors WHERE ArticleID = " + id.ToString() + ";"
+                        + "DELETE FROM Favorite WHERE ArticleID = " + id.ToString() + ";"
+                        + "DELETE FROM Article WHERE ArticleID = " + id.ToString() + ";";
+
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+            return true;
         }
 
         /// <summary>

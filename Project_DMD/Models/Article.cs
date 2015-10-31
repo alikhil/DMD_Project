@@ -81,6 +81,7 @@ namespace Project_DMD.Models
 
         public Article()
         {
+            ArticleId = Int32.MinValue;
             Views = 0;
             DOI = String.Empty;
             JournalReference = String.Empty;
@@ -190,15 +191,15 @@ namespace Project_DMD.Models
         /// <returns></returns>
         public string ToSql()
         {
-            string articleData = "(DEFAULT, $myTokken$"
+            string articleData = "(" + (ArticleId != Int32.MinValue ? ArticleId.ToString() : "DEFAULT") + ", $myTokken$"
                                  + Title.ToString() + "$myTokken$, $myTokken$"
                                  + Summary.ToString() + "$myTokken$, "
-                                 + Published.ToString("dd.MM.yyyy").PutIntoQuotes() + ", "
-                                 + Updated.ToString("dd.MM.yyyy").PutIntoQuotes() + ", "
-                                 + Views.ToString() + ", $myTokken$s"
-                                 + Url.ToString() + "$myTokken$, $myTokken$"
-                                 + DOI.ToString() + "$myTokken$, $myTokken$"
-                                 + JournalReference.ToString() + "$myTokken$)";
+                                 + (Published.Date != DateTime.MinValue ? Published.Date.ToString("yyyy.MM.dd").PutIntoQuotes() : "DEFAULT") + ", "
+                                 + (Updated.Date != DateTime.MinValue ? Updated.Date.ToString("yyyy.MM.dd").PutIntoQuotes() : "DEFAULT") + ", "
+                                 + Views.ToString() + ", "
+                                 + (Url != String.Empty ? "$myTokken$" + Url + "$myTokken$" : "DEFAULT").ToString() + ", "
+                                 + (DOI != String.Empty ? "$myTokken$" + DOI + "$myTokken$" : "DEFAULT").ToString() + ", "
+                                 + (JournalReference != String.Empty ? "$myTokken$" + JournalReference + "$myTokken$" : "DEFAULT").ToString() + ")";
             return articleData;
         }
 
