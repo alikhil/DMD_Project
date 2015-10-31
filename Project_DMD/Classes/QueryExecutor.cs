@@ -21,6 +21,33 @@ namespace Project_DMD.Classes
         {
 
         }
+
+        private DateTime parseDateTime(string postgresFormatDate)
+        {
+            if (String.IsNullOrEmpty(postgresFormatDate))
+                return DateTime.MinValue;
+
+            return DateTime.ParseExact(postgresFormatDate, "dd.MM.yyyy H:mm:ss",
+                System.Globalization.CultureInfo.CurrentCulture);
+        }
+
+        private List<Author> GetAuthorsByArticleID(int id)
+        {
+            var commandGetAuthors = "SELECT a.* " +
+                                    "FROM Author a, ArticleAuthors au " +
+                                    "WHERE au.ArticleID = " + id.ToString() +
+                                    " and a.AuthorID = au.AuthorID;";
+            var articleAuthors = AutoSqlGenerator.Instance.ExecuteCommandReturnList(commandGetAuthors);
+            var authors = new List<Author>();
+            foreach (var row in articleAuthors)
+            {
+                var author = new Author(Convert.ToInt32(row["authorid"]), row["authorname"]);
+                authors.Add(author);
+            }
+
+            return authors;
+        }
+
         /// <summary>
         /// Find article by id
         /// </summary>
@@ -28,11 +55,13 @@ namespace Project_DMD.Classes
         /// <returns>Article if it exists else null</returns>
         public Article GetArticleById(int id)
         {
-            string query = "SELECT * FROM Article WHERE Article.ArticleID = " + id.ToString() + " LIMIT 1;";
-            var articleData = AutoSqlGenerator.Instance.ExecuteCommand(query);
+            var commandGetArticle = "SELECT * FROM Article WHERE Article.ArticleID = " + id.ToString() + " LIMIT 1;";
+            var articleData = AutoSqlGenerator.Instance.ExecuteCommand(commandGetArticle);
 
             if(articleData.Count == 0)
                 return null;
+
+            var authors = GetAuthorsByArticleID(Convert.ToInt32(articleData["articleid"]));
 
             return new Article()
                 .WithId(Convert.ToInt32(articleData["articleid"]))
@@ -42,16 +71,8 @@ namespace Project_DMD.Classes
                 .WithUpdate(parseDateTime(articleData["updated"]))
                 .WithViews(Convert.ToInt32(articleData["views"]))
                 .WithDoi(articleData["doi"])
-                .WithJournalReference(articleData["journalreference"]);
-        }
-
-        private DateTime parseDateTime(string postgresFormatDate)
-        {
-            if(String.IsNullOrEmpty(postgresFormatDate))
-                return DateTime.MinValue;
-
-            return DateTime.ParseExact(postgresFormatDate, "dd.MM.yyyy H:mm:ss",
-                System.Globalization.CultureInfo.CurrentCulture);
+                .WithJournalReference(articleData["journalreference"])
+                .WithAuthors(authors);
         }
 
         /// <summary>
@@ -100,7 +121,7 @@ namespace Project_DMD.Classes
         public Author GetAuthorById(int id)
         {
             var author = AutoSqlGenerator.Instance.Get<Author>(id);
-            var sql = String.Format("select a.* from article a, articleauthors au where a.articleid = au.articleid and au.authorid ={0} ;",
+            var sql = String.Format("SELECT a.* FROM article a, ArticleAuthors au WHERE a.articleid = au.articleid and au.authorid ={0} ;",
                       id);
             author.PublishedArticles =
                 AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql)
@@ -112,7 +133,7 @@ namespace Project_DMD.Classes
         /// Get list of authors
         /// </summary>
         /// <returns>List of authors</returns>
-        public IEnumerable<Author> GetAuthors()
+        public IEnumerable<Author> GetAllAuthors()
         {
             var sql = "Select * from author;";
             var authorsData = AutoSqlGenerator.Instance.LazyExecute(sql);

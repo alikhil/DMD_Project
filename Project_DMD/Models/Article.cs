@@ -172,7 +172,11 @@ namespace Project_DMD.Models
                                  + Views.ToString() + ", "
                                  + Url.ToString() + ", "
                                  + DOI.ToString() + ", "
-                                 + JournalReference.ToString() + ")";
+                                 + JournalReference.ToString() + ")"
+                                 + "\nAuthors: ";
+            if(AuthorsList != null)
+                AuthorsList.ForEach((author) => articleData += "\nID: " + author.AuthorId + "; Name: " + author.AuthorName + "; ");
+
             return articleData;
         }
 
