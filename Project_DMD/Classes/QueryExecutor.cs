@@ -186,7 +186,8 @@ namespace Project_DMD.Classes
 
         public void RemoveFavorite(int articleId, string userId)
         {
-            throw new NotImplementedException();
+            var sql = String.Format("DELETE FROM favorite WHERE articleid={0} AND userid={1};", articleId, userId);
+            AutoSqlGenerator.Instance.ExecuteCommand(sql);
         }
 
         public List<Favorite> GetFavorites(string userId)
