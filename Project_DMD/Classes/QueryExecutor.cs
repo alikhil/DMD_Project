@@ -60,10 +60,10 @@ namespace Project_DMD.Classes
         public int AddArticle(Article article)
         {
             string query = AutoSqlGenerator.Constants.InsertTableTemplate;
-            query = String.Format(query, "Article", "", article.ToString(), "ArticleID");
+            query = String.Format(query, "Article", "", article.ToSql(), "ArticleID");
 
             var queryData = AutoSqlGenerator.Instance.ExecuteCommand(query);
-
+            
             if (queryData == null)
                 throw new InvalidDataException("Given article is not valid. (ID isn't presented in table, invalid date and so on)");
 
