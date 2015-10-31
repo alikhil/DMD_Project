@@ -303,11 +303,17 @@ namespace Project_DMD.Classes
                 
                 var fieldName = (attribute.Name ?? propertyInfo.Name).ToLower();
                 if(dictionary.ContainsKey(fieldName) && !string.IsNullOrEmpty(dictionary[fieldName]))
-                    propertyInfo.SetValue(entity, Convert.ChangeType(dictionary[fieldName],propertyInfo.PropertyType));
+                    propertyInfo.SetValue(entity, changeType(dictionary[fieldName],propertyInfo.PropertyType));
             }
             return entity;
         }
 
+        private object changeType(object ob, Type t)
+        {
+            if (t.IsEnum)
+                return Enum.Parse(t, ob.ToString());
+            return Convert.ChangeType(ob, t);
+        }
         private static List<string> GetColumnsAndValues(object entity, out List<object> values, out string primaryProperty, bool format = false)
         {
             Type typeOfObject = entity.GetType();
