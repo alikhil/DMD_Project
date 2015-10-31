@@ -290,12 +290,16 @@ namespace Project_DMD.Classes
 
         public List<ActionHistory> GetActionsForUser(string userId)
         {
-            throw new NotImplementedException();
+            var query = new Dictionary<string, string> { { "userid", userId } };
+            var actions = AutoSqlGenerator.Instance.FindAll<ActionHistory>(query);
+            return actions;
         }
 
         public List<ActionHistory> GetActionsForArticle(int articleId)
         {
-            throw new NotImplementedException();
+            var query = new Dictionary<string, string> {{"articleid", articleId.ToString()}};
+            var actions = AutoSqlGenerator.Instance.FindAll<ActionHistory>(query);
+            return actions;
         }
 
         public void AddAction(ActionHistory action)
