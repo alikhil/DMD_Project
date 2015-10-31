@@ -372,13 +372,13 @@ namespace Project_DMD.Classes
             int offset = (page - 1)*Global.ArticlePerPage;
             if (!string.IsNullOrEmpty(authorName))
             {
-                conditions.Add(String.Format(" au.articleid = a.articleId AND aa.authorid = au.authorid AND ({0} ILIKE '%' || aa.authorname || '%' OR  aa.authorname ILIKE '%'{0}'%')", authorName.PutIntoQuotes()));
+                conditions.Add(String.Format(" articleauthors.articleid = a.articleId AND author.authorid = articleauthors.authorid AND ({0} ILIKE '%' || author.authorname || '%' OR  author.authorname ILIKE '%{1}%')", authorName.PutIntoQuotes(), authorName));
                 authors = true;
             }
             if (!string.IsNullOrEmpty(category))
             {
                 conditions.Add(String.Format(
-                    " ac.articleid = a.articleid AND ac.categoryid = c.categoryId AND c.categoryName = {0} ", category.PutIntoQuotes()));
+                    " articlecategories.articleid = a.articleid AND articlecategories.categoryid = c.categoryId AND c.categoryName = {0} ", category.PutIntoQuotes()));
                 categories = true;
             }
            if(publicationYear != 0)
@@ -386,8 +386,8 @@ namespace Project_DMD.Classes
 
             var sql = String.Format("SELECT DISTINCT a.* " +
                                     "FROM article a " + (authors
-                                        ? ", articleauthors au, author aa "
-                                        : "") + (categories ? " ,articlecategories ac, category c " : "") +
+                                        ? ", articleauthors, author "
+                                        : "") + (categories ? " ,articlecategories, category c" : "") +
                                     " WHERE {0} {1} LIMIT {2} OFFSET {3};", String.Join(" AND ", conditions), sort, Global.ArticlePerPage, offset);
 
             var articlesData = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
