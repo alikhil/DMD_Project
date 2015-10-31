@@ -113,7 +113,7 @@
         </tr>
         <tr>
             <td>
-                @Html.DisplayFor(model => model.Summary)
+                @Html.DisplayFor(model => model.Summary)...<a href="@Model.Url">read more&raquo;</a>
             </td>
         </tr>
     </table>
@@ -142,11 +142,12 @@
                 using (Html.BeginForm("RemoveFromFavorite", "Articles", FormMethod.Post))
                 {
                     <input type="hidden" name="articleId" value="@Model.ArticleId" />
-                    <input type="submit" value="remove from favorite" class="btn btn-danger" />
+                    <input type="submit" value="Remove from favorite" class="btn btn-danger" />
                 }
             }
         }
     </div>
     <div style="display:inline-block;">@Html.ActionLink("Edit", "Edit", new { id = Model.ArticleId }, new { @class = "btn btn-info" })</div>
     <div style="display:inline-block;">@Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-warning" })</div>
+    <div style="display:inline-block;" class="col-lg-offset-7">@Html.ActionLink("Delete article", "Delete", new { id = Model.ArticleId }, new { @class = "btn btn-danger" })</div>
 </p>
