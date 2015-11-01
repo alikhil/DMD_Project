@@ -361,5 +361,17 @@ namespace Project_DMD.Classes
         {
             return "'" + value + "'";
         }
+
+        public static string PutIntoDollar(this string value)
+        {
+            string alphabet = "qwertyuiopasdfghjklzxvbnmcQWERTYUIOPASDFGHJKLZXVBNMC1234567890";
+            var random = new Random();
+            int k = 3;
+            var key = "$";
+            for (var i = 0; i < k; i++)
+                key += alphabet[random.Next(alphabet.Length)];
+            key += '$';
+            return key + value + key;
+        }
     }
 }
