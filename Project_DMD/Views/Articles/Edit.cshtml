@@ -14,64 +14,73 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="form">
+    <div>
         <h4>@Html.DisplayFor(model => model.Title)</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ArticleId)
+        <table class="table table-bordered">
+            <tr>
+                <th>
+                    @Html.LabelFor(model => model.Url, htmlAttributes: new { @class = "control-label col-md-2" })
+                </th>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Url, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Url, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Url, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <th>
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                </th>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <th>
+                    @Html.LabelFor(model => model.JournalReference, htmlAttributes: new { @class = "control-label col-md-2" })
+                </th>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.JournalReference, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.JournalReference, new { htmlAttributes = new { @class = "form-control"}})
-                @Html.ValidationMessageFor(model => model.JournalReference, "", new { @class = "text-danger" })
-            </div>
-        </div>
+                <th>
+                    @Html.LabelFor(model => model.DOI, htmlAttributes: new { @class = "control-label col-md-2" })
+                </th>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DOI, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DOI, new { htmlAttributes = new { @class = "form-control" } })
+                <th>
+                    @Html.LabelFor(model => model.Categories, htmlAttributes: new { @class = "control-label col-md-2" })
+                </th>
+            </tr>
+            <tr>
+                <th>
+                    <textarea name="Url" class="textarea2"> @Model.Url </textarea>
+                    @Html.ValidationMessageFor(model => model.Url, "", new { @class = "text-danger" })
+                </th>
+
+                <th>
+                    <textarea name="Title" class="textarea2">@Model.Title</textarea>
+                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                </th>
+
+                <th>
+                    <textarea name="JournalReference" class="textarea2">@Model.JournalReference</textarea>
+                    @Html.ValidationMessageFor(model => model.JournalReference, "", new { @class = "text-danger" })
+                </th>
+
+                <th>
+                    <textarea name="DOI" class="textarea2">@Model.DOI</textarea>
+                    @Html.ValidationMessageFor(model => model.DOI, "", new { @class = "text-danger" })
+                </th>
+
+                <th>
+                    @{ SelectList list = ViewBag.SelectedList;}
+                    @Html.ListBoxFor(model => model.Categories, list)
+                </th>
                 @Html.ValidationMessageFor(model => model.DOI, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Categories, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @{ SelectList list = ViewBag.SelectedList;}
-                @Html.ListBoxFor(model => model.Categories, list)
-                @Html.ValidationMessageFor(model => model.DOI, "", new { @class = "text-danger" })
-            </div>
-        </div>
+            </tr>
+        </table>
     </div>
 
     <div>
         <table class="table table-bordered">
             <tr>
-                <th>
-                    @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
+                <th style="text-align:center">
+                    Summary
                 </th>
             </tr>
             <tr>
                 <td>
-                    <textarea name="Summary" style="min-width:1120px; min-height:100px;">@Model.Summary</textarea>
+                    <textarea name="Summary" class="textarea">@Model.Summary</textarea>
                     @Html.ValidationMessageFor(model => model.Summary, "", new { @class = "text-danger" })
                 </td>
             </tr>

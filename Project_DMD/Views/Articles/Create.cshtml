@@ -3,16 +3,17 @@
 @{
     ViewBag.Title = "Create";
 }
+<div class="well">
+    <h2>Create</h2>
+</div>
 
-<h2>Create</h2>
 
-
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <h4>Article</h4>
+        <h4>Here you can add your own article</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -32,16 +33,6 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Summary, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Summary, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-
-        <div class="form-group">
             @Html.LabelFor(model => model.JournalReference, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.JournalReference, new { htmlAttributes = new { @class = "form-control" } })
@@ -58,32 +49,49 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Categories, htmlAttributes: new {@class = "control-label col-md-2"})
+            @Html.LabelFor(model => model.Categories, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @{ SelectList list = ViewBag.SelectedList;}
                 @Html.ListBoxFor(model => model.Categories, list)
-                @Html.ValidationMessageFor(model => model.Categories, "", new {@class = "text-danger"})
+                @Html.ValidationMessageFor(model => model.Categories, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-        @Html.LabelFor(model => model.AuthorsList, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @{ SelectList authors = ViewBag.Authors;}
-            @Html.ListBoxFor(model => model.Authors, authors)
-            @Html.ValidationMessageFor(model => model.Authors, "", new { @class = "text-danger" })
-        </div>
-    </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+            @Html.LabelFor(model => model.AuthorsList, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @{ SelectList authors = ViewBag.Authors;}
+                @Html.ListBoxFor(model => model.Authors, authors)
+                @Html.ValidationMessageFor(model => model.Authors, "", new { @class = "text-danger" })
             </div>
         </div>
     </div>
+
+    <div>
+        <table class="table table-bordered">
+            <tr>
+                <th>
+                    @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <textarea name="Summary" class="textarea">
+                        Add text here...
+                    </textarea>
+                    @Html.ValidationMessageFor(model => model.Summary, "", new { @class = "text-danger" })
+                </td>
+            </tr>
+        </table>
+    </div>
+
 }
+<div style="display:inline-block">
+    <input type="submit" value="Create" class="btn btn-success" />
+</div>
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
+<div style="display:inline-block">
+    @Html.ActionLink("Back to List", "Index", new {}, new { @class = "btn btn-warning" })
 </div>
 
 @section Scripts {
