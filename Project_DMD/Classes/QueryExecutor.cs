@@ -235,7 +235,8 @@ namespace Project_DMD.Classes
         /// <returns>List of authors</returns>
         public IEnumerable<Author> GetAllAuthors()
         {
-            var sql = "SELECT * FROM author;";
+            var start = (new Random()).Next(500000);
+            var sql = String.Format("SELECT * FROM author LIMIT 100 OFFSET {0};", start);
             var authorsData = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
             return authorsData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Author>(data));
         }
