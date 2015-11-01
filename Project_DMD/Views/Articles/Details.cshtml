@@ -148,8 +148,9 @@
 <p>
     @if (Model != null)
     {
+        Random random = new Random();
         <span>@Html.ActionLink("Show related by published year", "Index", new { publicationYear = Model.Published.Year }) |</span>
-        <span>@Html.ActionLink("Show related by author", "Index", new { authorName = String.Join(",", Model.AuthorsList.Select(a => a.AuthorName)) })</span>
+        <span>@Html.ActionLink("Show related by author", "Index", new { authorName = Model.AuthorsList[random.Next(Model.AuthorsList.Count)].AuthorName })</span>
     }
 </p>
 <p>
