@@ -236,7 +236,7 @@ namespace Project_DMD.Classes
         public IEnumerable<Author> GetAllAuthors()
         {
             var sql = "SELECT * FROM author;";
-            var authorsData = AutoSqlGenerator.Instance.LazyExecute(sql);
+            var authorsData = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
             return authorsData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Author>(data));
         }
 
