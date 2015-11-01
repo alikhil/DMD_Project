@@ -24,17 +24,28 @@
                     @Html.DisplayNameFor(model => model.Published)
                 </th>
 
+                @if (Model.Updated.Equals(DateTime.MinValue))  {
+                } else {
                 <th>
                     @Html.DisplayNameFor(model => model.Updated)
                 </th>
+                }
 
+                @if (string.IsNullOrEmpty(Model.JournalReference)) { } else { 
                 <th>
                     @Html.DisplayNameFor(model => model.JournalReference)
                 </th>
+                }
 
-                <th>
-                    @Html.DisplayNameFor(model => model.DOI)
-                </th>
+                @if (string.IsNullOrEmpty(Model.DOI))
+                {
+                }
+                else
+                {
+                    <th>
+                        @Html.DisplayNameFor(model => model.DOI)
+                    </th>
+                }
 
                 <th>
                     @Html.DisplayNameFor(model => model.Views)
@@ -57,17 +68,33 @@
                     @Html.DisplayFor(model => model.Published)
                 </td>
 
-                <td>
-                    @Html.DisplayFor(model => model.Updated)
-                </td>
+                @if (Model.Updated.Equals(DateTime.MinValue))
+                {
+                }
+                else
+                {
+                    <td>
+                        @Model.Updated.ToShortDateString()
+                    </td>
+                }
 
-                <td>
-                    @Html.DisplayFor(model => model.JournalReference)
-                </td>
+                @if (string.IsNullOrEmpty(Model.JournalReference)) { }
+                else
+                {
+                    <td>
+                        @Html.DisplayFor(model => model.JournalReference)
+                    </td>
+                }
 
-                <td>
-                    @Html.DisplayFor(model => model.DOI)
-                </td>
+                @if (string.IsNullOrEmpty(Model.DOI))
+                {
+                }
+                else
+                {
+                    <td>
+                        @Html.DisplayFor(model => model.DOI)
+                    </td>
+                }
 
                 <td>
                     @Html.DisplayFor(model => model.Views)
