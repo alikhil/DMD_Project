@@ -374,7 +374,6 @@ namespace Project_DMD.Classes
             #region Generating conditions
                         if (!string.IsNullOrEmpty(articleName))
                             conditions.Add(String.Format(" a.title ILIKE {0} ",makeStringFilter(articleName)));
-                        conditions.Add("true");
                         if (!string.IsNullOrEmpty(keyword))
                             conditions.Add(String.Format(" a.summary ILIKE {0} ",makeStringFilter(keyword)));
                         if(!string.IsNullOrEmpty(journalReference))
@@ -382,7 +381,7 @@ namespace Project_DMD.Classes
            
                         if (!string.IsNullOrEmpty(authorName))
                         {
-                            conditions.Add(String.Format(" articleauthors.articleid = a.articleId AND author.authorid = articleauthors.authorid AND ({0} ILIKE '%' || author.authorname || '%' OR  author.authorname ILIKE '%{1}%')", authorName.PutIntoQuotes(), authorName));
+                            conditions.Add(String.Format(" articleauthors.articleid = a.articleId AND author.authorid = articleauthors.authorid AND author.authorname ILIKE '%{0}%' ", authorName));
                             authors = true;
                         }
                         if (!string.IsNullOrEmpty(category))
@@ -395,11 +394,12 @@ namespace Project_DMD.Classes
                            conditions.Add(" date_part('year', a.published) = " + publicationYear);
             #endregion
 
-            var sql = String.Format("SELECT DISTINCT a.* " +
+            var conditionString = conditions.Count > 0 ? "WHERE " + String.Join(" AND ", conditions) : "";
+            var sql = String.Format("SELECT a.* " +
                                     "FROM article a " + (authors
                                         ? ", articleauthors, author "
                                         : "") + (categories ? " ,articlecategories, category c" : "") +
-                                    " WHERE {0} {1} LIMIT {2} OFFSET {3};", String.Join(" AND ", conditions), sort, Global.ArticlePerPage, offset);
+                                    " {0} {1} LIMIT {2} OFFSET {3};", conditionString, sort, Global.ArticlePerPage, offset);
 
             var articlesData = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
             var articles = articlesData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Article>(data)).ToList();
