@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -24,6 +25,14 @@ namespace Project_DMD.Classes
         private AutoSqlGenerator()
         {
         }
+
+        public void Log(string message)
+        {
+            TextWriter writer = Console.Out;
+            //Writer = new StreamWriter(String.Format("log_{0}_.txt", DateTime.Now.ToShortDateString()));
+            writer.WriteLine(message);
+        }
+
         public static class Constants
         {
             public readonly static string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=PMS;";
@@ -87,7 +96,7 @@ namespace Project_DMD.Classes
             {
                 
                 var query = new NpgsqlCommand(command, connection);
-                Console.WriteLine(query.CommandText);
+                Log(query.CommandText);
                 var reader = query.ExecuteReader();
                 var dictionary = new Dictionary<string, string>();
                 while (reader.Read())
@@ -107,7 +116,7 @@ namespace Project_DMD.Classes
             {
 
                 var query = new NpgsqlCommand(command, connection);
-                Console.WriteLine(query.CommandText);
+                Log(query.CommandText);
                 var reader = query.ExecuteReader();
                 while (reader.Read())
                 {
@@ -128,7 +137,7 @@ namespace Project_DMD.Classes
             {
 
                 var query = new NpgsqlCommand(command, connection);
-                Console.WriteLine(query.CommandText);
+                Log(query.CommandText);
                 var reader = query.ExecuteReader();
                 while (reader.Read())
                 {
@@ -154,7 +163,7 @@ namespace Project_DMD.Classes
                 var command = new NpgsqlCommand(String.Format(Constants.UpdateOnTemplate,tableName,
                     String.Join(",", columns.Zip(values,(column, value) => column + "=" + value)), 
                     primaryProperty + "=" + primaryKey), connection);
-                Console.WriteLine(command.CommandText);
+                Log(command.CommandText);
                 command.ExecuteScalar();
             }
 
@@ -179,7 +188,7 @@ namespace Project_DMD.Classes
                 {
                         query.Parameters.AddWithValue("@" + columns[i++], value);
                 }
-                Console.WriteLine(query.CommandText);
+                Log(query.CommandText);
 
                 var result = query.ExecuteScalar();
                 return result.ToString();
@@ -210,7 +219,7 @@ namespace Project_DMD.Classes
                 var query = new NpgsqlCommand(String.Format(Constants.SelectFromTableWhereTemplate, tableName,
                     primaryProperty + "=" + primaryKey), conn);
                 //query.Parameters.AddWithValue("@" + primaryProperty, "'" + primaryKey + "'");
-                Console.WriteLine(query.CommandText);
+                Log(query.CommandText);
 
                 var reader = query.ExecuteReader();
 
@@ -250,7 +259,7 @@ namespace Project_DMD.Classes
                 else
                     sqlQuery = new NpgsqlCommand(
                         String.Format(Constants.SelectAllFromTableTemplate, tableName), connection);
-                Console.WriteLine(sqlQuery.CommandText);
+                Log(sqlQuery.CommandText);
                 var reader = sqlQuery.ExecuteReader();
                 while (reader.Read())
                 {
