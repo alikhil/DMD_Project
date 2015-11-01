@@ -221,7 +221,7 @@ namespace Project_DMD.Classes
         public Author GetAuthorById(int id)
         {
             var author = AutoSqlGenerator.Instance.Get<Author>(id);
-            var sql = String.Format("SELECT a.* FROM article a, ArticleAuthors au WHERE a.articleid = au.articleid and au.authorid ={0} ;",
+            var sql = String.Format("SELECT a.* FROM article a, ArticleAuthors au WHERE a.articleid = au.articleid AND au.authorid ={0} ;",
                       id);
             author.PublishedArticles =
                 AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql)
@@ -235,7 +235,7 @@ namespace Project_DMD.Classes
         /// <returns>List of authors</returns>
         public IEnumerable<Author> GetAllAuthors()
         {
-            var sql = "Select * from author;";
+            var sql = "SELECT * FROM author;";
             var authorsData = AutoSqlGenerator.Instance.LazyExecute(sql);
             return authorsData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Author>(data));
         }
