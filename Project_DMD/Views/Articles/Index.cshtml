@@ -57,7 +57,7 @@
                             @Html.DisplayNameFor(model => model.Published)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.AuthorsList)
+                            @Html.DisplayNameFor(model => model.Authors)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.Categories)
@@ -78,12 +78,12 @@
                             </td>
                             <td style="width:300px">
                                 @{
-                        if (item != null && item.AuthorsList != null)
+                        if (item != null && item.Authors != null)
                         {
                             var count = 0;
-                            foreach (var author in item.AuthorsList)
+                            foreach (var author in item.Authors)
                             {
-                                var str = ++count == item.AuthorsList.Count ? "" : ",";
+                                var str = ++count == item.Authors.Count ? "" : ",";
                                 <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
                             }
                         }

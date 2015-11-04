@@ -68,18 +68,18 @@ namespace Project_DMD.Classes
         private void AddArticleAuthors(Article article)
         {
             if (article == null)
-                throw new ArgumentNullException("Given article cannot be null.");
-            if (article.AuthorsList.Count == 0)
+                throw new ArgumentNullException("article");
+            if (article.Authors.Count == 0)
                 return;
+            article.Authors
+                .Where(a => a.AuthorId == 0 && !String.IsNullOrEmpty(a.AuthorName) ) 
+                .ForEach(a => a.AuthorId = Convert.ToInt32(AutoSqlGenerator.Instance.Add(a)));
 
             var query = AutoSqlGenerator.Constants.InsertTableTemplate;
-            var authorsValues = "";
-            foreach (Author author in article.AuthorsList)
-            {
-                authorsValues += "(" + article.ArticleId.ToString() + ", "
-                                 + author.AuthorId.ToString() + "),";
-            }
-            authorsValues = authorsValues.Remove(authorsValues.Length - 1);
+            var authorsValues = String.Join(",", 
+                article.Authors
+                .Select(a => "(" + article.ArticleId + "," + a.AuthorId + ")"));
+            
 
             query = String.Format(query, "ArticleAuthors", "ArticleID, AuthorID", authorsValues, "1");
             AutoSqlGenerator.Instance.ExecuteCommand(query);
@@ -87,7 +87,7 @@ namespace Project_DMD.Classes
         private void AddArticleCategories(Article article)
         {
             if (article == null)
-                throw new ArgumentNullException("Given article cannot be null.");
+                throw new ArgumentNullException("article");
             if (article.Categories.Count == 0)
                 return;
 
@@ -108,7 +108,7 @@ namespace Project_DMD.Classes
         private void RemoveArticleCategories(Article article)
         {
             if (article == null)
-                throw new ArgumentNullException("Given article cannot be null.");
+                throw new ArgumentNullException("article");
 
             var query = "DELETE FROM ArticleCategories WHERE ArticleID = "
                         + article.ArticleId.ToString() + ";";
@@ -268,7 +268,7 @@ namespace Project_DMD.Classes
 
         public bool UpdateAppUser(AppUser appUser)
         {
-            AutoSqlGenerator.Instance.Update(appUser,appUser.Id.PutIntoQuotes());
+            AutoSqlGenerator.Instance.Update(appUser,appUser.Id.PutIntoDollar());
             return true;
         }
 
@@ -301,7 +301,7 @@ namespace Project_DMD.Classes
 
         public AppUser GetAppUserByUserName(string userName)
         {
-            var query = new Dictionary<string, string> {{"email", userName.PutIntoQuotes()}};
+            var query = new Dictionary<string, string> {{"email", userName}};
             var list = AutoSqlGenerator.Instance.FindAll<AppUser>(query);
             if(list == null || list.Count == 0)
                 return null;
@@ -407,10 +407,19 @@ namespace Project_DMD.Classes
             var articles = articlesData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Article>(data)).ToList();
             foreach (var a in articles)
             {
-                 a.AuthorsList = GetAuthorsByArticleID(a.ArticleId);
+                 a.Authors = GetAuthorsByArticleID(a.ArticleId);
                 a.Categories = GetCategoriesByArticleID(a.ArticleId);
             }
             return articles;
+        }
+
+        public List<Author> GetAuthorsWithName(string search)
+        {
+            var sql = String.Format(AutoSqlGenerator.Constants.SelectFromTableWhereTemplate, "author",
+                " authorName ILIKE " + (search+ "%").PutIntoDollar() + "ORDER BY authorName LIMIT 15");
+            var resultData = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
+            var result = resultData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Author>(data)).ToList();
+            return result;
         }
 
         private string makeStringFilter(string value)

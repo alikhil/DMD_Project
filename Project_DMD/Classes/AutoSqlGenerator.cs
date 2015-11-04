@@ -253,7 +253,7 @@ namespace Project_DMD.Classes
                 {
                     sqlQuery = new NpgsqlCommand(
                         String.Format(Constants.SelectFromTableWhereTemplate, tableName, String.Join(" AND ",
-                            query.Select(pair => pair.Key + "=" + pair.Value))), connection);
+                            query.Select(pair => pair.Key + "=" + pair.Value.PutIntoDollar()))), connection);
                    // query.ForEach(pair => sqlQuery.Parameters.AddWithValue(pair.Key, pair.Value));
                 }
                 else
@@ -348,7 +348,7 @@ namespace Project_DMD.Classes
 
                     var propValue = propertyInfo.GetValue(entity);
                     if (propValue is string && !agsAttribute.Int)
-                        values.Add(format ? propValue.ToString().PutIntoQuotes() : propValue.ToString());
+                        values.Add(format ? propValue.ToString().PutIntoDollar() : propValue.ToString());
                     else if (propValue is DateTime)
                     {
                         var dt = Convert.ToDateTime(propValue.ToString());

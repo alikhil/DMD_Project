@@ -56,7 +56,7 @@
                 </th>
 
                 <th>
-                    @Html.DisplayNameFor(model => model.AuthorsList)
+                    @Html.DisplayNameFor(model => model.Authors)
                 </th>
             </tr>
             <tr>
@@ -116,12 +116,12 @@
 
                 <td>
                     @{
-                        if (Model != null && Model.AuthorsList != null)
+                        if (Model != null && Model.Authors != null)
                         {
                             var count = 0;
-                            foreach (var author in Model.AuthorsList)
+                            foreach (var author in Model.Authors)
                             {
-                                var str = ++count == Model.AuthorsList.Count ? "" : ",";
+                                var str = ++count == Model.Authors.Count ? "" : ",";
                                 <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
                             }
                         }
@@ -150,7 +150,7 @@
     {
         Random random = new Random();
         <span>@Html.ActionLink("Show related by published year", "Index", new { publicationYear = Model.Published.Year }) |</span>
-        <span>@Html.ActionLink("Show related by author", "Index", new { authorName = Model.AuthorsList[random.Next(Model.AuthorsList.Count)].AuthorName })</span>
+        <span>@Html.ActionLink("Show related by author", "Index", new { authorName = Model.Authors[random.Next(Model.Authors.Count)].AuthorName })</span>
     }
 </p>
 <p>

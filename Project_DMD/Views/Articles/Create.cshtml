@@ -59,11 +59,14 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.AuthorsList, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Authors, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @{ SelectList authors = ViewBag.Authors;}
-                @Html.ListBoxFor(model => model.Authors, authors)
-                @Html.ValidationMessageFor(model => model.Authors, "", new { @class = "text-danger" })
+                <input id="author" type="text" name="author" />
+                <input type="hidden" id="author-id">
+                <button id="add-author-btn" type="button" class="btn btn-success">Add</button>
+                <div id="authors">
+                    
+                </div>
             </div>
         </div>
         <div class="form-group">
@@ -97,4 +100,58 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jquery-ui-ajax")
+    <script type="text/javascript">
+        $(function() {
+            var str = "";
+            $("#author").on('change keyup paste', (function() {
+                str = $(this).val();
+                //$("#temp").text($str);
+                var authors = [];
+                $.ajax({
+                    url: "/Articles/GetAuthors",
+                    type: 'GET',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: { search: str },
+                    success: function(data) {
+                        console.log(data);
+                        console.log(data[0]);
+                        for (var i = 0; i < data.length; i++) {
+                            authors.push({ label: data[i].AuthorName, value: data[i].AuthorId });
+                        }
+                        console.log(authors);
+                        $("#author").autocomplete({
+                            minLength: 0,
+                            source: authors,
+                            focus: function(event, ui) {
+                                $("#author").val(ui.item.label);
+                                return false;
+                            },
+                            select: function(event, ui) {
+                                $("#author").val(ui.item.label);
+                                $("#author-id").val(ui.item.value);
+                                return false;
+                            }
+                        }).autocomplete("instance")._renderItem = function(ul, item) {
+                            return $("<li>").append("<a>" + item.label + "</a>").appendTo(ul);
+                        };
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }));
+
+            $("#add-author-btn").click(function () {
+                var authorId = $("#author-id").val() || 0;
+                var authorName = $("#author").val();
+                var iterator = $("#authors").children().length;
+                $("#authors").append("<div><p>" + authorName +
+                    "</p><input hidden name='authors[" + iterator + "].AuthorName' value='" + authorName +
+                    "'><input hidden name='authors[" + iterator + "].AuthorId' value='" + authorId + "'></div>");
+                $("#author").val("");
+                $("#author-id").val("0");
+            });
+        });
+</script>
 }
