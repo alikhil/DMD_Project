@@ -167,7 +167,10 @@
     <Compile Include="Classes\Cloner.cs" />
     <Compile Include="Classes\DataRepository.cs" />
     <Compile Include="Classes\ExceptionExtensions.cs" />
+    <Compile Include="Classes\FakeAppUserRepository.cs" />
     <Compile Include="Classes\Global.cs" />
+    <Compile Include="Classes\IAppUserRepository.cs" />
+    <Compile Include="Classes\IDataRepository.cs" />
     <Compile Include="Classes\IdentityExtensions.cs" />
     <Compile Include="Classes\AutoSqlGenerator.cs" />
     <Compile Include="Classes\QueryExecutor.cs" />
@@ -218,7 +221,9 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="SqlScripts\InitializeTables.sql" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
