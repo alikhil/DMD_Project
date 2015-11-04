@@ -373,7 +373,7 @@ namespace Project_DMD.Classes
 
         public static string PutIntoDollar(this string value)
         {
-            string alphabet = "qwertyuiopasdfghjklzxvbnmcQWERTYUIOPASDFGHJKLZXVBNMC1234567890";
+            string alphabet = "qwertyuiopasdfghjklzxvbnmcQWERTYUIOPASDFGHJKLZXVBNMC";
             var random = new Random();
             int k = 3;
             var key = "$";
