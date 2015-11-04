@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
@@ -21,13 +22,18 @@ namespace Project_DMD.Controllers
             string authorName = null, int publicationYear = 0, string category = "",
             string journalReference = null, bool orderByDescending = false, int sortType = 0)
         {
+            Stopwatch watch = new Stopwatch();
             var tempDict = Global.Instance.InitCategories();
             tempDict.Add("","");
             ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value", category);
             var sortes = new Dictionary<string, string> {{"0", "Article Title"}, {"1", "Publication Date"}};
             ViewBag.Sortes = new SelectList(sortes, "Key", "Value", sortType.ToString());
             ViewBag.Page = page;
-            return View(DataRepository.GetArticles(page, articleName, keyword, authorName, publicationYear, category, journalReference, sortType, orderByDescending));
+            watch.Start();
+            var result = DataRepository.GetArticles(page, articleName, keyword, authorName, publicationYear, category,
+                journalReference, sortType, orderByDescending);
+            ViewBag.TimeElapsed = watch.Elapsed.TotalMilliseconds;
+            return View(result);
         }
 
         

@@ -4,13 +4,14 @@
 @{
     ViewBag.Title = "Articles";
 }
-
 <div class="well">
     <h2>You have access to more than one million articles. Use it!</h2>
 </div>
 <p>
     @Html.ActionLink("Add New Article", "Create")
 </p>
+<p>Search time: @ViewBag.TimeElapsed ms</p>
+
 @using (Html.BeginForm())
 {
     SelectList list = ViewBag.SelectedList;
