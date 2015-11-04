@@ -357,6 +357,7 @@ namespace Project_DMD.Classes
         /// <param name="authorName"></param>
         /// <param name="publicationYear"></param>
         /// <param name="category"></param>
+        /// <param name="journalReference"></param>
         /// <param name="sortType">1 - sort by date; 0 - sort by title</param>
         /// <param name="orderByDescending"></param>
         /// <returns></returns>
@@ -382,13 +383,13 @@ namespace Project_DMD.Classes
            
                         if (!string.IsNullOrEmpty(authorName))
                         {
-                            conditions.Add(String.Format(" articleauthors.articleid = a.articleId AND author.authorid = articleauthors.authorid AND author.authorname ILIKE '%{0}%' ", authorName));
+                            conditions.Add(String.Format(" articleauthors.articleid = a.articleId AND author.authorid = articleauthors.authorid AND author.authorname ILIKE {0} ", makeStringFilter(authorName)));
                             authors = true;
                         }
                         if (!string.IsNullOrEmpty(category))
                         {
                             conditions.Add(String.Format(
-                                " articlecategories.articleid = a.articleid AND articlecategories.categoryid = c.categoryId AND c.categoryName = {0} ", category.PutIntoQuotes()));
+                                " articlecategories.articleid = a.articleid AND articlecategories.categoryid = c.categoryId AND c.categoryName = {0} ", category.PutIntoDollar()));
                             categories = true;
                         }
                        if(publicationYear != 0)
@@ -417,10 +418,11 @@ namespace Project_DMD.Classes
             var filter = "";
             if (!string.IsNullOrEmpty(value))
             {
-                filter = value + "%";
-                if (value.Length > 2)
-                    filter = "%" + filter;
-                filter = filter.PutIntoQuotes();
+                if (value.Length == 1)
+                    value += ' ';
+                if (value.Length == 2)
+                    value = ' ' + value;
+                filter = ("%" + value + "%").PutIntoDollar();
             }
             return filter;
         }
