@@ -74,7 +74,7 @@ namespace Project_DMD.Classes
 
             foreach (var art in _articlesList)
             {
-                foreach (var auth in art.AuthorsList)
+                foreach (var auth in art.Authors)
                 {
                     auth.PublishedArticles = auth.PublishedArticles ?? new List<Article>();
                     auth.PublishedArticles.Add(art);
@@ -86,14 +86,14 @@ namespace Project_DMD.Classes
         public int Add(Article article)
         {
             article.ArticleId = _articlesList.Count;
-            article.AuthorsList = GetFullAuthorInfo(article);
+            article.Authors = GetFullAuthorInfo(article);
             _articlesList.Add(article.WithPublished(DateTime.Now));
             return article.ArticleId;
         }
 
         private List<Author> GetFullAuthorInfo(Article article)
         {
-            return article.AuthorsList.Select(author => GetAuthor(author.AuthorId)).ToList();
+            return article.Authors.Select(author => GetAuthor(author.AuthorId)).ToList();
         }
 
         public Article GetArticle(int id)
@@ -178,7 +178,11 @@ namespace Project_DMD.Classes
             return result.Skip(takeFrom).Take(Global.ArticlePerPage).ToList();
         }
 
-        
+        public List<Author> GetAuthorsByName(string search)
+        {
+            return _authors.FindAll(a => a.AuthorName.Contains(search));
+        }
+
 
         private Article getArticle(int articleId)
         {
@@ -201,7 +205,7 @@ namespace Project_DMD.Classes
         public static List<Article> FilterByAuthors(this List<Article> result, string authorName)
         {
             if (!string.IsNullOrEmpty(authorName))
-                result = result.FindAll(x => x.AuthorsList.Exists(y => authorName.Contains(y.AuthorName)));
+                result = result.FindAll(x => x.Authors.Exists(y => authorName.Contains(y.AuthorName)));
             return result;
         }
 

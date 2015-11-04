@@ -27,6 +27,8 @@ namespace Project_DMD.Classes
         void VisitArticle(int articleId);
 
         List<Article> GetArticles(int page, string articleName, string keyword, string authorName, int publicationYear, string category, string journalReference, int sortType, bool orderByDescending);
+        
+        List<Author> GetAuthorsByName(string search);
     }
 
 }

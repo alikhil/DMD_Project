@@ -70,9 +70,10 @@ namespace Project_DMD.Models
         public int Views { get; set; }
 
         [AgsForeign(Name = "ArticlId", TableName = "ArticleAuthors")]
-        public List<Author> AuthorsList { get; set; }
+        [Required]
+        public List<Author> Authors { get; set; }
 
-        public int[] Authors { get; set; }
+        //public int[] Authors { get; set; }
 
         [Required]
         [AgsForeign(Name = "ArticleId", TableName = "ArticleCategories")]
@@ -123,7 +124,7 @@ namespace Project_DMD.Models
 
         public Article WithAuthors(List<Author> authors)
         {
-            AuthorsList = authors;
+            Authors = authors;
             return this;
         }
 
@@ -175,8 +176,8 @@ namespace Project_DMD.Models
                                  + DOI.ToString() + ", "
                                  + JournalReference.ToString() + ")"
                                  + "\nAuthors: ";
-            if(AuthorsList != null)
-                AuthorsList.ForEach((author) => articleData += "\nID: " + author.AuthorId + "; Name: " + author.AuthorName + "; ");
+            if(Authors != null)
+                Authors.ForEach((author) => articleData += "\nID: " + author.AuthorId + "; Name: " + author.AuthorName + "; ");
             articleData += "\nCategories: ";
             if(Categories != null)
                 Categories.ForEach((category) => articleData += "\nName: " + category + "; Description: " + Global.Instance.Categories[category] + "; ");
@@ -207,7 +208,7 @@ namespace Project_DMD.Models
     {
         public static void ParseAuthors(this Article article)
         {
-            article.AuthorsList = article.Authors.Select(author => new Author() { AuthorId = author }).ToList();
+            //article.AuthorsList = article.Authors.Select(author => new Author() { AuthorId = author }).ToList();
         }
     }
     

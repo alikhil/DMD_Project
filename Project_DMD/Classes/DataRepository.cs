@@ -65,5 +65,9 @@ namespace Project_DMD.Classes
 
         }
 
+        public List<Author> GetAuthorsByName(string search)
+        {
+            return QueryExecutor.Instance.GetAuthorsWithName(search);
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace Project_DMD.Models
         /// <summary>
         /// Author id
         /// </summary>
-        [AgsPrimary]
+        [AgsPrimary(Insert = false)]
         public int AuthorId { get; set; }
 
         /// <summary>

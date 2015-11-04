@@ -36,6 +36,11 @@ namespace Project_DMD.Controllers
             return View(result);
         }
 
+        public JsonResult GetAuthors(string search)
+        {
+            var result = DataRepository.GetAuthorsByName(search);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         
         public ActionResult Details(int? id)
         {
@@ -67,14 +72,14 @@ namespace Project_DMD.Controllers
         public ActionResult Create([Bind(Include = "Url,Title,Summary,JournalReference,DOI,Categories,Authors")] Article article)
         {
 
-            if (ModelState.IsValid && article.Authors != null && article.Authors.Length > 0)
+            if (ModelState.IsValid && article.Authors != null && article.Authors.Count > 0)
             {
                 article.ParseAuthors();
                 var articleId = DataRepository.Add(article);
                 UsersRepository.AddAction(User.Identity.GetUserId(), articleId, ActionType.Add);
                 return RedirectToAction("Index");
             }
-            if (article.Authors == null || article.Authors.Length == 0)
+            if (article.Authors == null || article.Authors.Count == 0)
                 ModelState.AddModelError("Authors","Select authors!");
             ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
             ViewBag.Authors = new SelectList(Global.Instance.ArticlesRepository.GetAuthors(), "AuthorId", "AuthorName");
