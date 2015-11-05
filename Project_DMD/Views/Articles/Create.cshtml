@@ -61,38 +61,45 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Authors, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <input id="author" type="text" name="author" />
+
+                <input id="author" style="display: inline-block" class="form-control" type="text" name="author" />
+                <button id="add-author-btn" style="display: inline-block" type="button" class="btn btn-success">Add</button>
+
                 <input type="hidden" id="author-id">
-                <button id="add-author-btn" type="button" class="btn btn-success">Add</button>
                 <div id="authors">
-                    
+                    @if (Model != null && Model.Authors != null)
+                    {
+                        var authors = Model.Authors;
+                        for (int i = 0; i < authors.Count; i++)
+                        {
+                            <div class='author-item'>
+                                <div class='btn-group'>
+                                    <button type='button' class='btn btn-default btn-sm'>@authors[i].AuthorName</button>
+                                    <button type='button' class='btn btn-sm btn-default' onclick='removeAuthor(this)'><span class='glyphicon glyphicon-remove' /></button>
+                                </div>
+                                <input hidden class="author-name" name="authors[@i].AuthorName" value="@authors[i].AuthorName">
+                                <input hidden class="author-id" name="authors[@i].AuthorId" value="@authors[i].AuthorId">
+                            </div>
+                        }
+                    }
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <table class="table table-bordered">
-                <tr>
-                    <th>
-                        @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                        @Html.EditorFor(model => model.Summary, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Summary, "", new { @class = "text-danger" })
-                    </td>
-                </tr>
-            </table>
+            @Html.LabelFor(model => model.Summary, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Summary,3, 45,new { htmlAttributes = new { @class = "form-control", width = "250px" } })
+                @Html.ValidationMessageFor(model => model.Summary, "", new { @class = "text-danger" })
+            </div>
         </div>
     </div>
 
-    
-    <div style="display:inline-block">
-        <input type="submit" value="Create" class="btn btn-success" />
-    </div>
-    <div style="display:inline-block">
-        @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-warning" })
-    </div>
+        <div style="display:inline-block">
+            <input type="submit" value="Create"  class="btn btn-success" />
+        </div>
+        <div style="display:inline-block">
+            @Html.ActionLink("Back to List", "Index", new { }, new { @class = "btn btn-warning" })
+        </div>
 }
 @section styles{
     @Styles.Render("~/Content/jui")
@@ -101,11 +108,11 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jquery-ui-ajax")
     <script type="text/javascript">
+
         $(function() {
             var str = "";
             $("#author").on('change keyup paste', (function() {
                 str = $(this).val();
-                //$("#temp").text($str);
                 var authors = [];
                 $.ajax({
                     url: "/Articles/GetAuthors",
@@ -114,12 +121,9 @@
                     dataType: "json",
                     data: { search: str },
                     success: function(data) {
-                        console.log(data);
-                        console.log(data[0]);
                         for (var i = 0; i < data.length; i++) {
                             authors.push({ label: data[i].AuthorName, value: data[i].AuthorId });
                         }
-                        console.log(authors);
                         $("#author").autocomplete({
                             minLength: 0,
                             source: authors,
@@ -142,16 +146,35 @@
                 });
             }));
 
-            $("#add-author-btn").click(function () {
+            $("#add-author-btn").click(function() {
                 var authorId = $("#author-id").val() || 0;
                 var authorName = $("#author").val();
+                if (authorName.length === 0)
+                    return 0;
                 var iterator = $("#authors").children().length;
-                $("#authors").append("<div><p>" + authorName +
-                    "</p><input hidden name='authors[" + iterator + "].AuthorName' value='" + authorName +
-                    "'><input hidden name='authors[" + iterator + "].AuthorId' value='" + authorId + "'></div>");
+                $("#authors")
+                    .append($("<div class='author-item'></div>")
+                        .append($("<div class='btn-group'></div>")
+                            .append($("<button type='button' class='btn btn-default btn-sm'></button>").text(authorName))
+                            .append($("<button type='button' class='btn btn-sm btn-default' onclick='removeAuthor(this)'><span class='glyphicon glyphicon-remove' /></button>")))
+                        .append($("<input hidden class='author-id'>").attr('name', 'authors[' + iterator + '].AuthorId').attr("value", authorId))
+                        .append($("<input hidden class='author-name'>").attr('name', 'authors[' + iterator + '].AuthorName').attr("value",authorName)));
+                
                 $("#author").val("");
                 $("#author-id").val("0");
             });
         });
-</script>
+
+        function removeAuthor(elem) {
+            $(elem).parent().parent().remove();
+            $("#authors").children().children('input').each(function (i, val) {
+                if ($(this).hasClass("author-id"))
+                    $(this).attr('name', "authors[" + Math.floor(i / 2)+ "].AuthorId");
+                if($(this).hasClass("author-name"))
+                    $(this).attr('name', "authors[" + Math.floor(i / 2) + "].AuthorName");
+            });
+        }
+    </script>
 }
+
+

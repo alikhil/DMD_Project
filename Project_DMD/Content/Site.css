@@ -22,3 +22,15 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.author-item {
+    margin: 5px;
+    display: inline-block;
+}
+
+.author-name {
+    
+}
+.author-id {
+    
+}
