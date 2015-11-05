@@ -194,7 +194,20 @@ namespace Project_DMD.Classes
             RemoveArticleCategories(article);
             AddArticleCategories(article);
 
+            RemoveArticleAuthors(article);
+            AddArticleAuthors(article);
             return true;
+        }
+
+        private void RemoveArticleAuthors(Article article)
+        {
+            if (article == null)
+                throw new ArgumentNullException("article");
+
+            var query = "DELETE FROM ArticleAuthors WHERE ArticleID = "
+                        + article.ArticleId + ";";
+
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
         }
 
         /// <summary>
