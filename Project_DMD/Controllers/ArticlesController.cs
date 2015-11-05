@@ -105,7 +105,7 @@ namespace Project_DMD.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,JournalReference,DOI,Categories")] Article article)
+        public ActionResult Edit([Bind(Include = "ArticleId,Url,Title,Summary,JournalReference,DOI,Categories,Authors")] Article article)
         {
             if (ModelState.IsValid)
             {   
