@@ -42,5 +42,10 @@ namespace Project_DMD.Models
             Global.Instance.UsersRepository.Add(user);
             return true;
         }
+
+        public AppUser FindById(string userId)
+        {
+            return Global.Instance.UsersRepository.GetAppUser(userId);
+        }
     }
 }

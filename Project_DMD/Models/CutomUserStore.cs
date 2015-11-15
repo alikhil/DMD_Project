@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using Project_DMD.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,29 +35,29 @@ namespace Project_DMD.Models
         }
 
         #region Not implemented methods
-        public System.Threading.Tasks.Task DeleteAsync(AppUser user)
+        public Task DeleteAsync(AppUser user)
         {
             throw new NotImplementedException();
         }
 
-        public System.Threading.Tasks.Task<AppUser> FindByIdAsync(string userId)
+        public Task<AppUser> FindByIdAsync(string userId)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<AppUser>(AppUserContext.Instance.FindById(userId));
         }
 
-        public System.Threading.Tasks.Task UpdateAsync(AppUser user)
+        public Task UpdateAsync(AppUser user)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(QueryExecutor.Instance.UpdateAppUser(user));
         }
 
         public Task<bool> HasPasswordAsync(AppUser user)
         {
-            throw new NotImplementedException();
+            return Task.FromResult<bool>(!String.IsNullOrEmpty(user.PasswordHash));
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+
         }
         #endregion
     }

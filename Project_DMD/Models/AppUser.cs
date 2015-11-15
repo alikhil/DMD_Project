@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Project_DMD.Attributes;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Project_DMD.Models
 {
@@ -11,7 +13,7 @@ namespace Project_DMD.Models
     /// Application User class
     /// </summary>
     [AgsModel(TableName = "Client")]
-    public class AppUser : IUser<string>
+    public class AppUser : IUser
     {
         private string _temp;
 
@@ -35,5 +37,13 @@ namespace Project_DMD.Models
         public string UserName {
             get { return Email; }
             set { _temp = value; }}
+
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<AppUser> manager)
+        {
+            // Обратите внимание, что authenticationType должен совпадать с типом, определенным в CookieAuthenticationOptions.AuthenticationType
+            var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
+            // Здесь добавьте утверждения пользователя
+            return userIdentity;
+        }
     }
 }
