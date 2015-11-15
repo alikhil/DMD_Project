@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNet.Identity;
 using Project_DMD.Models;
+using Project_DMD.Repositories;
 
 namespace Project_DMD.Classes
 {

@@ -19,103 +19,13 @@ namespace Project_DMD.Classes
 	        get { return _instance; }
         }
 
+
         private QueryExecutor()
         {
 
         }
 
-        private DateTime parseDateTime(string postgresFormatDate)
-        {
-            if (String.IsNullOrEmpty(postgresFormatDate))
-                return DateTime.MinValue;
-
-            return DateTime.ParseExact(postgresFormatDate, "dd.MM.yyyy H:mm:ss",
-                System.Globalization.CultureInfo.CurrentCulture);
-        }
-        private List<Author> GetAuthorsByArticleID(int id)
-        {
-            var commandGetAuthors = "SELECT a.* " +
-                                    "FROM Author a, ArticleAuthors au " +
-                                    "WHERE au.ArticleID = " + id.ToString() +
-                                    " and a.AuthorID = au.AuthorID;";
-            var articleAuthors = AutoSqlGenerator.Instance.ExecuteCommandReturnList(commandGetAuthors);
-            var authors = new List<Author>();
-            foreach (var row in articleAuthors)
-            {
-                var author = new Author(Convert.ToInt32(row["authorid"]), row["authorname"]);
-                authors.Add(author);
-            }
-
-            return authors;
-        }
-        private List<string> GetCategoriesByArticleID(int id)
-        {
-            var commandGetCategories = "SELECT c.* " +
-                                       "FROM Category c, ArticleCategories ac " +
-                                       "WHERE ac.ArticleID = " + id.ToString() +
-                                       " and c.CategoryID = ac.CategoryID;";
-            var articleCategories = AutoSqlGenerator.Instance.ExecuteCommandReturnList(commandGetCategories);
-            var categories = new List<string>();
-            foreach (var row in articleCategories)
-            {
-                var category = row["categoryname"];
-                categories.Add(category);
-            }
-
-            return categories;
-        }
-
-        private void AddArticleAuthors(Article article)
-        {
-            if (article == null)
-                throw new ArgumentNullException("article");
-            if (article.Authors.Count == 0)
-                return;
-            article.Authors
-                .Where(a => a.AuthorId == 0 && !String.IsNullOrEmpty(a.AuthorName) ) 
-                .ForEach(a => a.AuthorId = Convert.ToInt32(AutoSqlGenerator.Instance.Add(a)));
-
-            var query = AutoSqlGenerator.Constants.InsertTableTemplate;
-            var authorsValues = String.Join(",", 
-                article.Authors
-                .Select(a => "(" + article.ArticleId + "," + a.AuthorId + ")"));
-            
-
-            query = String.Format(query, "ArticleAuthors", "ArticleID, AuthorID", authorsValues, "1");
-            AutoSqlGenerator.Instance.ExecuteCommand(query);
-        }
-        private void AddArticleCategories(Article article)
-        {
-            if (article == null)
-                throw new ArgumentNullException("article");
-            if (article.Categories.Count == 0)
-                return;
-
-            var query = AutoSqlGenerator.Constants.InsertTableTemplate;
-            var categoriesValue = "";
-            var categories = Global.Instance.Categories.Keys.ToList();
-            foreach (var category in article.Categories)
-            {
-                categoriesValue += "(" + article.ArticleId.ToString() + ", "
-                                 + (categories.IndexOf(category)+1) + "),";
-            }
-            categoriesValue = categoriesValue.Remove(categoriesValue.Length - 1);
-
-            query = String.Format(query, "ArticleCategories", "ArticleID, CategoryID", categoriesValue, "1");
-            AutoSqlGenerator.Instance.ExecuteCommand(query);
-
-        }
-        private void RemoveArticleCategories(Article article)
-        {
-            if (article == null)
-                throw new ArgumentNullException("article");
-
-            var query = "DELETE FROM ArticleCategories WHERE ArticleID = "
-                        + article.ArticleId.ToString() + ";";
-
-            AutoSqlGenerator.Instance.ExecuteCommand(query);
-
-        }
+       
 
         /// <summary>
         /// Find article by id
@@ -137,8 +47,8 @@ namespace Project_DMD.Classes
                 .WithId(Convert.ToInt32(articleData["articleid"]))
                 .WithTitle(articleData["title"])
                 .WithSummary(articleData["summary"])
-                .WithPublished(parseDateTime(articleData["published"]))
-                .WithUpdate(parseDateTime(articleData["updated"]))
+                .WithPublished(ParseDateTime(articleData["published"]))
+                .WithUpdate(ParseDateTime(articleData["updated"]))
                 .WithViews(Convert.ToInt32(articleData["views"]))
                 .WithDoi(articleData["doi"])
                 .WithJournalReference(articleData["journalreference"])
@@ -199,16 +109,6 @@ namespace Project_DMD.Classes
             return true;
         }
 
-        private void RemoveArticleAuthors(Article article)
-        {
-            if (article == null)
-                throw new ArgumentNullException("article");
-
-            var query = "DELETE FROM ArticleAuthors WHERE ArticleID = "
-                        + article.ArticleId + ";";
-
-            AutoSqlGenerator.Instance.ExecuteCommand(query);
-        }
 
         /// <summary>
         /// Deletes article from table
@@ -388,15 +288,15 @@ namespace Project_DMD.Classes
 
             #region Generating conditions
                         if (!string.IsNullOrEmpty(articleName))
-                            conditions.Add(String.Format(" a.title ILIKE {0} ",makeStringFilter(articleName)));
+                            conditions.Add(String.Format(" a.title ILIKE {0} ",MakeStringFilter(articleName)));
                         if (!string.IsNullOrEmpty(keyword))
-                            conditions.Add(String.Format(" a.summary ILIKE {0} ",makeStringFilter(keyword)));
+                            conditions.Add(String.Format(" a.summary ILIKE {0} ",MakeStringFilter(keyword)));
                         if(!string.IsNullOrEmpty(journalReference))
-                            conditions.Add(String.Format(" a.journalreference ILIKE {0}", makeStringFilter(journalReference)));
+                            conditions.Add(String.Format(" a.journalreference ILIKE {0}", MakeStringFilter(journalReference)));
            
                         if (!string.IsNullOrEmpty(authorName))
                         {
-                            conditions.Add(String.Format(" articleauthors.articleid = a.articleId AND author.authorid = articleauthors.authorid AND author.authorname ILIKE {0} ", makeStringFilter(authorName)));
+                            conditions.Add(String.Format(" articleauthors.articleid = a.articleId AND author.authorid = articleauthors.authorid AND author.authorname ILIKE {0} ", MakeStringFilter(authorName)));
                             authors = true;
                         }
                         if (!string.IsNullOrEmpty(category))
@@ -435,7 +335,8 @@ namespace Project_DMD.Classes
             return result;
         }
 
-        private string makeStringFilter(string value)
+        #region Private helper methods
+        private string MakeStringFilter(string value)
         {
             var filter = "";
             if (!string.IsNullOrEmpty(value))
@@ -448,5 +349,109 @@ namespace Project_DMD.Classes
             }
             return filter;
         }
+
+        private DateTime ParseDateTime(string postgresFormatDate)
+        {
+            if (String.IsNullOrEmpty(postgresFormatDate))
+                return DateTime.MinValue;
+
+            return DateTime.ParseExact(postgresFormatDate, "dd.MM.yyyy H:mm:ss",
+                System.Globalization.CultureInfo.CurrentCulture);
+        }
+        private List<Author> GetAuthorsByArticleID(int id)
+        {
+            var commandGetAuthors = "SELECT a.* " +
+                                    "FROM Author a, ArticleAuthors au " +
+                                    "WHERE au.ArticleID = " + id.ToString() +
+                                    " and a.AuthorID = au.AuthorID;";
+            var articleAuthors = AutoSqlGenerator.Instance.ExecuteCommandReturnList(commandGetAuthors);
+            var authors = new List<Author>();
+            foreach (var row in articleAuthors)
+            {
+                var author = new Author(Convert.ToInt32(row["authorid"]), row["authorname"]);
+                authors.Add(author);
+            }
+
+            return authors;
+        }
+        private List<string> GetCategoriesByArticleID(int id)
+        {
+            var commandGetCategories = "SELECT c.* " +
+                                       "FROM Category c, ArticleCategories ac " +
+                                       "WHERE ac.ArticleID = " + id.ToString() +
+                                       " and c.CategoryID = ac.CategoryID;";
+            var articleCategories = AutoSqlGenerator.Instance.ExecuteCommandReturnList(commandGetCategories);
+            var categories = new List<string>();
+            foreach (var row in articleCategories)
+            {
+                var category = row["categoryname"];
+                categories.Add(category);
+            }
+
+            return categories;
+        }
+
+        private void RemoveArticleAuthors(Article article)
+        {
+            if (article == null)
+                throw new ArgumentNullException("article");
+
+            var query = "DELETE FROM ArticleAuthors WHERE ArticleID = "
+                        + article.ArticleId + ";";
+
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+        }
+        private void AddArticleAuthors(Article article)
+        {
+            if (article == null)
+                throw new ArgumentNullException("article");
+            if (article.Authors.Count == 0)
+                return;
+            article.Authors
+                .Where(a => a.AuthorId == 0 && !String.IsNullOrEmpty(a.AuthorName))
+                .ForEach(a => a.AuthorId = Convert.ToInt32(AutoSqlGenerator.Instance.Add(a)));
+
+            var query = AutoSqlGenerator.Constants.InsertTableTemplate;
+            var authorsValues = String.Join(",",
+                article.Authors
+                .Select(a => "(" + article.ArticleId + "," + a.AuthorId + ")"));
+
+
+            query = String.Format(query, "ArticleAuthors", "ArticleID, AuthorID", authorsValues, "1");
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+        }
+        private void AddArticleCategories(Article article)
+        {
+            if (article == null)
+                throw new ArgumentNullException("article");
+            if (article.Categories.Count == 0)
+                return;
+
+            var query = AutoSqlGenerator.Constants.InsertTableTemplate;
+            var categoriesValue = "";
+            var categories = Global.Instance.Categories.Keys.ToList();
+            foreach (var category in article.Categories)
+            {
+                categoriesValue += "(" + article.ArticleId.ToString() + ", "
+                                 + (categories.IndexOf(category) + 1) + "),";
+            }
+            categoriesValue = categoriesValue.Remove(categoriesValue.Length - 1);
+
+            query = String.Format(query, "ArticleCategories", "ArticleID, CategoryID", categoriesValue, "1");
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+
+        }
+        private void RemoveArticleCategories(Article article)
+        {
+            if (article == null)
+                throw new ArgumentNullException("article");
+
+            var query = "DELETE FROM ArticleCategories WHERE ArticleID = "
+                        + article.ArticleId.ToString() + ";";
+
+            AutoSqlGenerator.Instance.ExecuteCommand(query);
+
+        }
+        #endregion
     }
 }

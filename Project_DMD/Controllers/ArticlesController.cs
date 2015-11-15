@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Web.Mvc;
-using System.Web.Routing;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Project_DMD.Models;
 using Project_DMD.Classes;
+using Project_DMD.Repositories;
 
 namespace Project_DMD.Controllers
 {

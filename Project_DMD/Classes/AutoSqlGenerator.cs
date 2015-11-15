@@ -25,6 +25,13 @@ namespace Project_DMD.Classes
         private AutoSqlGenerator()
         {
         }
+        private static NpgsqlConnection CreateConnection()
+        {
+            var conn = new NpgsqlConnection(Constants.ConnectionString);
+            conn.Open();
+            conn.RegisterEnum<ActionType>("actiontype");
+            return conn;
+        }
 
         public void Log(string message)
         {
@@ -35,7 +42,7 @@ namespace Project_DMD.Classes
 
         public static class Constants
         {
-            public readonly static string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=PMS;";
+            public readonly static string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=PMS;COMMANDTIMEOUT=30;";
 
             public readonly static string AppUsersTableName = "Client";
 
@@ -105,28 +112,9 @@ namespace Project_DMD.Classes
                     {
                         dictionary[reader.GetName(i)] = reader[i].ToString();
                     }
+
                 }
                 return dictionary;
-            }
-        }
-
-        public IEnumerable<Dictionary<string, string>> LazyExecute(string command)
-        {
-            using (var connection = CreateConnection())
-            {
-
-                var query = new NpgsqlCommand(command, connection);
-                Log(query.CommandText);
-                var reader = query.ExecuteReader();
-                while (reader.Read())
-                {
-                    var dictionary = new Dictionary<string, string>();
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        dictionary[reader.GetName(i)] = reader[i].ToString();
-                    }
-                   yield return     dictionary;
-                }
             }
         }
 
@@ -193,14 +181,6 @@ namespace Project_DMD.Classes
                 var result = query.ExecuteScalar();
                 return result.ToString();
             }
-        }
-
-        private static NpgsqlConnection CreateConnection()
-        {
-            var conn = new NpgsqlConnection(Constants.ConnectionString);
-            conn.Open();
-            conn.RegisterEnum<ActionType>("actiontype");
-            return conn;
         }
 
         public T Get<T>(object primaryKey) where T : new()
@@ -272,32 +252,7 @@ namespace Project_DMD.Classes
             }
             return result;
         }
-
-        private static string GetTableName(object entity)
-        {
-            var typeOfObject = entity.GetType();
-            var model = typeOfObject.GetCustomAttribute<AgsModel>();
-            if (model == null)
-                throw new ArgumentException("Object must be taged by AgsModel attribute", "entity");
-
-            var tableName = model.TableName ?? typeOfObject.Name;
-            return tableName;
-        }
-
-        private string GetPrimaryProperty<T>(Type type) where T : new()
-        {
-            string primaryProperty = "";
-            foreach (var propertyInfo in type.GetProperties())
-            {
-                var _primaryAttribute = propertyInfo.GetCustomAttribute(typeof (AgsPrimary));
-                if (_primaryAttribute == null) continue;
-                var primaryAttribute = (AgsPrimary) _primaryAttribute;
-                primaryProperty = primaryAttribute.Name ?? propertyInfo.Name;
-                break;
-            }
-            return primaryProperty;
-        }
-
+        
         public T ParseDictionary<T>(Dictionary<string, string> dictionary) where T : new()
         {
             if (dictionary == null || dictionary.Count == 0)
@@ -312,12 +267,13 @@ namespace Project_DMD.Classes
                 
                 var fieldName = (attribute.Name ?? propertyInfo.Name).ToLower();
                 if(dictionary.ContainsKey(fieldName) && !string.IsNullOrEmpty(dictionary[fieldName]))
-                    propertyInfo.SetValue(entity, changeType(dictionary[fieldName],propertyInfo.PropertyType));
+                    propertyInfo.SetValue(entity, СhangeType(dictionary[fieldName],propertyInfo.PropertyType));
             }
             return entity;
         }
 
-        private object changeType(object ob, Type t)
+        #region helper methods
+        private object СhangeType(object ob, Type t)
         {
             if (t.IsEnum)
                 return Enum.Parse(t, ob.ToString());
@@ -362,6 +318,32 @@ namespace Project_DMD.Classes
             }
             return columns;
         }
+
+        private static string GetTableName(object entity)
+        {
+            var typeOfObject = entity.GetType();
+            var model = typeOfObject.GetCustomAttribute<AgsModel>();
+            if (model == null)
+                throw new ArgumentException("Object must be taged by AgsModel attribute", "entity");
+
+            var tableName = model.TableName ?? typeOfObject.Name;
+            return tableName;
+        }
+
+        private string GetPrimaryProperty<T>(Type type) where T : new()
+        {
+            string primaryProperty = "";
+            foreach (var propertyInfo in type.GetProperties())
+            {
+                var _primaryAttribute = propertyInfo.GetCustomAttribute(typeof(AgsPrimary));
+                if (_primaryAttribute == null) continue;
+                var primaryAttribute = (AgsPrimary)_primaryAttribute;
+                primaryProperty = primaryAttribute.Name ?? propertyInfo.Name;
+                break;
+            }
+            return primaryProperty;
+        }
+        #endregion
     }
 
     public static class StringExtensions

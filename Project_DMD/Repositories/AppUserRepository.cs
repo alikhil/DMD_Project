@@ -5,8 +5,8 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Web;
 using System.Web.Helpers;
-
-namespace Project_DMD.Classes
+using Project_DMD.Classes;
+namespace Project_DMD.Repositories
 {
     public class AppUserRepository : IAppUserRepository
     {

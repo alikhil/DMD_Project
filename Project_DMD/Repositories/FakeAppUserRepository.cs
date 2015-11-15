@@ -4,8 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Helpers;
 using Project_DMD.Models;
-
-namespace Project_DMD.Classes
+using Project_DMD.Classes;
+namespace Project_DMD.Repositories
 {
     public class FakeAppUserRepository : IAppUserRepository
     {

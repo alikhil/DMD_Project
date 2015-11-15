@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using Project_DMD.Models;
 using Project_DMD.Classes;
 using Microsoft.AspNet.Identity;
+using Project_DMD.Repositories;
 
 namespace Project_DMD.Controllers
 {

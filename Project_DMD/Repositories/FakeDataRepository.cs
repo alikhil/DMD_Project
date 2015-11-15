@@ -4,8 +4,8 @@ using System.Linq;
 using System.Security.Policy;
 using System.Web;
 using Project_DMD.Models;
-
-namespace Project_DMD.Classes
+using Project_DMD.Classes;
+namespace Project_DMD.Repositories
 {
     public class FakeDataRepository : IDataRepository
     {
