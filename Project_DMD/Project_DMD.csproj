@@ -164,6 +164,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Attributes\AutoSGAttributes.cs" />
+    <Compile Include="Classes\DatabaseConstants.cs" />
+    <Compile Include="Classes\DatabaseProvider.cs" />
     <Compile Include="Repositories\AppUserRepository.cs" />
     <Compile Include="Classes\Cloner.cs" />
     <Compile Include="Repositories\DataRepository.cs" />

@@ -6,10 +6,11 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using Project_DMD.Models;
 using WebGrease.Css.Extensions;
+using Npgsql;
 
 namespace Project_DMD.Classes
 {
-    public sealed class QueryExecutor
+    public sealed class QueryExecutor : DatabaseProvider
     {
         static readonly QueryExecutor _instance = new QueryExecutor();
 
@@ -25,7 +26,50 @@ namespace Project_DMD.Classes
 
         }
 
-       
+        #region Base Methods
+        public Dictionary<string, string> ExecuteCommand(string command)
+        {
+            using (var connection = CreateConnection())
+            {
+
+                var query = new NpgsqlCommand(command, connection);
+                Log(query.CommandText);
+                var reader = query.ExecuteReader();
+                var dictionary = new Dictionary<string, string>();
+                while (reader.Read())
+                {
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        dictionary[reader.GetName(i)] = reader[i].ToString();
+                    }
+
+                }
+                return dictionary;
+            }
+        }
+
+        public List<Dictionary<string, string>> ExecuteCommandReturnList(string command)
+        {
+            var result = new List<Dictionary<string, string>>();
+            using (var connection = CreateConnection())
+            {
+
+                var query = new NpgsqlCommand(command, connection);
+                Log(query.CommandText);
+                var reader = query.ExecuteReader();
+                while (reader.Read())
+                {
+                    var dictionary = new Dictionary<string, string>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        dictionary[reader.GetName(i)] = reader[i].ToString();
+                    }
+                    result.Add(dictionary);
+                }
+                return result;
+            }
+        }
+        #endregion
 
         /// <summary>
         /// Find article by id
@@ -35,7 +79,7 @@ namespace Project_DMD.Classes
         public Article GetArticleById(int id)
         {
             var commandGetArticle = "SELECT * FROM Article WHERE Article.ArticleID = " + id.ToString() + " LIMIT 1;";
-            var articleData = AutoSqlGenerator.Instance.ExecuteCommand(commandGetArticle);
+            var articleData = ExecuteCommand(commandGetArticle);
 
             if(articleData.Count == 0)
                 return null;
@@ -66,10 +110,10 @@ namespace Project_DMD.Classes
         {
             article.WithPublished(DateTime.Now);
 
-            string query = AutoSqlGenerator.Constants.InsertTableTemplateWithoutColumns;
+            string query = DatabaseConstants.InsertTableTemplateWithoutColumns;
             query = String.Format(query, "Article",  article.ToSql(), "ArticleID");
 
-            var queryData = AutoSqlGenerator.Instance.ExecuteCommand(query);
+            var queryData = ExecuteCommand(query);
             
             if (queryData == null)
                 throw new InvalidDataException("Given article is not valid. (ID isn't presented in table, invalid date and so on)");
@@ -94,12 +138,12 @@ namespace Project_DMD.Classes
             article.WithUpdate(DateTime.Now)
                 .WithPublished(oldArticle.Published);
 
-            var query = AutoSqlGenerator.Constants.UpdateOnTemplate;
+            var query = DatabaseConstants.UpdateOnTemplate;
             var values = "(ArticleID, Title, Summary, Published, Updated, Views, URL, DOI, JournalReference) = " +
                          article.ToSql();
 
             query = String.Format(query, "Article", values, "ArticleID = " + article.ArticleId.ToString());
-            AutoSqlGenerator.Instance.ExecuteCommand(query);
+            ExecuteCommand(query);
 
             RemoveArticleCategories(article);
             AddArticleCategories(article);
@@ -122,7 +166,7 @@ namespace Project_DMD.Classes
                         + "DELETE FROM Favorite WHERE ArticleID = " + id.ToString() + ";"
                         + "DELETE FROM Article WHERE ArticleID = " + id.ToString() + ";";
 
-            AutoSqlGenerator.Instance.ExecuteCommand(query);
+            ExecuteCommand(query);
             return true;
         }
 
@@ -137,7 +181,7 @@ namespace Project_DMD.Classes
             var sql = String.Format("SELECT a.* FROM article a, ArticleAuthors au WHERE a.articleid = au.articleid AND au.authorid ={0} ;",
                       id);
             author.PublishedArticles =
-                AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql)
+                ExecuteCommandReturnList(sql)
                     .Select(data => AutoSqlGenerator.Instance.ParseDictionary<Article>(data)).ToList();
             return author;
         }
@@ -150,7 +194,7 @@ namespace Project_DMD.Classes
         {
             var start = (new Random()).Next(500000);
             var sql = String.Format("SELECT * FROM author LIMIT 100 OFFSET {0};", start);
-            var authorsData = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
+            var authorsData = ExecuteCommandReturnList(sql);
             return authorsData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Author>(data));
         }
 
@@ -194,14 +238,14 @@ namespace Project_DMD.Classes
         public Favorite GetFavorite(int articleId, string userId)
         {
             var sql = String.Format("SELECT * FROM favorite WHERE articleid={0} AND userid={1} LIMIT 1;", articleId, userId);
-            var favoriteData = AutoSqlGenerator.Instance.ExecuteCommand(sql);
+            var favoriteData = ExecuteCommand(sql);
             return AutoSqlGenerator.Instance.ParseDictionary<Favorite>(favoriteData);
         }
 
         public void RemoveFavorite(int articleId, string userId)
         {
             var sql = String.Format("DELETE FROM favorite WHERE articleid={0} AND userid={1};", articleId, userId);
-            AutoSqlGenerator.Instance.ExecuteCommand(sql);
+            ExecuteCommand(sql);
         }
 
         public List<Favorite> GetFavorites(string userId)
@@ -224,7 +268,7 @@ namespace Project_DMD.Classes
         public void VisitArticle(int articleId)
         {
             var sql = String.Format("UPDATE article SET views=views + 1 WHERE articleid={0};", articleId);
-            AutoSqlGenerator.Instance.ExecuteCommand(sql);
+            ExecuteCommand(sql);
         }
 
         public void CreateVisit(Visit visit)
@@ -316,7 +360,7 @@ namespace Project_DMD.Classes
                                         : "") + (categories ? " ,articlecategories, category c" : "") +
                                     " {0} {1} LIMIT {2} OFFSET {3};", conditionString, sort, Global.ArticlePerPage, offset);
 
-            var articlesData = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
+            var articlesData = ExecuteCommandReturnList(sql);
             var articles = articlesData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Article>(data)).ToList();
             foreach (var a in articles)
             {
@@ -328,14 +372,14 @@ namespace Project_DMD.Classes
 
         public List<Author> GetAuthorsWithName(string search)
         {
-            var sql = String.Format(AutoSqlGenerator.Constants.SelectFromTableWhereTemplate, "author",
+            var sql = String.Format(DatabaseConstants.SelectFromTableWhereTemplate, "author",
                 " authorName ILIKE " + (search+ "%").PutIntoDollar() + "ORDER BY authorName LIMIT 15");
-            var resultData = AutoSqlGenerator.Instance.ExecuteCommandReturnList(sql);
+            var resultData = ExecuteCommandReturnList(sql);
             var result = resultData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Author>(data)).ToList();
             return result;
         }
 
-        #region Private helper methods
+        #region Private Helper Methods
         private string MakeStringFilter(string value)
         {
             var filter = "";
@@ -364,7 +408,7 @@ namespace Project_DMD.Classes
                                     "FROM Author a, ArticleAuthors au " +
                                     "WHERE au.ArticleID = " + id.ToString() +
                                     " and a.AuthorID = au.AuthorID;";
-            var articleAuthors = AutoSqlGenerator.Instance.ExecuteCommandReturnList(commandGetAuthors);
+            var articleAuthors = ExecuteCommandReturnList(commandGetAuthors);
             var authors = new List<Author>();
             foreach (var row in articleAuthors)
             {
@@ -380,7 +424,7 @@ namespace Project_DMD.Classes
                                        "FROM Category c, ArticleCategories ac " +
                                        "WHERE ac.ArticleID = " + id.ToString() +
                                        " and c.CategoryID = ac.CategoryID;";
-            var articleCategories = AutoSqlGenerator.Instance.ExecuteCommandReturnList(commandGetCategories);
+            var articleCategories = ExecuteCommandReturnList(commandGetCategories);
             var categories = new List<string>();
             foreach (var row in articleCategories)
             {
@@ -399,7 +443,7 @@ namespace Project_DMD.Classes
             var query = "DELETE FROM ArticleAuthors WHERE ArticleID = "
                         + article.ArticleId + ";";
 
-            AutoSqlGenerator.Instance.ExecuteCommand(query);
+            ExecuteCommand(query);
         }
         private void AddArticleAuthors(Article article)
         {
@@ -411,14 +455,14 @@ namespace Project_DMD.Classes
                 .Where(a => a.AuthorId == 0 && !String.IsNullOrEmpty(a.AuthorName))
                 .ForEach(a => a.AuthorId = Convert.ToInt32(AutoSqlGenerator.Instance.Add(a)));
 
-            var query = AutoSqlGenerator.Constants.InsertTableTemplate;
+            var query = DatabaseConstants.InsertTableTemplate;
             var authorsValues = String.Join(",",
                 article.Authors
                 .Select(a => "(" + article.ArticleId + "," + a.AuthorId + ")"));
 
 
             query = String.Format(query, "ArticleAuthors", "ArticleID, AuthorID", authorsValues, "1");
-            AutoSqlGenerator.Instance.ExecuteCommand(query);
+            ExecuteCommand(query);
         }
         private void AddArticleCategories(Article article)
         {
@@ -427,7 +471,7 @@ namespace Project_DMD.Classes
             if (article.Categories.Count == 0)
                 return;
 
-            var query = AutoSqlGenerator.Constants.InsertTableTemplate;
+            var query = DatabaseConstants.InsertTableTemplate;
             var categoriesValue = "";
             var categories = Global.Instance.Categories.Keys.ToList();
             foreach (var category in article.Categories)
@@ -438,7 +482,7 @@ namespace Project_DMD.Classes
             categoriesValue = categoriesValue.Remove(categoriesValue.Length - 1);
 
             query = String.Format(query, "ArticleCategories", "ArticleID, CategoryID", categoriesValue, "1");
-            AutoSqlGenerator.Instance.ExecuteCommand(query);
+            ExecuteCommand(query);
 
         }
         private void RemoveArticleCategories(Article article)
@@ -449,7 +493,7 @@ namespace Project_DMD.Classes
             var query = "DELETE FROM ArticleCategories WHERE ArticleID = "
                         + article.ArticleId.ToString() + ";";
 
-            AutoSqlGenerator.Instance.ExecuteCommand(query);
+            ExecuteCommand(query);
 
         }
         #endregion

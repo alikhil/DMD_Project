@@ -13,7 +13,7 @@ using Project_DMD.Models;
 
 namespace Project_DMD.Classes
 {
-    public class AutoSqlGenerator
+    public class AutoSqlGenerator : DatabaseProvider
     {
         private static AutoSqlGenerator _instance;
 
@@ -25,120 +25,8 @@ namespace Project_DMD.Classes
         private AutoSqlGenerator()
         {
         }
-        private static NpgsqlConnection CreateConnection()
-        {
-            var conn = new NpgsqlConnection(Constants.ConnectionString);
-            conn.Open();
-            conn.RegisterEnum<ActionType>("actiontype");
-            return conn;
-        }
-
-        public void Log(string message)
-        {
-            TextWriter writer = Console.Out;
-            //Writer = new StreamWriter(String.Format("log_{0}_.txt", DateTime.Now.ToShortDateString()));
-            writer.WriteLine(message);
-        }
-
-        public static class Constants
-        {
-            public readonly static string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=PMS;COMMANDTIMEOUT=30;";
-
-            public readonly static string AppUsersTableName = "Client";
-
-            /// <summary>
-            /// Template string in order to drop table.
-            /// <para>You should use String.Formater, where </para>
-            /// <para>{0} - Table Name.</para>
-            /// </summary>
-            public readonly static string DropTableTemplate = "DROP TABLE {0};";
-
-            /// <summary>
-            /// Template string for insertion into POSTGRESQL. 
-            /// <para>You should use String.Formater, where </para>
-            /// <para>{0} - Table Name </para>
-            /// <para>{1} - Ordered Name Columns (For Example: Column1, Column2) </para>
-            /// <para>{2} - Ordered Values For Columns (For Example: (Column1Value, Column2Value) ) </para>
-            /// <para>{3} - Column Name of returning value. </para>
-            /// </summary>
-            public static readonly string InsertTableTemplate = "INSERT INTO {0} ({1}) VALUES {2} RETURNING {3};";
-
-            /// <summary>
-            /// Template string for insertion into POSTGRESQL. 
-            /// <para>You should use String.Formater, where </para>
-            /// <para>{0} - Table Name </para>
-            /// <para>{1} - Ordered Values For Columns (For Example: (Column1Value, Column2Value) ) </para>
-            /// <para>{2} - Column Name of returning value. </para>
-            /// </summary>
-            public static readonly string InsertTableTemplateWithoutColumns = "INSERT INTO {0} VALUES {1} RETURNING {2};";
-
-            /// <summary>
-            /// Template string for selection.
-            /// <para>You should use String.Formater, where</para>
-            /// <para>{0} - From what table we select (TableName)</para>
-            /// <para>{1} - Selection Filters (ColumnName = SomeValue or ColumnName1 = SomeValue1...).</para>
-            /// </summary>
-            public static readonly string SelectFromTableWhereTemplate = "SELECT * FROM {0} WHERE {1};";
-
-            /// <summary>
-            /// Template string for selection.
-            /// <para>You should use String.Formater, where</para>
-            /// <para>{0} - From what table we select (TableName).</para>
-            /// </summary>
-            public static readonly string SelectAllFromTableTemplate = "SELECT * FROM {0};";
-
-            /// <summary>
-            /// Template string for update.
-            /// <para>You should use String.Formater, where</para>
-            /// <para>{0} - What table we refresh (TableName)</para>
-            /// <para>{1} - Refresh expression (i.e Views = 0)</para>
-            /// <para>{2} - Update filter, on what records refresh expression will be applied</para>.
-            /// </summary>
-            public static readonly string UpdateOnTemplate = "Update {0} SET {1} WHERE {2};";
-        }
-
-        public Dictionary<string,string> ExecuteCommand(string command)
-        {
-            using (var connection = CreateConnection())
-            {
-                
-                var query = new NpgsqlCommand(command, connection);
-                Log(query.CommandText);
-                var reader = query.ExecuteReader();
-                var dictionary = new Dictionary<string, string>();
-                while (reader.Read())
-                {
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        dictionary[reader.GetName(i)] = reader[i].ToString();
-                    }
-
-                }
-                return dictionary;
-            }
-        }
-
-        public List<Dictionary<string, string>> ExecuteCommandReturnList(string command)
-        {
-            var result = new List<Dictionary<string, string>>();
-            using (var connection = CreateConnection())
-            {
-
-                var query = new NpgsqlCommand(command, connection);
-                Log(query.CommandText);
-                var reader = query.ExecuteReader();
-                while (reader.Read())
-                {
-                    var dictionary = new Dictionary<string, string>();
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        dictionary[reader.GetName(i)] = reader[i].ToString();
-                    }
-                    result.Add(dictionary);
-                }
-                return result;
-            }
-        }
+        
+        
 
         public void Update(object entity, string primaryKey)
         {
@@ -148,7 +36,7 @@ namespace Project_DMD.Classes
             var columns = GetColumnsAndValues(entity, out values, out primaryProperty, true);
             using (var connection = CreateConnection())
             {
-                var command = new NpgsqlCommand(String.Format(Constants.UpdateOnTemplate,tableName,
+                var command = new NpgsqlCommand(String.Format(DatabaseConstants.UpdateOnTemplate,tableName,
                     String.Join(",", columns.Zip(values,(column, value) => column + "=" + value)), 
                     primaryProperty + "=" + primaryKey), connection);
                 Log(command.CommandText);
@@ -167,7 +55,7 @@ namespace Project_DMD.Classes
             using (var conn = CreateConnection())
             {
                 NpgsqlCommand query = new NpgsqlCommand(
-                    String.Format(Constants.InsertTableTemplate, tableName,
+                    String.Format(DatabaseConstants.InsertTableTemplate, tableName,
                         String.Join(",", columns),
                         '(' + String.Join(",", columns.Select(x => "@" + x)) + ')', primaryProperty), conn);
 
@@ -196,7 +84,7 @@ namespace Project_DMD.Classes
 
             using (var conn = CreateConnection())
             {
-                var query = new NpgsqlCommand(String.Format(Constants.SelectFromTableWhereTemplate, tableName,
+                var query = new NpgsqlCommand(String.Format(DatabaseConstants.SelectFromTableWhereTemplate, tableName,
                     primaryProperty + "=" + primaryKey), conn);
                 //query.Parameters.AddWithValue("@" + primaryProperty, "'" + primaryKey + "'");
                 Log(query.CommandText);
@@ -232,13 +120,13 @@ namespace Project_DMD.Classes
                 if (query != null && query.Count > 0)
                 {
                     sqlQuery = new NpgsqlCommand(
-                        String.Format(Constants.SelectFromTableWhereTemplate, tableName, String.Join(" AND ",
+                        String.Format(DatabaseConstants.SelectFromTableWhereTemplate, tableName, String.Join(" AND ",
                             query.Select(pair => pair.Key + "=" + pair.Value.PutIntoDollar()))), connection);
                    // query.ForEach(pair => sqlQuery.Parameters.AddWithValue(pair.Key, pair.Value));
                 }
                 else
                     sqlQuery = new NpgsqlCommand(
-                        String.Format(Constants.SelectAllFromTableTemplate, tableName), connection);
+                        String.Format(DatabaseConstants.SelectAllFromTableTemplate, tableName), connection);
                 Log(sqlQuery.CommandText);
                 var reader = sqlQuery.ExecuteReader();
                 while (reader.Read())
