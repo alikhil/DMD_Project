@@ -57,18 +57,25 @@ namespace Project_DMD.Classes
                 var query = new NpgsqlCommand(command, connection);
                 Log(query.CommandText);
                 var reader = query.ExecuteReader();
-                while (reader.Read())
-                {
-                    var dictionary = new Dictionary<string, string>();
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        dictionary[reader.GetName(i)] = reader[i].ToString();
-                    }
-                    result.Add(dictionary);
-                }
-                return result;
+               
+                return ReadResultSet(reader);
             }
         }
+        private List<Dictionary<string, string>> ReadResultSet(NpgsqlDataReader reader)
+        {
+            List<Dictionary<string, string>> result = new List<Dictionary<string, string>>();
+            while (reader.Read())
+            {
+                var dictionary = new Dictionary<string, string>();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    dictionary[reader.GetName(i)] = reader[i].ToString();
+                }
+                result.Add(dictionary);
+            }
+            return result;
+        }
+
         #endregion
 
         /// <summary>
@@ -362,10 +369,73 @@ namespace Project_DMD.Classes
 
             var articlesData = ExecuteCommandReturnList(sql);
             var articles = articlesData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Article>(data)).ToList();
-            foreach (var a in articles)
+            articles = GetAuthorsAndCategories(articles);
+           
+            return articles;
+        }
+        
+        public List<Article> GetAuthorsAndCategories(List<Article> articles)
+        {
+            if (articles == null || articles.Count < 1)
+                return articles;
+            List<Dictionary<string, string>> categories;
+            List<Dictionary<string, string>> authors;
+            var articleIds = String.Join(" OR ", articles.Select(a => "ac.articleId = " + a.ArticleId));
+            var sql = "SELECT ac.articleId, c.categoryName " +
+                        "FROM category c, articleCategories ac " +
+                        "WHERE (" + articleIds + ") and ac.categoryId = c.categoryId;\n" +
+
+                        "SELECT a.authorId, a.authorName, ac.articleId " +
+                        "FROM author a, articleAuthors ac " +
+                        "WHERE (" + articleIds + ") and ac.authorid = a.authorid;";
+            using (var connection = CreateConnection())
             {
-                 a.Authors = GetAuthorsByArticleID(a.ArticleId);
-                a.Categories = GetCategoriesByArticleID(a.ArticleId);
+                var query = new NpgsqlCommand(sql, connection);
+
+
+                Log(query.CommandText);
+                var reader = query.ExecuteReader();
+
+                categories = ReadResultSet(reader);
+                reader.NextResult();
+                authors = ReadResultSet(reader);
+            }
+
+            var authorsMap = new Dictionary<int, List<Dictionary<string, string>>>();
+            foreach(var a in authors)
+            {
+                var articleId = Convert.ToInt32(a["articleid"]);
+                if(!authorsMap.ContainsKey(articleId))
+                    authorsMap[articleId] = new List<Dictionary<string, string>>();
+                authorsMap[articleId].Add(a);
+            }
+
+            foreach (var article in articles)
+            {
+                article.Authors = new List<Author>();
+                if(authorsMap.ContainsKey(article.ArticleId))
+                    foreach (var author in authorsMap[article.ArticleId])
+                    {
+                        var authorId = Convert.ToInt32(author["authorid"]);
+                        article.Authors.Add(new Author(authorId, author["authorname"]));
+                    }
+                    
+            }
+            var categoriesMap = new Dictionary<int, List<Dictionary<string, string>>>();
+            foreach(var c in categories)
+            {
+                var articleId = Convert.ToInt32(c["articleid"]);
+                if(!categoriesMap.ContainsKey(articleId))
+                    categoriesMap[articleId] = new List<Dictionary<string, string>>();
+                categoriesMap[articleId].Add(c);
+            }
+
+            foreach(var article in articles)
+            {
+                article.Categories = new List<string>();
+                if(categoriesMap.ContainsKey(article.ArticleId))
+                    foreach(var category in categoriesMap[article.ArticleId])
+                        article.Categories.Add(category["categoryname"]);
             }
             return articles;
         }

@@ -62,7 +62,6 @@ namespace Project_DMD.Controllers
         public ActionResult Create()
         {
             ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
-            ViewBag.Authors = new SelectList(Global.Instance.ArticlesRepository.GetAuthors(),"AuthorId", "AuthorName");
             return View();
         }
 
@@ -81,7 +80,6 @@ namespace Project_DMD.Controllers
             if (article.Authors == null || article.Authors.Count == 0)
                 ModelState.AddModelError("Authors","Select authors!");
             ViewBag.SelectedList = new SelectList(Global.Instance.Categories, "Key", "Value");
-            ViewBag.Authors = new SelectList(Global.Instance.ArticlesRepository.GetAuthors(), "AuthorId", "AuthorName");
             return View(article);
         }
 
