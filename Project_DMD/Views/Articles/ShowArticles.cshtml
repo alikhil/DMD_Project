@@ -1,0 +1,93 @@
+﻿@using Project_DMD.Classes;
+@using Project_DMD.Models;
+@model ArticlesIndexViewModel
+
+<p>Search time: @Model.ElapsedTime ms</p>
+<div class="row">
+    <div class="col-lg-12">
+        <table class="table-bordered table-condensed table-hover widefortable heightfortable">
+            <tr>
+                <th>
+                    @Html.DisplayName("Title")
+                </th>
+                <th>
+                    @Html.DisplayName("Published Date")
+                </th>
+                <th>
+                    @Html.DisplayName("Authors")
+                </th>
+                <th>
+                    @Html.DisplayName("Categories")
+                </th>
+                <th>
+                    Operations
+                </th>
+            </tr>
+
+            @foreach (var item in Model.Articles)
+            {
+                <tr>
+                    <td style="width:300px">
+                        @Html.ActionLink(item.Title, "Details", new { id = item.ArticleId })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Published)
+                    </td>
+                    <td style="width:300px">
+                        @{
+                            if (item != null && item.Authors != null)
+                            {
+                                var count = 0;
+                                foreach (var author in item.Authors)
+                                {
+                                    var str = ++count == item.Authors.Count ? "" : ",";
+                                    <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
+                                }
+                            }
+                        }
+                    </td>
+                    <td style="width:300px">
+                        @if (item.Categories != null)
+                        {
+                            <p>
+                                @{var count = 0;}
+                                @foreach (var category in item.Categories)
+                                {
+                                    var str = ++count == item.Categories.Count ? "" : ",";
+                                    <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category })@str </span>
+                                }
+                            </p>
+                                    }
+                    </td>
+                    <td style="width:180px">
+                        <div style="display:inline-block;">@Html.ActionLink("Edit", "Edit", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-success" })</div>
+                        <div style="display:inline-block;"> @Html.ActionLink("Info", "Details", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-info" })</div>
+                        <div style="display:inline-block;">@Html.ActionLink("Delete", "Delete", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-danger" })</div>
+                    </td>
+                </tr>
+                                    }
+        </table>
+    </div>
+</div>
+
+<div class="col-lg-offset-10">
+    @if (Model.Page != 1)
+    {
+        <div style="display:inline-block;" class="col-lg-offset-0">
+            <input type="submit" value="&laquo Previous" onclick="PreviousPage()" class="btn btn-default">
+        </div>
+    }
+    @if (Model.Page == 1)
+    {
+        <div class="col-lg-offset-7">
+            <input type="submit" value="Next &raquo" onclick="NextPage()" class="btn btn-default">
+        </div>
+    }
+    else
+    {
+        <div style="display:inline-block;" class="col-lg-offset-1 g">
+            <input type="submit" value="Next &raquo" onclick="NextPage()" class="btn btn-default">
+        </div>
+    }
+</div>
+}

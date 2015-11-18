@@ -10,6 +10,8 @@ using Project_DMD.Classes;
 using Project_DMD.Repositories;
 using System.Linq;
 using Project_DMD.Classes.Extensions;
+using System.Threading.Tasks;
+
 namespace Project_DMD.Controllers
 {
     [Authorize]
@@ -20,16 +22,22 @@ namespace Project_DMD.Controllers
         
         public ActionResult Index([Bind(Exclude = "Articles, ElapsedTime")]ArticlesIndexViewModel model)
         {
-            Stopwatch watch = new Stopwatch();
             var tempDict = Global.Instance.InitCategories();
-            tempDict.Add("","");
+            tempDict.Add("", "");
             ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value", model.CategoryName);
-            ViewBag.Sortes = EnumExtensions.ToSelectList<SortTypeEnum>(); 
-            watch.Start();
-            model.Articles = DataRepository.GetArticles(model.Page, model.AuthorName, model.ArticleSummary, model.AuthorName, model.PublicationYear, model.CategoryName,
-                model.JournalReference, (int)model.SortType, model.OrderByDescending);
-            model.ElapsedTime= watch.Elapsed.TotalMilliseconds;
+            ViewBag.Sortes = EnumExtensions.ToSelectList<SortTypeEnum>();
+
             return View(model);
+        }
+
+        public async Task<ActionResult> GetArticles([Bind(Exclude = "Articles, ElapsedTime")]ArticlesIndexViewModel model)
+        {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            model.Articles = await Task.FromResult(DataRepository.GetArticles(model.Page, model.ArticleTitle, model.ArticleSummary, model.AuthorName, model.PublicationYear, model.CategoryName,
+                model.JournalReference, (int)model.SortType, model.OrderByDescending));
+            model.ElapsedTime = watch.Elapsed.TotalMilliseconds;
+            return PartialView("ShowArticles",model);
         }
 
         public JsonResult GetAuthors(string search)

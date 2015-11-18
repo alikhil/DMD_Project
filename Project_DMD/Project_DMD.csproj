@@ -321,6 +321,7 @@
     <Content Include="Views\Manage\Favorites.cshtml" />
     <Content Include="Views\Manage\Visits.cshtml" />
     <Content Include="Views\Manage\Actions.cshtml" />
+    <Content Include="Views\Articles\ShowArticles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
