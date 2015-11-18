@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using Project_DMD.Models;
 using WebGrease.Css.Extensions;
 using Npgsql;
+using Project_DMD.Classes.Extensions;
 
 namespace Project_DMD.Classes
 {
@@ -55,6 +56,7 @@ namespace Project_DMD.Classes
             {
 
                 var query = new NpgsqlCommand(command, connection);
+                query.Prepare();
                 Log(query.CommandText);
                 var reader = query.ExecuteReader();
                
@@ -328,6 +330,7 @@ namespace Project_DMD.Classes
         public List<Article> GetArticles(int page, string articleName, string keyword, string authorName,
             int publicationYear, string category, string journalReference, int sortType, bool orderByDescending)
         {
+            page = page < 1 ? 1 : page;
             bool authors = false;
             bool categories = false;
 
