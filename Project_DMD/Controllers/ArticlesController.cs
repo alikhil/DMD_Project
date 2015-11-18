@@ -8,7 +8,8 @@ using Microsoft.AspNet.Identity;
 using Project_DMD.Models;
 using Project_DMD.Classes;
 using Project_DMD.Repositories;
-
+using System.Linq;
+using Project_DMD.Classes.Extensions;
 namespace Project_DMD.Controllers
 {
     [Authorize]
@@ -17,22 +18,18 @@ namespace Project_DMD.Controllers
         readonly IDataRepository DataRepository = Global.Instance.ArticlesRepository;
         readonly IAppUserRepository UsersRepository = Global.Instance.UsersRepository;
         
-        public ActionResult Index(int page = 1, string articleName = null, string keyword = null,
-            string authorName = null, int publicationYear = 0, string category = "",
-            string journalReference = null, bool orderByDescending = false, int sortType = 0)
+        public ActionResult Index([Bind(Exclude = "Articles, ElapsedTime")]ArticlesIndexViewModel model)
         {
             Stopwatch watch = new Stopwatch();
             var tempDict = Global.Instance.InitCategories();
             tempDict.Add("","");
-            ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value", category);
-            var sortes = new Dictionary<string, string> {{"0", "Article Title"}, {"1", "Publication Date"}};
-            ViewBag.Sortes = new SelectList(sortes, "Key", "Value", sortType.ToString());
-            ViewBag.Page = page;
+            ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value", model.CategoryName);
+            ViewBag.Sortes = EnumExtensions.ToSelectList<SortTypeEnum>(); 
             watch.Start();
-            var result = DataRepository.GetArticles(page, articleName, keyword, authorName, publicationYear, category,
-                journalReference, sortType, orderByDescending);
-            ViewBag.TimeElapsed = watch.Elapsed.TotalMilliseconds;
-            return View(result);
+            model.Articles = DataRepository.GetArticles(model.Page, model.AuthorName, model.ArticleSummary, model.AuthorName, model.PublicationYear, model.CategoryName,
+                model.JournalReference, (int)model.SortType, model.OrderByDescending);
+            model.ElapsedTime= watch.Elapsed.TotalMilliseconds;
+            return View(model);
         }
 
         public JsonResult GetAuthors(string search)

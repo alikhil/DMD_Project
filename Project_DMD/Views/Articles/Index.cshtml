@@ -1,5 +1,6 @@
 ﻿@using Project_DMD.Classes
-@model IEnumerable<Project_DMD.Models.Article>
+@using Project_DMD.Models
+@model ArticlesIndexViewModel
 
 @{
     ViewBag.Title = "Articles";
@@ -10,26 +11,26 @@
 <p>
     @Html.ActionLink("Add New Article", "Create")
 </p>
-<p>Search time: @ViewBag.TimeElapsed ms</p>
+<p>Search time: @Model.ElapsedTime ms</p>
 
 @using (Html.BeginForm())
 {
     SelectList list = ViewBag.SelectedList;
     SelectList sortes = ViewBag.Sortes;
     <div id="container" class="container">
-        @Html.Hidden("orderByDescending")
+        @Html.Hidden("OrderByDescending")
         <div class="row">
             <div>
                 <table class="table table-bordered table-hover table-sortable" id="tab_logic">
                     <thead>
                         <tr>
-                            <th>Article Name @Html.TextBox("articleName", "", new { @class = "wide" })</th>
-                            <th>Author Name @Html.TextBox("authorName", "", new { @class = "wide" })</th>
-                            <th>Publication year @Html.TextBox("publicationYear", "", new { @class = "wide" })</th>
-                            <th>Keyword @Html.TextBox("keyword", "", new { @class = "wide" })</th>
-                            <th>Journal reference @Html.TextBox("journalReference", "", new { @class = "wide" })</th>
-                            <th>Category @Html.DropDownList("category", list, new { @class = "wideforcategories" })</th>
-                            <th>Order by @Html.DropDownList("sortType", sortes, new { @class = "high" })</th>
+                            <th>Article Name @Html.TextBox("ArticleTitle", "", new { @class = "wide" })</th>
+                            <th>Author Name @Html.TextBox("AuthorName", "", new { @class = "wide" })</th>
+                            <th>Publication year @Html.TextBox("PublicationYear", "", new { @class = "wide" })</th>
+                            <th>Keyword @Html.TextBox("ArticleSummary", "", new { @class = "wide" })</th>
+                            <th>Journal reference @Html.TextBox("JournalReference", "", new { @class = "wide" })</th>
+                            <th>Category @Html.DropDownList("CategoryName", list, new { @class = "wideforcategories" })</th>
+                            <th>Order by @Html.DropDownList("SortType", sortes, new { @class = "high" })</th>
                             <th>
                                 <div style="display:inline-block;" id="order"></div>
                             </th>
@@ -50,23 +51,23 @@
                 <table class="table-bordered table-condensed table-hover widefortable heightfortable">
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.Title)
+                            @Html.DisplayName("Title")
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Published)
+                            @Html.DisplayName("Published Date")
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Authors)
+                            @Html.DisplayName("Authors")
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Categories)
+                            @Html.DisplayName("Categories")
                         </th>
                         <th>
                             Operations
                         </th>
                     </tr>
 
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.Articles)
                     {
                         <tr>
                             <td style="width:300px">

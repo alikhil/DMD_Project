@@ -165,6 +165,9 @@
     <Compile Include="Attributes\AutoSGAttributes.cs" />
     <Compile Include="Classes\DatabaseConstants.cs" />
     <Compile Include="Classes\DatabaseProvider.cs" />
+    <Compile Include="Classes\Extensions\EnumExtensions.cs" />
+    <Compile Include="Classes\Extensions\StringExtensions.cs" />
+    <Compile Include="Models\ArticlesIndexViewModel.cs" />
     <Compile Include="Repositories\AppUserRepository.cs" />
     <Compile Include="Classes\Cloner.cs" />
     <Compile Include="Repositories\DataRepository.cs" />
@@ -172,7 +175,7 @@
     <Compile Include="Classes\Global.cs" />
     <Compile Include="Repositories\IAppUserRepository.cs" />
     <Compile Include="Repositories\IDataRepository.cs" />
-    <Compile Include="Classes\IdentityExtensions.cs" />
+    <Compile Include="Classes\Extensions\IdentityExtensions.cs" />
     <Compile Include="Classes\AutoSqlGenerator.cs" />
     <Compile Include="Classes\QueryExecutor.cs" />
     <Compile Include="Controllers\AppUserController.cs" />

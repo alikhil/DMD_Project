@@ -7,7 +7,7 @@ namespace Project_DMD.Classes
 {
     public class DatabaseConstants
     {
-        public readonly static string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=PMS;COMMANDTIMEOUT=30;";
+        public readonly static string ConnectionString = "Host=localhost;Username=postgres;Password=postgres;Database=PMS;COMMANDTIMEOUT=200;";
 
         public readonly static string AppUsersTableName = "Client";
 

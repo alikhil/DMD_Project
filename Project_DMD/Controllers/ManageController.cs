@@ -4,6 +4,7 @@ using Project_DMD.Models;
 using Project_DMD.Classes;
 using Microsoft.AspNet.Identity;
 using Project_DMD.Repositories;
+using Project_DMD.Classes.Extensions;
 
 namespace Project_DMD.Controllers
 {
