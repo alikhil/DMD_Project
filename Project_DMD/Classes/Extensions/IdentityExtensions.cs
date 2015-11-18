@@ -7,7 +7,7 @@ using Microsoft.AspNet;
 using System.Web.Mvc;
 using System.Security.Principal;
 using Microsoft.AspNet.Identity;
-namespace Project_DMD.Classes
+namespace Project_DMD.Classes.Extensions
 {
     public static class IdentityExtensions
     {
