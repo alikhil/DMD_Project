@@ -13,8 +13,7 @@
 </p>
 
 
-@using (Ajax.BeginForm("GetArticles", new AjaxOptions() { InsertionMode = InsertionMode.Replace, LoadingElementDuration=2000, LoadingElementId = "loading", UpdateTargetId = "articles"}))
-{
+@{ 
     SelectList list = ViewBag.SelectedList;
     SelectList sortes = ViewBag.Sortes;
     <div id="container" class="container">
@@ -36,7 +35,7 @@
                             </th>
                             <th>
                                 <div style="display:inline-block;">
-                                    <button type="submit" class="btn btn-sm btn-success">
+                                    <button type="button" onclick="onSubmit(this)" class="btn btn-sm btn-success">
                                         <span class="glyphicon glyphicon-search"></span>
                                     </button>
                                 </div>
@@ -48,17 +47,28 @@
         </div>
        
     </div>
-}
-<div class="container" id="articles">
 
-</div>
-<div id="loading" style="display:none; color:Red; font-weight:bold;">
-    <p>Loading...</p>
-</div>
+    <div id="loading" style="display:none; color:Red; font-weight:bold;">
+        <div class="text-center"><span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span> Loading...</div>
+    </div>
+    <div class="container" id="articles">
+
+    </div>
+}
+
 @section scripts{
 @Scripts.Render("~/bundles/jqueryval")
 @Scripts.Render("~/bundles/jquery-ui-ajax")
     <script type="text/javascript">
+        function onBeforeSend(data) {
+            $("#loading").show(200);
+        }
+        function onComplete() {
+            $("#loading").hide(200);
+        }
+        function onSubmit(form) {
+            callAjaxGetArticles();
+        }
         $(function () {
             callAjaxGetArticles();
             if ($("#orderByDescending").val() == "true") {
@@ -79,7 +89,7 @@
                 url: '@Url.Action("GetArticles", "Articles")',
                 data: {
                     Page: getElemVal("page", 1),
-                    ArticleName: getElemVal("ArticleName",""),
+                    ArticleTitle: getElemVal("ArticleTitle", ""),
                     AuthorName: getElemVal("AuthorName", ""),
                     ArticleSummary: getElemVal("ArticleSummary", ""),
                     JournalReference: getElemVal("JournalReference", ""),
@@ -88,7 +98,8 @@
                     CategoryName: getElemVal("CategoryName", ""),
                     OrderByDescending: getElemVal("OrderByDescending",true)
                 },
-                loadingElementId: "loading",
+                beforeSend: onBeforeSend,
+                complete: onComplete,
                 success: function (data) {
                     $('#articles').html(data);
                 }
@@ -97,10 +108,11 @@
 
         function getElemVal(id, def){
             var obj = $("#" + id);
-            var res = obj === null ? undefined : $(obj).value;
+            var res = obj === null ? undefined : $(obj).val();
 
             if (res === undefined)
                 res = def;
+            console.log(id + ": " + res);
             return res;
         }
 

@@ -2,6 +2,7 @@
 using Project_DMD.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -22,6 +23,7 @@ namespace Project_DMD.Classes
         {
             TextWriter writer = Console.Out;
             //Writer = new StreamWriter(String.Format("log_{0}_.txt", DateTime.Now.ToShortDateString()));
+            Debug.WriteLine(message);
             writer.WriteLine(message);
         }
     }

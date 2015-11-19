@@ -24,7 +24,7 @@ namespace Project_DMD.Controllers
         {
             var tempDict = Global.Instance.InitCategories();
             tempDict.Add("", "");
-            ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value", model.CategoryName);
+            ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value", model.CategoryName ?? "");
             ViewBag.Sortes = EnumExtensions.ToSelectList<SortTypeEnum>();
 
             return View(model);

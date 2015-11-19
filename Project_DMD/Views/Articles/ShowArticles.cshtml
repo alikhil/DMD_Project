@@ -57,7 +57,7 @@
                                     <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category })@str </span>
                                 }
                             </p>
-                                    }
+                        }
                     </td>
                     <td style="width:180px">
                         <div style="display:inline-block;">@Html.ActionLink("Edit", "Edit", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-success" })</div>
@@ -65,7 +65,7 @@
                         <div style="display:inline-block;">@Html.ActionLink("Delete", "Delete", new { id = item.ArticleId }, new { @class = "btn btn-sm btn-danger" })</div>
                     </td>
                 </tr>
-                                    }
+            }
         </table>
     </div>
 </div>
@@ -90,4 +90,3 @@
         </div>
     }
 </div>
-}
