@@ -78,13 +78,9 @@ namespace Project_DMD.Classes
             return result;
         }
 
+        
         #endregion
 
-        /// <summary>
-        /// Find article by id
-        /// </summary>
-        /// <param name="id">id of searching article</param>
-        /// <returns>Article if it exists else null</returns>
         public Article GetArticleById(int id)
         {
             var commandGetArticle = "SELECT * FROM Article WHERE Article.ArticleID = " + id.ToString() + " LIMIT 1;";
@@ -110,11 +106,6 @@ namespace Project_DMD.Classes
                 .WithUrl(articleData["url"]);
         }
 
-        /// <summary>
-        /// Adding article to DB
-        /// </summary>
-        /// <param name="article">Article to add</param>
-        /// <returns>Id of created article</returns>
         public int AddArticle(Article article)
         {
             article.WithPublished(DateTime.Now);
@@ -135,11 +126,6 @@ namespace Project_DMD.Classes
             return article.ArticleId;
         }
 
-        /// <summary>
-        ///  Updating given article in DB
-        /// </summary>
-        /// <param name="article"></param>
-        /// <returns>True if article successfully updated, else false</returns>
         public bool UpdateArticle(Article article)
         {
             Article oldArticle = GetArticleById(article.ArticleId);
@@ -163,11 +149,6 @@ namespace Project_DMD.Classes
         }
 
 
-        /// <summary>
-        /// Deletes article from table
-        /// </summary>
-        /// <param name="id">Id of article</param>
-        /// <returns>true if article successfully deleted, else false</returns>
         public bool DeleteArticle(int id)
         {
             var query = "DELETE FROM ArticleCategories WHERE ArticleID = " + id.ToString() + ";"
@@ -179,11 +160,6 @@ namespace Project_DMD.Classes
             return true;
         }
 
-        /// <summary>
-        /// Get author by his Id
-        /// </summary>
-        /// <param name="id">Id of needed author</param>
-        /// <returns>Null if author doesn't exist in table, else author data</returns>
         public Author GetAuthorById(int id)
         {
             var author = AutoSqlGenerator.Instance.Get<Author>(id);
@@ -195,10 +171,6 @@ namespace Project_DMD.Classes
             return author;
         }
 
-        /// <summary>
-        /// Get list of authors
-        /// </summary>
-        /// <returns>List of authors</returns>
         public IEnumerable<Author> GetAllAuthors()
         {
             var start = (new Random()).Next(500000);
@@ -207,21 +179,12 @@ namespace Project_DMD.Classes
             return authorsData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Author>(data));
         }
 
-        /// <summary>
-        /// Adding new AppUser to table
-        /// </summary>
-        /// <param name="user">Given AppUser</param>
-        /// <returns>True if appUser successfully added into table, otherwise false </returns>
         public bool AddAppUser(AppUser user)
         {
             user.Id = AutoSqlGenerator.Instance.Add(user);
             return false;
         }
 
-        /// <summary>
-        /// Getting AppUsers list
-        /// </summary>
-        /// <returns>List of AppUsers</returns>
         public List<AppUser> GetAppUsers()
         {
             return AutoSqlGenerator.Instance.FindAll<AppUser>(null);
@@ -314,19 +277,7 @@ namespace Project_DMD.Classes
             action.ActionDate = DateTime.Now;
             AutoSqlGenerator.Instance.Add(action);
         }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        /// <param name="articleName"></param>
-        /// <param name="keyword"></param>
-        /// <param name="authorName"></param>
-        /// <param name="publicationYear"></param>
-        /// <param name="category"></param>
-        /// <param name="journalReference"></param>
-        /// <param name="sortType">1 - sort by date; 0 - sort by title</param>
-        /// <param name="orderByDescending"></param>
-        /// <returns></returns>
+      
         public List<Article> GetArticles(int page, string articleName, string keyword, string authorName,
             int publicationYear, string category, string journalReference, int sortType, bool orderByDescending)
         {
@@ -376,7 +327,85 @@ namespace Project_DMD.Classes
            
             return articles;
         }
-        
+
+        public List<Article> GetArticles(ArticlesIndexViewModel model)
+        {
+            var articles = new List<Article>();
+            var sql = "";
+            switch (model.SearchType)
+            {
+                case "authorName":
+                    sql = GetArticlesByAuthorNameSql(model);
+                    break;
+                case "articleCategory":
+                    sql = GetArticlesByCategory(model);
+                    break;
+                default:
+                    sql = GetArticlesByArticleData(model);
+                    break;
+            }
+            sql += String.Format("ORDER BY {0} {1} LIMIT {3} OFFSET {2};",
+                (model.SortType == SortTypeEnum.ByTitle ? "a.title" : "a.published"), 
+                model.OrderByDescending ? "DESC" : "",
+                ((model.Page - 1) * Global.ArticlePerPage),
+                Global.ArticlePerPage);
+            var articleData = ExecuteCommandReturnList(sql);
+            articles =articleData.Select(data => AutoSqlGenerator.Instance.ParseDictionary<Article>(data)).ToList();
+            articles = GetAuthorsAndCategories(articles);
+            return articles;
+        }
+
+        private string GetArticlesByArticleData(ArticlesIndexViewModel model)
+        {
+            string key = MakeStringFilter(model.SearchKey);
+            int year = 0;
+            if (!string.IsNullOrEmpty(model.SearchKey))
+            {
+                var yearData = model.SearchKey.Where(x => x >= '0' && x <= '9').Select(y => Convert.ToInt32(y));
+                yearData.ForEach(x => { year += x; year *= 10; });
+            }
+            string sql = "  SELECT a.* " +
+                         "  FROM article a" + 
+            (string.IsNullOrEmpty(model.SearchKey) ? "" : 
+                         "  WHERE title ILIKE " + key +
+                         "  AND summary ILIKE " + key + 
+                         "  AND journalReference ILIKE " + key + 
+            (year == 0 ? "" : " AND date_part('year', published) = " + year));
+            return sql;
+        }
+
+        private string GetArticlesByCategory(ArticlesIndexViewModel model)
+        {
+            string sql = "  SELECT a.* " +
+                         "  FROM article a, category c,articlecategories ac " +
+                         "  WHERE c.categoryName = " + model.SearchKey.PutIntoDollar() +
+                         "  AND ac.categoryId = c.categoryId " +
+                         "  AND ac.articleId = a.articleId ";
+            return sql;
+        }
+
+        private string GetArticlesByAuthorNameSql(ArticlesIndexViewModel model)
+        {
+            string sql = "SELECT a.* " +
+                         "FROM " +
+                            " (SELECT a.* " +
+                              "FROM( " +
+                                        "(SELECT au.articleId " +
+                                            " FROM" +
+                                               " (SELECT aut.authorId " +
+                                                 "FROM author as aut " +
+                                                 "WHERE aut.authorname ILIKE " + MakeStringFilter(model.SearchKey) +
+                                                " ) as aut " +
+                                            "INNER JOIN  articleauthors as au " +
+                                            "USING(authorid) " +
+                                        " ) as aut " +
+                                        "INNER join article as a " +
+                                        "USING(articleId) " +
+                             "  )) as a ";
+                       
+            return sql;
+        }
+
         public List<Article> GetAuthorsAndCategories(List<Article> articles)
         {
             if (articles == null || articles.Count < 1)

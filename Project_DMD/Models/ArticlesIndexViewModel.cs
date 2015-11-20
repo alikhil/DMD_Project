@@ -7,17 +7,9 @@ namespace Project_DMD.Models
 {
     public class ArticlesIndexViewModel
     {
-        public string ArticleTitle { get; set; }
+        public string SearchKey { get; set; }
 
-        public int PublicationYear { get; set; }
-
-        public string ArticleSummary { get; set; }
-
-        public string JournalReference { get; set; }
-
-        public string AuthorName{ get; set; }
-
-        public string CategoryName { get; set; }
+        public string SearchType { get; set; }
 
         public int Page { get; set; }
 

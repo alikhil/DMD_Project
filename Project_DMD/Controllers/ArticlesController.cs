@@ -23,10 +23,10 @@ namespace Project_DMD.Controllers
         public ActionResult Index([Bind(Exclude = "Articles, ElapsedTime")]ArticlesIndexViewModel model)
         {
             var tempDict = Global.Instance.InitCategories();
-            tempDict.Add("", "");
-            ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value", model.CategoryName ?? "");
+            ViewBag.SelectedList = new SelectList(tempDict, "Key", "Value");
             ViewBag.Sortes = EnumExtensions.ToSelectList<SortTypeEnum>();
-
+            model.Page = 1;
+            
             return View(model);
         }
 
@@ -34,8 +34,7 @@ namespace Project_DMD.Controllers
         {
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            model.Articles = await Task.FromResult(DataRepository.GetArticles(model.Page, model.ArticleTitle, model.ArticleSummary, model.AuthorName, model.PublicationYear, model.CategoryName,
-                model.JournalReference, (int)model.SortType, model.OrderByDescending));
+            model.Articles = await Task.FromResult(DataRepository.GetArticles(model));
             model.ElapsedTime = watch.Elapsed.TotalMilliseconds;
             return PartialView("ShowArticles",model);
         }

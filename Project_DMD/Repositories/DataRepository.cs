@@ -69,5 +69,10 @@ namespace Project_DMD.Repositories
         {
             return QueryExecutor.Instance.GetAuthorsWithName(search);
         }
+
+        public List<Article> GetArticles(ArticlesIndexViewModel model)
+        {
+            return QueryExecutor.Instance.GetArticles(model);
+        }
     }
 }

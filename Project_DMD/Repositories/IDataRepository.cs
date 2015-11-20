@@ -27,7 +27,9 @@ namespace Project_DMD.Repositories
         void VisitArticle(int articleId);
 
         List<Article> GetArticles(int page, string articleName, string keyword, string authorName, int publicationYear, string category, string journalReference, int sortType, bool orderByDescending);
-        
+
+        List<Article> GetArticles(ArticlesIndexViewModel model);
+
         List<Author> GetAuthorsByName(string search);
     }
 

@@ -188,6 +188,12 @@ namespace Project_DMD.Repositories
         {
             return _articlesList.Find(x => x.ArticleId == articleId);
         }
+
+        public List<Article> GetArticles(ArticlesIndexViewModel model)
+        {
+            //this method added on pre-release stage and it don't need to implement now
+            throw new NotImplementedException();
+        }
     }
 
     /// <summary>

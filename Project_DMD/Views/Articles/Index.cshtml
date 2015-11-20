@@ -11,40 +11,40 @@
 <p>
     @Html.ActionLink("Add New Article", "Create")
 </p>
+@Html.Hidden("typeOfSearch", "articleData")
 
-
-@{ 
+@{
     SelectList list = ViewBag.SelectedList;
     SelectList sortes = ViewBag.Sortes;
     <div id="container" class="container">
-        @Html.Hidden("OrderByDescending")
-        <div class="row">
-            <div>
-                <table class="table table-bordered table-hover table-sortable" id="tab_logic">
-                    <thead>
-                        <tr>
-                            <th>Article Name @Html.TextBox("ArticleTitle", "", new { @class = "wide" })</th>
-                            <th>Author Name @Html.TextBox("AuthorName", "", new { @class = "wide" })</th>
-                            <th>Publication year @Html.TextBox("PublicationYear", "", new { @class = "wide" })</th>
-                            <th>Keyword @Html.TextBox("ArticleSummary", "", new { @class = "wide" })</th>
-                            <th>Journal reference @Html.TextBox("JournalReference", "", new { @class = "wide" })</th>
-                            <th>Category @Html.DropDownList("CategoryName", list, new { @class = "wideforcategories" })</th>
-                            <th>Order by @Html.DropDownList("SortType", sortes, new { @class = "high" })</th>
-                            <th>
-                                <div style="display:inline-block;" id="order"></div>
-                            </th>
-                            <th>
-                                <div style="display:inline-block;">
-                                    <button type="button" onclick="onSubmit(this)" class="btn btn-sm btn-success">
-                                        <span class="glyphicon glyphicon-search"></span>
-                                    </button>
-                                </div>
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
+        @Html.Hidden("OrderByDescending", true)
+        @Html.HiddenFor(m => m.Page)
+            <div class="row">
+                <div class="input-group text-center">
+                    <input type="text" id="searchKey" class="form-control col-lg-6" style="max-width:700px;" placeholder="Search for...">
+                    @Html.DropDownList("Categories", list, new { @class = "form-control col-lg-6", style = "max-width:700px;", id = "category", hidden="hidden" })
+
+
+                    <span class="input-group col-lg-4" >
+                        <span class="input-group-addon" id="orderD">Order</span>
+                         @Html.DropDownList("SortType", sortes, new { @class = "form-control" })
+                    </span>
+                    <span class="input-group-btn">
+                        <button class="btn btn-info" onclick="changeDescending()" type="button"><span id="orderSwitcher" class="glyphicon glyphicon-arrow-down" /></button>
+                    </span>
+                    <span class="input-group-btn">
+                        <button class="btn btn-success" onclick="onSubmit()" type="button">Go!</button>
+                    </span>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
+            <div  class="row" style="margin-top:10px;">
+                <ul class="nav nav-pills nav-justified">
+                    <li role="navigation" id="articleData" class="active"><a>By title, summary, journal or publication date</a></li>
+                    <li role="navigation" id="authorName" ><a>By author name</a></li>
+                    <li role="navigation" id="articleCategory"><a>By category</a></li>
+                </ul>
+                
             </div>
-        </div>
        
     </div>
 
@@ -66,11 +66,34 @@
         function onComplete() {
             $("#loading").hide(200);
         }
-        function onSubmit(form) {
+        function onSubmit() {
             callAjaxGetArticles();
         }
+        function changeDescending() {
+            var val = $("#OrderByDescending").attr("value");
+            var currentValue = val === "True" || val == "true";
+            $("#OrderByDescending").attr("value", !currentValue);
+            if (currentValue)
+                $("#orderSwitcher").removeClass("glyphicon-arrow-down").addClass("glyphicon-arrow-up");
+            else
+                $("#orderSwitcher").removeClass("glyphicon-arrow-up").addClass("glyphicon-arrow-down");
+
+        }
+        function setupNavigationLinksStyle() {
+            $("[role='navigation']").click(function () {
+                $("[role='navigation']").removeClass("active");
+                $(this).addClass("active");
+                $("#typeOfSearch").attr("value",$(this).attr("id"));
+            });
+        }
+        function setupCategoriesInput() {
+            $("#articleCategory").click()
+        }
+
         $(function () {
             callAjaxGetArticles();
+            setupNavigationLinksStyle();
+            setupCategoriesInput();
             if ($("#orderByDescending").val() == "true") {
                 $("#order").append("<button class='btn btn-sm btn-warning'><span class='glyphicon glyphicon-arrow-up'></span></button>").click(function () {
                     $("#orderByDescending").val("false");
@@ -88,14 +111,10 @@
             $.ajax({
                 url: '@Url.Action("GetArticles", "Articles")',
                 data: {
-                    Page: getElemVal("page", 1),
-                    ArticleTitle: getElemVal("ArticleTitle", ""),
-                    AuthorName: getElemVal("AuthorName", ""),
-                    ArticleSummary: getElemVal("ArticleSummary", ""),
-                    JournalReference: getElemVal("JournalReference", ""),
-                    PublicationYear: getElemVal("PublicationYear", 0),
+                    Page: getElemVal("Page", 1),
+                    SearchKey: getElemVal("searchKey", ""),
+                    SearchType: getElemVal("typeOfSearch",""),
                     SortType: getElemVal("SortType", 0),
-                    CategoryName: getElemVal("CategoryName", ""),
                     OrderByDescending: getElemVal("OrderByDescending",true)
                 },
                 beforeSend: onBeforeSend,
@@ -117,13 +136,13 @@
         }
 
         function PreviousPage() {
-            $("#container").append($("<input hidden name='page'>").attr("value", "@(ViewBag.Page-1)"));
-            $("form").submit();
+            $("#Page").attr("value", "@(Model.Page-1)");
+            onSubmit();
         }
 
         function NextPage() {
-            $("#container").append($("<input hidden name='page'>").attr("value", "@(ViewBag.Page+1)"));
-            $("form").submit();
+            $("#Page").attr("value", "@(Model.Page+1)");
+            onSubmit();
         }
     </script>
 }
