@@ -3,6 +3,10 @@
 @model ArticlesIndexViewModel
 
 <p>Search time: @Model.ElapsedTime ms</p>
+
+@Html.Hidden("Page","")
+
+
 <div class="row">
     <div class="col-lg-12">
         <table class="table-bordered table-condensed table-hover widefortable heightfortable">
@@ -74,19 +78,19 @@
     @if (Model.Page != 1)
     {
         <div style="display:inline-block;" class="col-lg-offset-0">
-            <input type="submit" value="&laquo Previous" onclick="PreviousPage()" class="btn btn-default">
+            <input type="submit" value="&laquo Previous" onclick="PreviousPage(this)" page="@(Model.Page - 1)"  class="btn btn-default">
         </div>
     }
     @if (Model.Page == 1)
     {
         <div class="col-lg-offset-7">
-            <input type="submit" value="Next &raquo" onclick="NextPage()" class="btn btn-default">
+            <input type="submit" value="Next &raquo" onclick="NextPage(this)" page="@(Model.Page + 1)" class="btn btn-default">
         </div>
     }
     else
     {
         <div style="display:inline-block;" class="col-lg-offset-1 g">
-            <input type="submit" value="Next &raquo" onclick="NextPage()" class="btn btn-default">
+            <input type="submit" value="Next &raquo" onclick="NextPage(this)" page="@(Model.Page + 1)" class="btn btn-default">
         </div>
     }
 </div>
