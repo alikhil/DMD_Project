@@ -152,7 +152,7 @@
         <span>@Html.ActionLink("Show related by published year", "Index", new { searchKey = Model.Published.Year})</span>
         if (Model.Authors != null && Model.Authors.Count > 0)
         {
-            <span>@Html.ActionLink("Show related by author", "Index", new {searchKey = Model.Authors[random.Next(Model.Authors.Count)].AuthorName, SearchType = "authorName" })</span>
+            <span>| @Html.ActionLink("Show related by author", "Index", new {searchKey = Model.Authors[random.Next(Model.Authors.Count)].AuthorName, SearchType = "authorName" })</span>
         }
     }
 </p>
