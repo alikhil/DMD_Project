@@ -357,7 +357,7 @@ namespace Project_DMD.Classes
                     sql = GetArticlesByArticleData(model);
                     break;
             }
-            sql += String.Format("ORDER BY {0} {1} LIMIT {3} OFFSET {2}; reset enable_indexscan;",
+            sql = String.Format(sql,
                 (model.SortType == SortTypeEnum.ByTitle ? "a.title" : "a.published"), 
                 model.OrderByDescending ? "DESC" : "",
                 ((model.Page - 1) * Global.ArticlePerPage),
@@ -383,21 +383,26 @@ namespace Project_DMD.Classes
                          "  WHERE title ILIKE " + key +
                          "  OR summary ILIKE " + key + 
                          "  OR journalReference ILIKE " + key + 
-            (year == 0 ? "" : " OR date_part('year', published) = " + year));
+            (year == 0 ? "" : " OR date_part('year', published) = " + year)) +
+                        "ORDER BY {0} {1} LIMIT {3} OFFSET {2}; ";
             return sql;
         }
 
         private string GetArticlesByCategory(ArticlesIndexViewModel model)
         {
             var categoryId = ExecuteCommandScalar<int>(
-                String.Format("set enable_indexscan=false; SELECT categoryId FROM category WHERE categoryName = {0};", 
+                String.Format(" SELECT categoryId FROM category WHERE categoryName = {0};", 
                 model.SearchKey.PutIntoDollar()));
 
             string sql = "  SELECT a.* " +
-                         "  FROM article a,articlecategories ac " +
-                         "  WHERE " + 
-                         "  ac.categoryId = " + categoryId +
-                         "  AND ac.articleId = a.articleId ";
+                         "  FROM  " +
+                         " (SELECT a.* " +
+                         "  FROM ArticleCategories ac, Article a " +
+                         "  WHERE ac.categoryId =  " + categoryId +
+                         " AND ac.articleId = a.ArticleId " +
+                         " LIMIT {3} " + 
+                         ") as a " +
+                        " ORDER BY {0} {1} OFFSET {2}; ";
             return sql;
         }
 
@@ -418,8 +423,9 @@ namespace Project_DMD.Classes
                                         " ) as aut " +
                                         "INNER join article as a " +
                                         "USING(articleId) " +
-                             "  )) as a ";
-                       
+                             "  )) as a " +
+                             "ORDER BY {0} {1} LIMIT {3} OFFSET {2}; ";
+
             return sql;
         }
 
