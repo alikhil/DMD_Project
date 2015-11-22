@@ -21,7 +21,7 @@
         @Html.HiddenFor(m => m.Page)
             <div class="row">
                 <div class="input-group text-center">
-                    <input type="text" id="searchKey" class="form-control col-lg-6" style="max-width:700px;" placeholder="Search for...">
+                    <input type="text" id="searchKey" class="form-control col-lg-6" style="max-width:700px;" placeholder="Looking for...">
                     @Html.DropDownList("Categories", list, new { @class = "form-control col-lg-6", style = "display:none; max-width:700px;", id = "category" })
 
 
@@ -30,10 +30,7 @@
                          @Html.DropDownList("SortType", sortes, new { @class = "form-control" })
                     </span>
                     <span class="input-group-btn">
-                        <button class="btn btn-info" onclick="changeDescending()" type="button"><span id="orderSwitcher" class="glyphicon glyphicon-arrow-down" /></button>
-                    </span>
-                    <span class="input-group-btn">
-                        <button class="btn btn-success" onclick="onSubmit()" type="button">Go!</button>
+                        <button class="btn btn-success" onclick="onSubmit()" type="button">Search</button>
                     </span>
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
