@@ -5,7 +5,7 @@
 }
 
 <div class="well">
-    <h2>ShowAuthor</h2>
+    <h2>Author Info</h2>
 </div>
 
 <div>
@@ -13,18 +13,13 @@
     <hr />
     <table class="table table-bordered" style="width:400px">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.AuthorName)
-            </th>
+           
 
             <th>
                 @Html.DisplayNameFor(model => model.PublishedArticles)
             </th>
         </tr>
         <tr>
-            <td>
-            @Html.DisplayFor(model => model.AuthorName)
-            </td>
 
             <td>
                 @{
@@ -34,7 +29,7 @@
                         foreach (var article in Model.PublishedArticles)
                         {
                             var str = ++count == Model.PublishedArticles.Count ? "" : ",";
-                            <span>@Html.ActionLink(article.Title, "Details", new { id = article.ArticleId })@str</span>
+                            <p>@Html.ActionLink(article.Title, "Details", new { id = article.ArticleId })@str</p>
                         }
                     }
                 }

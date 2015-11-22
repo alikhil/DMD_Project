@@ -11,7 +11,7 @@
 <p>
     @Html.ActionLink("Add New Article", "Create")
 </p>
-@Html.Hidden("typeOfSearch", "articleData")
+@Html.Hidden("typeOfSearch", Model.SearchType ?? "articleData")
 
 @{
     SelectList list = ViewBag.SelectedList;
@@ -21,7 +21,7 @@
         @Html.HiddenFor(m => m.Page)
             <div class="row">
                 <div class="input-group text-center">
-                    <input type="text" id="searchKey" class="form-control col-lg-6" style="max-width:700px;" placeholder="Looking for...">
+                    <input type="text" id="searchKey" value="@Model.SearchKey" class="form-control col-lg-6" style="max-width:700px;" placeholder="Looking for...">
                     @Html.DropDownList("Categories", list, new { @class = "form-control col-lg-6", style = "display:none; max-width:700px;", id = "category" })
 
 
@@ -39,7 +39,7 @@
             </div><!-- /.col-lg-6 -->
             <div  class="row" style="margin-top:10px;">
                 <ul class="nav nav-pills nav-justified">
-                    <li role="navigation" id="articleData" class="active"><a>By title, summary, journal or publication date</a></li>
+                    <li role="navigation" id="articleData" ><a>By title, summary, journal or publication date</a></li>
                     <li role="navigation" id="authorName" ><a>By author name</a></li>
                     <li role="navigation" id="articleCategory"><a>By category</a></li>
                 </ul>
@@ -101,9 +101,20 @@
             });
         }
 
+        function setupDefaultValues(){
+            var defaultSearchType = $("#typeOfSearch").val();
+            if (defaultSearchType === "articleCategory") {
+                $("[value='" + $("#searchKey").val() + "']").prop("selected", true);
+            }
+            $("#" + defaultSearchType).click();
+
+        }
+
         $(function () {
-            callAjaxGetArticles();
             setupNavigationLinksStyle();
+            setupDefaultValues();
+            callAjaxGetArticles();
+
             if ($("#orderByDescending").val() == "true") {
                 $("#order").append("<button class='btn btn-sm btn-warning'><span class='glyphicon glyphicon-arrow-up'></span></button>").click(function () {
                     $("#orderByDescending").val("false");
