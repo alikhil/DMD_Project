@@ -400,31 +400,25 @@ namespace Project_DMD.Classes
                          "  FROM ArticleCategories ac, Article a " +
                          "  WHERE ac.categoryId =  " + categoryId +
                          " AND ac.articleId = a.ArticleId " +
-                         " LIMIT {3} " + 
+                         " LIMIT {3} OFFSET {2} " + 
                          ") as a " +
-                        " ORDER BY {0} {1} OFFSET {2}; ";
+                        "  ORDER BY {0} {1} ; ";
             return sql;
         }
 
         private string GetArticlesByAuthorNameSql(ArticlesIndexViewModel model)
         {
-            string sql = "SELECT a.* " +
-                         "FROM " +
-                            " (SELECT a.* " +
-                              "FROM( " +
-                                        "(SELECT au.articleId " +
-                                            " FROM" +
-                                               " (SELECT aut.authorId " +
-                                                 "FROM author as aut " +
-                                                 "WHERE aut.authorname ILIKE " + MakeStringFilter(model.SearchKey) +
-                                                " ) as aut " +
-                                            "INNER JOIN  articleauthors as au " +
-                                            "USING(authorid) " +
-                                        " ) as aut " +
-                                        "INNER join article as a " +
-                                        "USING(articleId) " +
-                             "  )) as a " +
-                             "ORDER BY {0} {1} LIMIT {3} OFFSET {2}; ";
+            var sql = "SELECT a.* " +
+                        " FROM " +
+                        " (SELECT a.* " +
+                        " FROM   Article a, ArticleAuthors aa, Author aut " +
+                        " WHERE   aut.AuthorName ILIKE  " + MakeStringFilter(model.SearchKey) + 
+                        " AND aut.AuthorID = aa.AuthorID " +
+                        " AND a.ArticleID = aa.ArticleID " +
+                        " LIMIT {3} OFFSET {2} ) as a " +
+                        " ORDER BY {0} {1} " +
+                        " ; ";
+
 
             return sql;
         }
