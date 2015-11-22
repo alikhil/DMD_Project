@@ -28,6 +28,19 @@ namespace Project_DMD.Classes
         }
 
         #region Base Methods
+
+        public T ExecuteCommandScalar<T>(string command)
+        {
+            using (var connection = CreateConnection())
+            {
+
+                var query = new NpgsqlCommand(command, connection);
+                Log(query.CommandText);
+                var obj = query.ExecuteScalar();
+                
+                return (T)obj;
+            }
+        }
         public Dictionary<string, string> ExecuteCommand(string command)
         {
             using (var connection = CreateConnection())
@@ -365,21 +378,25 @@ namespace Project_DMD.Classes
                 yearData.ForEach(x => { year += x; year *= 10; });
             }
             string sql = "  SELECT a.* " +
-                         "  FROM article a" + 
+                         "  FROM article a " + 
             (string.IsNullOrEmpty(model.SearchKey) ? "" : 
                          "  WHERE title ILIKE " + key +
-                         "  AND summary ILIKE " + key + 
-                         "  AND journalReference ILIKE " + key + 
-            (year == 0 ? "" : " AND date_part('year', published) = " + year));
+                         "  OR summary ILIKE " + key + 
+                         "  OR journalReference ILIKE " + key + 
+            (year == 0 ? "" : " OR date_part('year', published) = " + year));
             return sql;
         }
 
         private string GetArticlesByCategory(ArticlesIndexViewModel model)
         {
+            var categoryId = ExecuteCommandScalar<int>(
+                String.Format("SELECT categoryId FROM category WHERE categoryName = {0};", 
+                model.SearchKey.PutIntoDollar()));
+
             string sql = "  SELECT a.* " +
-                         "  FROM article a, category c,articlecategories ac " +
-                         "  WHERE c.categoryName = " + model.SearchKey.PutIntoDollar() +
-                         "  AND ac.categoryId = c.categoryId " +
+                         "  FROM article a,articlecategories ac " +
+                         "  WHERE " + 
+                         "  ac.categoryId = " + categoryId +
                          "  AND ac.articleId = a.articleId ";
             return sql;
         }
