@@ -22,7 +22,7 @@
             <div class="row">
                 <div class="input-group text-center">
                     <input type="text" id="searchKey" class="form-control col-lg-6" style="max-width:700px;" placeholder="Search for...">
-                    @Html.DropDownList("Categories", list, new { @class = "form-control col-lg-6", style = "max-width:700px;", id = "category", hidden="hidden" })
+                    @Html.DropDownList("Categories", list, new { @class = "form-control col-lg-6", style = "display:none; max-width:700px;", id = "category" })
 
 
                     <span class="input-group col-lg-4" >
@@ -83,17 +83,27 @@
             $("[role='navigation']").click(function () {
                 $("[role='navigation']").removeClass("active");
                 $(this).addClass("active");
-                $("#typeOfSearch").attr("value",$(this).attr("id"));
+                $("#typeOfSearch").attr("value", $(this).attr("id"));
+
+                if ($(this).attr("id") === "articleCategory") {
+                    $("#category").show().change();
+                    $("#searchKey").hide();
+                }
+                else {
+                    $("#category").hide();
+                    $("#searchKey").show();
+                }
+
             });
-        }
-        function setupCategoriesInput() {
-            $("#articleCategory").click()
+
+            $("#category").change(function () {
+                $("#searchKey").val($("#category").val());
+            });
         }
 
         $(function () {
             callAjaxGetArticles();
             setupNavigationLinksStyle();
-            setupCategoriesInput();
             if ($("#orderByDescending").val() == "true") {
                 $("#order").append("<button class='btn btn-sm btn-warning'><span class='glyphicon glyphicon-arrow-up'></span></button>").click(function () {
                     $("#orderByDescending").val("false");
