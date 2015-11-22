@@ -357,7 +357,7 @@ namespace Project_DMD.Classes
                     sql = GetArticlesByArticleData(model);
                     break;
             }
-            sql += String.Format("ORDER BY {0} {1} LIMIT {3} OFFSET {2};",
+            sql += String.Format("ORDER BY {0} {1} LIMIT {3} OFFSET {2}; reset enable_indexscan;",
                 (model.SortType == SortTypeEnum.ByTitle ? "a.title" : "a.published"), 
                 model.OrderByDescending ? "DESC" : "",
                 ((model.Page - 1) * Global.ArticlePerPage),
@@ -390,7 +390,7 @@ namespace Project_DMD.Classes
         private string GetArticlesByCategory(ArticlesIndexViewModel model)
         {
             var categoryId = ExecuteCommandScalar<int>(
-                String.Format("SELECT categoryId FROM category WHERE categoryName = {0};", 
+                String.Format("set enable_indexscan=false; SELECT categoryId FROM category WHERE categoryName = {0};", 
                 model.SearchKey.PutIntoDollar()));
 
             string sql = "  SELECT a.* " +
