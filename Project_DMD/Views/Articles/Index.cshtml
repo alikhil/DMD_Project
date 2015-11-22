@@ -30,7 +30,10 @@
                          @Html.DropDownList("SortType", sortes, new { @class = "form-control" })
                     </span>
                     <span class="input-group-btn">
-                        <button class="btn btn-success" onclick="onSubmit()" type="button">Search</button>
+                        <button class="btn btn-info" onclick="changeDescending()" type="button"><span id="orderSwitcher" class="glyphicon glyphicon-arrow-down" /></button>
+                    </span>
+                    <span class="input-group-btn">
+                        <button class="btn btn-success" onclick="onSubmit()" type="button"><span class="glyphicon glyphicon-search" /></button>
                     </span>
                 </div><!-- /input-group -->
             </div><!-- /.col-lg-6 -->
