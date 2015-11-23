@@ -9,7 +9,7 @@
 ####Configure database
 There are must be database named '**PMS**' with owner '**postgres**' whose password '**postgres**'
 
-1. Execute '**setup.sql**'
+1. Execute ```psql -U postgres -d PMS -a -f **setup.sql**```
 
 2. Execute '**data.sql**'
 
@@ -22,4 +22,9 @@ There are must be database named '**PMS**' with owner '**postgres**' whose passw
 3. Start app
 
 ##### Run on local II Server(Advanced)
+
 Look tutorial [here](http://blogs.msdn.com/b/rickandy/archive/2011/04/22/test-you-asp-net-mvc-or-webforms-application-on-iis-7-in-30-seconds.aspx)
+
+## System Design and Architecture
+
+![Application architecture](http://i.imgur.com/ILSSh40.png)
