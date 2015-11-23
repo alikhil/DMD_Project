@@ -27,7 +27,7 @@
                 <a href="~/Articles/Details/@item.ArticleId">@title</a>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AdditionDate)
+                <p>@item.AdditionDate.ToShortDateString()</p>
             </td>
             <td>
                 @using (Html.BeginForm("RemoveFromFavorite", "Articles", FormMethod.Post))
