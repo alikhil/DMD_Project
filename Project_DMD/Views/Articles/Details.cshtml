@@ -108,7 +108,7 @@
                             @foreach (var category in Model.Categories)
                             {
                                 var str = ++count == Model.Categories.Count ? "" : ",";
-                                <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { category = category })@str</span>
+                                <span>@Html.ActionLink(Global.Instance.Categories[category], "Index", new { searchKey = category, SearchType = "articleCategory" })@str</span>
                             }
                         </p>
                     }
