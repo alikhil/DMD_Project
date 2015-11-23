@@ -17,7 +17,7 @@
     SelectList list = ViewBag.SelectedList;
     SelectList sortes = ViewBag.Sortes;
     <div id="container" class="container">
-        @Html.Hidden("OrderByDescending", true)
+        @Html.Hidden("OrderByDescending", false)
             <div class="row">
                 <div class="input-group text-center">
                     <input type="text" id="searchKey" value="@Model.SearchKey" class="form-control col-lg-6" style="max-width:700px;" placeholder="Looking for...">
