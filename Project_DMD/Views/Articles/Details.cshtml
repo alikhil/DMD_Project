@@ -122,7 +122,7 @@
                             foreach (var author in Model.Authors)
                             {
                                 var str = ++count == Model.Authors.Count ? "" : ",";
-                                <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
+                                <span>@Html.ActionLink(String.IsNullOrEmpty(author.AuthorName) ? "Unkown" : author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
                             }
                         }
                     }

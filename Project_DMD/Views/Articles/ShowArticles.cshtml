@@ -45,7 +45,7 @@
                                 foreach (var author in item.Authors)
                                 {
                                     var str = ++count == item.Authors.Count ? "" : ",";
-                                    <span>@Html.ActionLink(author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
+                                    <span>@Html.ActionLink(String.IsNullOrEmpty(author.AuthorName) ? "Unknown" : author.AuthorName, "ShowAuthor", new { id = author.AuthorId })@str</span>
                                 }
                             }
                         }
