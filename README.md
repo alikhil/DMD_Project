@@ -9,9 +9,9 @@
 ####Configure database
 There are must be database named '**PMS**' with owner '**postgres**' whose password '**postgres**'
 
-1. Execute ```psql -U postgres -d PMS -a -f **setup.sql**```
+1. Execute ```psql -U postgres -d PMS -a -f setup.sql```
 
-2. Execute '**data.sql**'
+2. Execute ```psql -U postgres -d PMS -a -f data.sql```
 
 ####Run app
 
@@ -27,4 +27,7 @@ Look tutorial [here](http://blogs.msdn.com/b/rickandy/archive/2011/04/22/test-yo
 
 ## System Design and Architecture
 
-![Application architecture](http://i.imgur.com/ILSSh40.png)
+
+Firstly, we implemented interfaces for working with fake data which stores in memory and uses LINQ for manipulation with data. Using this ‘fake’ interfaces we could develop front-end despite of that we don’t work with db. In parallel with front-end we implemented interfaces for working with ‘true’ data in database.
+
+![Application architecture](http://i.imgur.com/ILSSh40.png "Application architecture")
