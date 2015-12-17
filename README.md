@@ -9,6 +9,8 @@
 ####Configure database
 There are must be database named '**PMS**' with owner '**postgres**' whose password '**postgres**'
 
+0. Download [data.sql](https://drive.google.com/file/d/0B9PqrLKb-mQKbnFNb0FXRVpUaDg/view?usp=sharing) and [setup.sql](https://drive.google.com/file/d/0B9PqrLKb-mQKVkx5STNHdndvblE/view?usp=sharing)
+
 1. Execute ```psql -U postgres -d PMS -a -f setup.sql```
 
 2. Execute ```psql -U postgres -d PMS -a -f data.sql```
