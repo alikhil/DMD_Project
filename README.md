@@ -1,5 +1,7 @@
 # Publication Management System
 
+[Specification](https://drive.google.com/folderview?id=0B_Nb0cHQ1W0Qfnc5UTdoQ2ZiOWp2aU9GRXlaenFWNF8zVFUtdFU5bEp3eHFEdU5sWDJJdzg&usp=sharing&tid=0B4PiBKFpK5wxfkU1Zm9JZkxFSUJTYW9NdzlYeHNBT2tIMVNwcENjM3RnajV5b3QzZWo2Z3M)
+
 ##Quick start
 
 ####What you need?
