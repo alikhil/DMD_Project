@@ -1,7 +1,10 @@
 # Publication Management System
 
 [Specification](https://drive.google.com/folderview?id=0B_Nb0cHQ1W0Qfnc5UTdoQ2ZiOWp2aU9GRXlaenFWNF8zVFUtdFU5bEp3eHFEdU5sWDJJdzg&usp=sharing&tid=0B4PiBKFpK5wxfkU1Zm9JZkxFSUJTYW9NdzlYeHNBT2tIMVNwcENjM3RnajV5b3QzZWo2Z3M)
+### Demo Video
 
+[![image](https://cloud.githubusercontent.com/assets/7482065/16802995/fd575be2-4918-11e6-8497-8a5d28f7f664.png)
+](https://youtu.be/vjk8IyQYCz0 "Demonstration Video")
 ##Quick start
 
 ####What you need?
