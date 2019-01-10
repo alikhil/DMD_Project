@@ -5,13 +5,13 @@
 
 [![image](https://cloud.githubusercontent.com/assets/7482065/16802995/fd575be2-4918-11e6-8497-8a5d28f7f664.png)
 ](https://youtu.be/vjk8IyQYCz0 "Demonstration Video")
-##Quick start
+## Quick start
 
-####What you need?
+#### What you need?
 * Visual Studio 2013 or newer
 * PostgreSQL 9.3 or newer
 
-####Configure database
+#### Configure database
 There are must be database named '**PMS**' with owner '**postgres**' whose password '**postgres**'
 
 0. Download [data.sql](https://drive.google.com/file/d/0B9PqrLKb-mQKbnFNb0FXRVpUaDg/view?usp=sharing) and [setup.sql](https://drive.google.com/file/d/0B9PqrLKb-mQKVkx5STNHdndvblE/view?usp=sharing)
@@ -20,9 +20,9 @@ There are must be database named '**PMS**' with owner '**postgres**' whose passw
 
 2. Execute ```psql -U postgres -d PMS -a -f data.sql```
 
-####Run app
+#### Run app
 
-#####Run throught Visual Studio
+##### Run throught Visual Studio
 
 1. Open project solution **Project_DMD.sln**
 2. Build project(it should install needed Nuget packages)
